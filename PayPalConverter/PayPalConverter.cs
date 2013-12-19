@@ -43,14 +43,16 @@ namespace PayPalConverter
             string fullpath = "";
             try
             {
+                //Gets the filename and path from the OpenFileDialog
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     filename = System.IO.Path.GetFileName(ofd.FileName);
                     path = System.IO.Path.GetDirectoryName(ofd.FileName);
                 }
+                //Combines the filename and the path
                 fullpath = path + "\\" + filename;
 
-
+                //Populates the Input Listbox with the data from the text file. Each row of the textfile becomes a line in the listbox
                 FileInfo file = new FileInfo(fullpath);
                 StreamReader stRead = file.OpenText();
                 while (!stRead.EndOfStream)
@@ -60,7 +62,7 @@ namespace PayPalConverter
 
 
                
-
+                //Adds each line of the Input listbox to a List<>
                 foreach (String item in lb_Start.Items)
                 {
                     myList.Add(item);
@@ -70,13 +72,16 @@ namespace PayPalConverter
                 enddate = (myList.ElementAt(2));
                 nrOfDeposits = Convert.ToInt32(myList.ElementAt(3));
                 listcount = lb_Start.Items.Count;
+                //Calculates the total amount that the visitor has added to their account for the period
                 for (int i = 4; i < listcount; i++)
                 {
                     String[] temp = myList.ElementAt(i).Split(' ');
                     totalAmount += Convert.ToDecimal(temp[1]);
                 }
-
+                //Updates the Database
                 dbh.AddMoneyPaypal(visitor_id, totalAmount);
+
+                //Populates the Output listbox with general information
                 lb_End.Items.Add("VisitorID: " + visitor_id.ToString());
                 lb_End.Items.Add("Start Period: " + startdate.ToString());
                 lb_End.Items.Add("End Period: " + enddate.ToString());
