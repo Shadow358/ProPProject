@@ -54,7 +54,7 @@
             this.libProducts.FormattingEnabled = true;
             this.libProducts.ItemHeight = 15;
             this.libProducts.Location = new System.Drawing.Point(9, 30);
-            this.libProducts.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.libProducts.Margin = new System.Windows.Forms.Padding(2);
             this.libProducts.Name = "libProducts";
             this.libProducts.Size = new System.Drawing.Size(301, 394);
             this.libProducts.TabIndex = 0;
@@ -78,7 +78,7 @@
             this.libBasket.FormattingEnabled = true;
             this.libBasket.ItemHeight = 15;
             this.libBasket.Location = new System.Drawing.Point(450, 30);
-            this.libBasket.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.libBasket.Margin = new System.Windows.Forms.Padding(2);
             this.libBasket.Name = "libBasket";
             this.libBasket.Size = new System.Drawing.Size(301, 394);
             this.libBasket.TabIndex = 2;
@@ -109,7 +109,7 @@
             // 
             this.tbProductSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbProductSearch.Location = new System.Drawing.Point(9, 453);
-            this.tbProductSearch.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbProductSearch.Margin = new System.Windows.Forms.Padding(2);
             this.tbProductSearch.Name = "tbProductSearch";
             this.tbProductSearch.Size = new System.Drawing.Size(114, 21);
             this.tbProductSearch.TabIndex = 5;
@@ -141,7 +141,7 @@
             // 
             this.tbCurBalance.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbCurBalance.Location = new System.Drawing.Point(450, 453);
-            this.tbCurBalance.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbCurBalance.Margin = new System.Windows.Forms.Padding(2);
             this.tbCurBalance.Name = "tbCurBalance";
             this.tbCurBalance.ReadOnly = true;
             this.tbCurBalance.Size = new System.Drawing.Size(114, 21);
@@ -151,7 +151,7 @@
             // 
             this.tbCurCost.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbCurCost.Location = new System.Drawing.Point(638, 453);
-            this.tbCurCost.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbCurCost.Margin = new System.Windows.Forms.Padding(2);
             this.tbCurCost.Name = "tbCurCost";
             this.tbCurCost.ReadOnly = true;
             this.tbCurCost.Size = new System.Drawing.Size(114, 21);
@@ -161,7 +161,7 @@
             // 
             this.btConfirm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btConfirm.Location = new System.Drawing.Point(450, 496);
-            this.btConfirm.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btConfirm.Margin = new System.Windows.Forms.Padding(2);
             this.btConfirm.Name = "btConfirm";
             this.btConfirm.Size = new System.Drawing.Size(148, 41);
             this.btConfirm.TabIndex = 11;
@@ -172,7 +172,7 @@
             // 
             this.btIncreaseQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btIncreaseQuantity.Location = new System.Drawing.Point(754, 30);
-            this.btIncreaseQuantity.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btIncreaseQuantity.Margin = new System.Windows.Forms.Padding(2);
             this.btIncreaseQuantity.Name = "btIncreaseQuantity";
             this.btIncreaseQuantity.Size = new System.Drawing.Size(75, 41);
             this.btIncreaseQuantity.TabIndex = 12;
@@ -183,7 +183,7 @@
             // 
             this.btDecreaseQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btDecreaseQuantity.Location = new System.Drawing.Point(754, 76);
-            this.btDecreaseQuantity.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btDecreaseQuantity.Margin = new System.Windows.Forms.Padding(2);
             this.btDecreaseQuantity.Name = "btDecreaseQuantity";
             this.btDecreaseQuantity.Size = new System.Drawing.Size(75, 41);
             this.btDecreaseQuantity.TabIndex = 13;
@@ -194,7 +194,7 @@
             // 
             this.btDeleteItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btDeleteItem.Location = new System.Drawing.Point(754, 121);
-            this.btDeleteItem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btDeleteItem.Margin = new System.Windows.Forms.Padding(2);
             this.btDeleteItem.Name = "btDeleteItem";
             this.btDeleteItem.Size = new System.Drawing.Size(75, 41);
             this.btDeleteItem.TabIndex = 14;
@@ -215,7 +215,7 @@
             // tbName
             // 
             this.tbName.Location = new System.Drawing.Point(9, 519);
-            this.tbName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbName.Margin = new System.Windows.Forms.Padding(2);
             this.tbName.Name = "tbName";
             this.tbName.ReadOnly = true;
             this.tbName.Size = new System.Drawing.Size(114, 20);
@@ -225,7 +225,7 @@
             // 
             this.btCancelTransaction.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btCancelTransaction.Location = new System.Drawing.Point(602, 498);
-            this.btCancelTransaction.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btCancelTransaction.Margin = new System.Windows.Forms.Padding(2);
             this.btCancelTransaction.Name = "btCancelTransaction";
             this.btCancelTransaction.Size = new System.Drawing.Size(148, 41);
             this.btCancelTransaction.TabIndex = 65;
@@ -237,12 +237,13 @@
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.Location = new System.Drawing.Point(341, 167);
-            this.button3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 41);
             this.button3.TabIndex = 67;
             this.button3.Text = ">>";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // Shop
             // 
@@ -267,7 +268,7 @@
             this.Controls.Add(this.libBasket);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.libProducts);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Shop";
             this.Text = "Shop Application";
             this.ResumeLayout(false);

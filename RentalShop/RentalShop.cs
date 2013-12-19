@@ -16,5 +16,10 @@ namespace RentalShop
         {
             InitializeComponent();
         }
+
+        private void libProducts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

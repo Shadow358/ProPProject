@@ -356,5 +356,26 @@ namespace Classes
                 connection.Close();
             }
         }
+        public void AddMoneyPaypal(int id, decimal amount)
+        {
+            try
+            {
+                String sql = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + id + ";";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                return;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+       
     }
 }
