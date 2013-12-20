@@ -8,9 +8,6 @@ namespace Classes
 {
     public class Visitor
     {
-        //database connection & all queries to database
-        DBHelper dbhelper = new DBHelper();
-
         //fields
         int visitor_id;
         String rfid;
@@ -39,42 +36,6 @@ namespace Classes
         public override string ToString()
         {
             return first_name + " " + last_name;
-        }
-
-        public bool RemoveMoneyFromBalance(Decimal amount)
-        {
-            if (dbhelper.RemoveMoneyFromBalance(this, amount))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool AddMoneyToBalance(Decimal amount)
-        {
-            if (dbhelper.AddMoneyToBalance(this, amount))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool setBalanceToZero()
-        {
-            if (dbhelper.setBalanceToZero(this))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

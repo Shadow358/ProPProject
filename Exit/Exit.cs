@@ -51,7 +51,7 @@ namespace Entrance
                 {
                     if (((VisitorAtExit)myvisitor).CountNotReturnedArticles == 0)
                     {
-                        ((VisitorAtExit)myvisitor).exitEvent();
+                        dbhelper.exitEvent(myvisitor);
                         this.BackColor = Color.Green;
                         lbInfo.Text = "Visitor can exit!";
                     }
@@ -59,25 +59,30 @@ namespace Entrance
                     {
                         if (((VisitorAtExit)myvisitor).CountNotReturnedArticles > 0)
                         {
+                            Console.Beep(2000, 500);
                             btCash.Visible = false;
                             this.BackColor = Color.Red;
-                            Console.Beep(2000, 500);
                             lbInfo.Text = "Visitor cannot exit!";
                             myRFIDReader.Antenna = false;
                             MessageBox.Show("Visitor has to return " + ((VisitorAtExit)myvisitor).CountNotReturnedArticles + " item(s)\nbefore he/she can exit!");
                             myRFIDReader.Antenna = true;
+                            tbName.Text = "";
+                            tbBalance.Text = "";
+                            lbInfo.Text = "Ready to scan a tag...";
+                            this.BackColor = DefaultBackColor;
+                            myvisitor = null;
                         }
                     }
                 }
                 else
                 {
-                    this.BackColor = Color.DarkOliveGreen;
+                    this.BackColor = Color.DarkSeaGreen;
                     lbInfo.Text = "Visitor already checked out or never checked in...";
                 }
             }
             catch (NullReferenceException)
             {
-                MessageBox.Show("No visitor found with this RFID");
+                MessageBox.Show("No visitor found with this tag.");
             }
         }
 
@@ -110,10 +115,13 @@ namespace Entrance
                 lbOnOff.Text = "RFID-Reader is OFF";
                 lbInfo.Text = "";
                 this.BackColor = DefaultBackColor;
+                tbName.Text = "";
+                tbBalance.Text = "";
+                myvisitor = null;
             }
-            catch (PhidgetException x)
+            catch (PhidgetException)
             {
-                MessageBox.Show(x.Message);
+
             }
             catch (Exception x)
             {
@@ -133,11 +141,11 @@ namespace Entrance
                             "Money back?", MessageBoxButtons.OKCancel);
                     if (dialogResult == DialogResult.OK)
                     {
-                        DialogResult confirm = MessageBox.Show("Click OK to confirm if you gave the visitor cash back or Cancel to cancel this transaction", "Confirm", MessageBoxButtons.OKCancel);
+                        DialogResult confirm = MessageBox.Show("Click OK to confirm if you gave the visitor cash back or Cancel to cancel this transaction.", "Confirm", MessageBoxButtons.OKCancel);
 
                         if (confirm == DialogResult.OK)
                         {
-                            myvisitor.setBalanceToZero();
+                            dbhelper.setBalanceToZero(myvisitor);
                             MessageBox.Show("Transaction completed.");
                         }
                         else if (confirm == DialogResult.Cancel)
@@ -148,13 +156,22 @@ namespace Entrance
                 }
                 else
                 {
-                    MessageBox.Show("Visitor does not have money on account to cash out");
+                    MessageBox.Show("Visitor does not have money on account to cash out.");
                 }
-                myvisitor = null;
                 lbInfo.Text = "Ready to scan a tag...";
                 tbBalance.Text = "";
                 tbName.Text = "";
+                myvisitor = null;
                 myRFIDReader.Antenna = true;
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("There is no scanned tag.");
+                myRFIDReader.Antenna = true;
+            }
+            catch (PhidgetException)
+            {
+                MessageBox.Show("Please turn RFID-Reader ON.");
             }
             catch (Exception x)
             {

@@ -29,17 +29,5 @@ namespace Classes
         {
             return base.ToString();
         }
-
-        public bool exitEvent()
-        {
-            if (dbhelper.exitEvent(this))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 }

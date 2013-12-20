@@ -45,30 +45,28 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tbName = new System.Windows.Forms.TextBox();
             this.btCancelTransaction = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btProductsToBasket = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // libProducts
             // 
             this.libProducts.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.libProducts.FormattingEnabled = true;
-            this.libProducts.ItemHeight = 15;
-            this.libProducts.Location = new System.Drawing.Point(9, 30);
-            this.libProducts.Margin = new System.Windows.Forms.Padding(2);
+            this.libProducts.ItemHeight = 18;
+            this.libProducts.Location = new System.Drawing.Point(12, 37);
+            this.libProducts.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.libProducts.Name = "libProducts";
-            this.libProducts.Size = new System.Drawing.Size(301, 394);
+            this.libProducts.Size = new System.Drawing.Size(400, 472);
             this.libProducts.TabIndex = 0;
-            this.libProducts.SelectedIndexChanged += new System.EventHandler(this.libProducts_SelectedIndexChanged);
-            this.libProducts.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.libProducts_MouseDoubleClick);
+            this.libProducts.DoubleClick += new System.EventHandler(this.libProducts_DoubleClick);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(5, 7);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(7, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(92, 20);
+            this.label1.Size = new System.Drawing.Size(114, 25);
             this.label1.TabIndex = 1;
             this.label1.Text = "All products";
             // 
@@ -76,21 +74,21 @@
             // 
             this.libBasket.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.libBasket.FormattingEnabled = true;
-            this.libBasket.ItemHeight = 15;
-            this.libBasket.Location = new System.Drawing.Point(450, 30);
-            this.libBasket.Margin = new System.Windows.Forms.Padding(2);
+            this.libBasket.ItemHeight = 18;
+            this.libBasket.Location = new System.Drawing.Point(600, 37);
+            this.libBasket.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.libBasket.MultiColumn = true;
             this.libBasket.Name = "libBasket";
-            this.libBasket.Size = new System.Drawing.Size(301, 394);
+            this.libBasket.Size = new System.Drawing.Size(400, 472);
             this.libBasket.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(446, 7);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(595, 9);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 20);
+            this.label2.Size = new System.Drawing.Size(72, 25);
             this.label2.TabIndex = 3;
             this.label2.Text = "Basket";
             // 
@@ -98,20 +96,19 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(5, 431);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Location = new System.Drawing.Point(7, 530);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(136, 20);
+            this.label3.Size = new System.Drawing.Size(166, 25);
             this.label3.TabIndex = 4;
             this.label3.Text = "Seach for product";
             // 
             // tbProductSearch
             // 
             this.tbProductSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbProductSearch.Location = new System.Drawing.Point(9, 453);
-            this.tbProductSearch.Margin = new System.Windows.Forms.Padding(2);
+            this.tbProductSearch.Location = new System.Drawing.Point(12, 558);
+            this.tbProductSearch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbProductSearch.Name = "tbProductSearch";
-            this.tbProductSearch.Size = new System.Drawing.Size(114, 21);
+            this.tbProductSearch.Size = new System.Drawing.Size(151, 24);
             this.tbProductSearch.TabIndex = 5;
             this.tbProductSearch.TextChanged += new System.EventHandler(this.tbProductSearch_TextChanged);
             // 
@@ -119,10 +116,9 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(446, 431);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Location = new System.Drawing.Point(595, 530);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(120, 20);
+            this.label4.Size = new System.Drawing.Size(147, 25);
             this.label4.TabIndex = 6;
             this.label4.Text = "Balance of user";
             // 
@@ -130,40 +126,39 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(629, 431);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Location = new System.Drawing.Point(839, 530);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(129, 20);
+            this.label5.Size = new System.Drawing.Size(161, 25);
             this.label5.TabIndex = 8;
             this.label5.Text = "Total price to pay";
             // 
             // tbCurBalance
             // 
             this.tbCurBalance.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbCurBalance.Location = new System.Drawing.Point(450, 453);
-            this.tbCurBalance.Margin = new System.Windows.Forms.Padding(2);
+            this.tbCurBalance.Location = new System.Drawing.Point(600, 558);
+            this.tbCurBalance.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbCurBalance.Name = "tbCurBalance";
             this.tbCurBalance.ReadOnly = true;
-            this.tbCurBalance.Size = new System.Drawing.Size(114, 21);
+            this.tbCurBalance.Size = new System.Drawing.Size(151, 24);
             this.tbCurBalance.TabIndex = 9;
             // 
             // tbCurCost
             // 
             this.tbCurCost.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbCurCost.Location = new System.Drawing.Point(638, 453);
-            this.tbCurCost.Margin = new System.Windows.Forms.Padding(2);
+            this.tbCurCost.Location = new System.Drawing.Point(851, 558);
+            this.tbCurCost.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbCurCost.Name = "tbCurCost";
             this.tbCurCost.ReadOnly = true;
-            this.tbCurCost.Size = new System.Drawing.Size(114, 21);
+            this.tbCurCost.Size = new System.Drawing.Size(151, 24);
             this.tbCurCost.TabIndex = 10;
             // 
             // btConfirm
             // 
             this.btConfirm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btConfirm.Location = new System.Drawing.Point(450, 496);
-            this.btConfirm.Margin = new System.Windows.Forms.Padding(2);
+            this.btConfirm.Location = new System.Drawing.Point(600, 610);
+            this.btConfirm.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btConfirm.Name = "btConfirm";
-            this.btConfirm.Size = new System.Drawing.Size(148, 41);
+            this.btConfirm.Size = new System.Drawing.Size(197, 50);
             this.btConfirm.TabIndex = 11;
             this.btConfirm.Text = "Confirm transaction";
             this.btConfirm.UseVisualStyleBackColor = true;
@@ -171,10 +166,10 @@
             // btIncreaseQuantity
             // 
             this.btIncreaseQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btIncreaseQuantity.Location = new System.Drawing.Point(754, 30);
-            this.btIncreaseQuantity.Margin = new System.Windows.Forms.Padding(2);
+            this.btIncreaseQuantity.Location = new System.Drawing.Point(1005, 37);
+            this.btIncreaseQuantity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btIncreaseQuantity.Name = "btIncreaseQuantity";
-            this.btIncreaseQuantity.Size = new System.Drawing.Size(75, 41);
+            this.btIncreaseQuantity.Size = new System.Drawing.Size(100, 50);
             this.btIncreaseQuantity.TabIndex = 12;
             this.btIncreaseQuantity.Text = "+";
             this.btIncreaseQuantity.UseVisualStyleBackColor = true;
@@ -182,10 +177,10 @@
             // btDecreaseQuantity
             // 
             this.btDecreaseQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btDecreaseQuantity.Location = new System.Drawing.Point(754, 76);
-            this.btDecreaseQuantity.Margin = new System.Windows.Forms.Padding(2);
+            this.btDecreaseQuantity.Location = new System.Drawing.Point(1005, 94);
+            this.btDecreaseQuantity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btDecreaseQuantity.Name = "btDecreaseQuantity";
-            this.btDecreaseQuantity.Size = new System.Drawing.Size(75, 41);
+            this.btDecreaseQuantity.Size = new System.Drawing.Size(100, 50);
             this.btDecreaseQuantity.TabIndex = 13;
             this.btDecreaseQuantity.Text = "-";
             this.btDecreaseQuantity.UseVisualStyleBackColor = true;
@@ -193,10 +188,10 @@
             // btDeleteItem
             // 
             this.btDeleteItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btDeleteItem.Location = new System.Drawing.Point(754, 121);
-            this.btDeleteItem.Margin = new System.Windows.Forms.Padding(2);
+            this.btDeleteItem.Location = new System.Drawing.Point(1005, 149);
+            this.btDeleteItem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btDeleteItem.Name = "btDeleteItem";
-            this.btDeleteItem.Size = new System.Drawing.Size(75, 41);
+            this.btDeleteItem.Size = new System.Drawing.Size(100, 50);
             this.btDeleteItem.TabIndex = 14;
             this.btDeleteItem.Text = "Delete";
             this.btDeleteItem.UseVisualStyleBackColor = true;
@@ -205,52 +200,51 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(9, 498);
-            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label10.Location = new System.Drawing.Point(12, 613);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(117, 20);
+            this.label10.Size = new System.Drawing.Size(146, 25);
             this.label10.TabIndex = 64;
             this.label10.Text = "Name of visitor:";
             // 
             // tbName
             // 
-            this.tbName.Location = new System.Drawing.Point(9, 519);
-            this.tbName.Margin = new System.Windows.Forms.Padding(2);
+            this.tbName.Location = new System.Drawing.Point(12, 639);
+            this.tbName.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbName.Name = "tbName";
             this.tbName.ReadOnly = true;
-            this.tbName.Size = new System.Drawing.Size(114, 20);
+            this.tbName.Size = new System.Drawing.Size(151, 22);
             this.tbName.TabIndex = 63;
             // 
             // btCancelTransaction
             // 
             this.btCancelTransaction.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btCancelTransaction.Location = new System.Drawing.Point(602, 498);
-            this.btCancelTransaction.Margin = new System.Windows.Forms.Padding(2);
+            this.btCancelTransaction.Location = new System.Drawing.Point(805, 610);
+            this.btCancelTransaction.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btCancelTransaction.Name = "btCancelTransaction";
-            this.btCancelTransaction.Size = new System.Drawing.Size(148, 41);
+            this.btCancelTransaction.Size = new System.Drawing.Size(197, 50);
             this.btCancelTransaction.TabIndex = 65;
             this.btCancelTransaction.Text = "Cancel";
             this.btCancelTransaction.UseVisualStyleBackColor = true;
             this.btCancelTransaction.Click += new System.EventHandler(this.btCancelTransaction_Click);
             // 
-            // button3
+            // btProductsToBasket
             // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(341, 167);
-            this.button3.Margin = new System.Windows.Forms.Padding(2);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 41);
-            this.button3.TabIndex = 67;
-            this.button3.Text = ">>";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btProductsToBasket.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btProductsToBasket.Location = new System.Drawing.Point(455, 206);
+            this.btProductsToBasket.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btProductsToBasket.Name = "btProductsToBasket";
+            this.btProductsToBasket.Size = new System.Drawing.Size(100, 50);
+            this.btProductsToBasket.TabIndex = 67;
+            this.btProductsToBasket.Text = ">>";
+            this.btProductsToBasket.UseVisualStyleBackColor = true;
+            this.btProductsToBasket.Click += new System.EventHandler(this.btProductsToBasket_Click);
             // 
             // Shop
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(946, 547);
-            this.Controls.Add(this.button3);
+            this.ClientSize = new System.Drawing.Size(1261, 673);
+            this.Controls.Add(this.btProductsToBasket);
             this.Controls.Add(this.btCancelTransaction);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.tbName);
@@ -268,9 +262,10 @@
             this.Controls.Add(this.libBasket);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.libProducts);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Shop";
             this.Text = "Shop Application";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Shop_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -295,7 +290,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.Button btCancelTransaction;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btProductsToBasket;
     }
 }
 

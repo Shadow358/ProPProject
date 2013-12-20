@@ -18,10 +18,10 @@ namespace Shop
         RFID myRFIDReader;
         DBHelper dbhelper;
         Visitor myvisitor;
-        List<Item> shopList;
-        List<Item> basketList;
+        List<Product> shopList;
+        List<BasketItem> basketList = new List<BasketItem>();
 
-        int shopID;
+        int shopID = EnterShopID.shopId;
 
         public Shop()
         {
@@ -29,19 +29,10 @@ namespace Shop
             // Connect to shop
             dbhelper = new DBHelper();
 
-             EnterShopID form = new EnterShopID();
-             form.Show();
-            
-            Shop thisShop = new Shop();
-            thisShop.Hide();
             try
             {
-                shopID = 1;
-                shopList = dbhelper.GetAllArticles(shopID);
-                foreach (Item item in shopList)
-                {
-                    libProducts.Items.Add(item.ToString());
-                }
+                ShowProductsDatabase();
+                tbCurCost.Text = "0.00";
             }
             catch (Exception x)
             {
@@ -62,6 +53,15 @@ namespace Shop
             }
         }
 
+        private void ShowProductsDatabase()
+        {
+            shopList = dbhelper.GetAllProducts(shopID);
+            foreach (Product item in shopList)
+            {
+                libProducts.Items.Add(item.ToString());
+            }
+        }
+
         private void ReadTag(object sender, TagEventArgs e)
         {
             try
@@ -76,12 +76,12 @@ namespace Shop
                 }
                 else
                 {
-                    MessageBox.Show("Your balance is 0\nPlease transfer money to your account");
+                    MessageBox.Show("Balance is 0\nVisitor should transfer money to his/her account.");
                 }
             }
             catch (NullReferenceException)
             {
-                MessageBox.Show("No visitor found with this RFID");
+                MessageBox.Show("No visitor found with this tag.");
             }
             catch (Exception x)
             {
@@ -89,59 +89,179 @@ namespace Shop
             }
         }
 
-        // If text in search box is changed, it updates the listbox with items which contain the criteria
-        private void tbProductSearch_TextChanged(object sender, EventArgs e)
+        public void ShowShopListBox()
         {
-            libProducts.Items.Clear();
-            List<Item> tempList = new List<Item>();
-            foreach (Item item in shopList)
-            {
-                if (item.ItemName.Contains(tbProductSearch.Text))
-                {
-                    tempList.Add(item);
-                }
-            }
-            foreach (Item item in tempList)
+            foreach (Product item in shopList)
             {
                 libProducts.Items.Add(item.ToString());
             }
         }
 
-        private void btCancelTransaction_Click(object sender, EventArgs e)
+        public void ShowBasketListBox()
         {
-            myRFIDReader.Antenna = true;
+            foreach (BasketItem item in basketList)
+            {
+                libBasket.Items.Add(item.ToString());
+            }
         }
 
-        private void libProducts_MouseDoubleClick(object sender, MouseEventArgs e)
+        // If text in search box is changed, it updates the listbox with items which contain the criteria
+        private void tbProductSearch_TextChanged(object sender, EventArgs e)
         {
-            if (libProducts.SelectedItem != null)
+            try
             {
-                // put items in temp list, then if transaction is completed, update database and then store the new list in the shopList
-                foreach(Item item in shopList)
+                libProducts.Items.Clear();
+                List<Product> tempList = new List<Product>();
+                foreach (Product item in shopList)
                 {
-                    if (libProducts.SelectedItem.Equals(item.ToString()))
+                    if (item.ProductName.Contains(tbProductSearch.Text))
                     {
-                        item.StockInShop = item.StockInShop - 1;
-                        basketList = new List<Item>();
-                        basketList.Add(item);
-                        foreach (Item bitem in basketList)
+                        tempList.Add(item);
+                    }
+                }
+                foreach (Product item in tempList)
+                {
+                    libProducts.Items.Add(item.ToString());
+                }
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.Message);
+            }
+        }
+
+        private void btCancelTransaction_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                tbName.Text = "";
+                tbCurBalance.Text = "";
+                tbProductSearch.Text = "";
+                myvisitor = null;
+                myRFIDReader.Antenna = true;
+                libProducts.Items.Clear();
+                basketList.Clear();
+                libBasket.Items.Clear();
+                ShowProductsDatabase();
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.Message);
+            }
+        }
+
+        private void btProductsToBasket_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (libProducts.SelectedItem != null)
+                {
+                    foreach (Product item in shopList)
+                    {
+                        if (item.ToString().Equals(libProducts.SelectedItem.ToString()))
                         {
-                            libBasket.Items.Add(bitem);
+                            //if basketList is empty
+                            if (!basketList.Any())
+                            {
+                                BasketItem basketitem = new BasketItem(item, 1, item.ProductPrice * 1);
+                                basketList.Add(basketitem);
+                                item.StockInShop--;
+                            }
+                            else
+                            {
+                                if (basketList.All(bitem => bitem.Product.ProductID != item.ProductID))
+                                {
+                                    basketList.Add(new BasketItem(item, 1, item.ProductPrice * 1));
+                                    item.StockInShop--;
+                                    ShowShopListBox();
+                                    ShowBasketListBox();
+                                }
+                                else
+                                {
+                                    foreach (BasketItem bitem in basketList)
+                                    {
+                                        if (bitem.Product.ProductID == item.ProductID)
+                                        {
+                                            bitem.Quantity++;
+                                            item.StockInShop--;
+                                            ShowShopListBox();
+                                            ShowBasketListBox();
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+                libProducts.Items.Clear();
+                libBasket.Items.Clear();
+                ShowShopListBox();
+                ShowBasketListBox();
             }
-            libProducts.Update();
+            catch (Exception x)
+            {
+                MessageBox.Show(x.Message);
+            }
         }
 
-        private void libProducts_SelectedIndexChanged(object sender, EventArgs e)
+        private void libProducts_DoubleClick(object sender, EventArgs e)
         {
+            try
+            {
+                if (libProducts.SelectedItem != null)
+                {
 
+                    foreach (Product item in shopList)
+                    {
+                        if (item.ToString().Equals(libProducts.SelectedItem.ToString()))
+                        {
+                            //if basketList is empty
+                            if (!basketList.Any())
+                            {
+                                BasketItem basketitem = new BasketItem(item, 1, item.ProductPrice * 1);
+                                basketList.Add(basketitem);
+                                item.StockInShop--;
+                            }
+                            else
+                            {
+                                if (basketList.All(bitem => bitem.Product.ProductID != item.ProductID))
+                                {
+                                    basketList.Add(new BasketItem(item, 1, item.ProductPrice * 1));
+                                    item.StockInShop--;
+                                    ShowShopListBox();
+                                    ShowBasketListBox();
+                                }
+                                else
+                                {
+                                    foreach (BasketItem bitem in basketList)
+                                    {
+                                        if (bitem.Product.ProductID == item.ProductID)
+                                        {
+                                            bitem.Quantity++;
+                                            item.StockInShop--;
+                                            ShowShopListBox();
+                                            ShowBasketListBox();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                libProducts.Items.Clear();
+                libBasket.Items.Clear();
+                ShowShopListBox();
+                ShowBasketListBox();
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.Message);
+            }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void Shop_FormClosed(object sender, FormClosedEventArgs e)
         {
-
+            Application.Exit();
         }
     }
 }

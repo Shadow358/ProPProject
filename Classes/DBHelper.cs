@@ -315,17 +315,17 @@ namespace Classes
             }
         }
 
-        public List<Item> GetAllArticles(int shopID)
+        public List<Product> GetAllProducts(int shopID)
         {
             try
             {
-                String sql = "SELECT p.product_id, p.product_description, p.product_price, s.stock_quantity FROM Product p NATURAL JOIN Stock s WHERE s.shop_id = "+shopID+";";
+                String sql = "SELECT p.product_id, p.product_description, p.product_price, s.stock_quantity FROM Product p NATURAL JOIN Stock s WHERE s.shop_id = " + shopID + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
                 MySqlDataReader reader = command.ExecuteReader();
 
-                List<Item> tempList = new List<Item>();
+                List<Product> tempList = new List<Product>();
                 int productID;
                 String productDescription;
                 decimal productPrice;
@@ -335,10 +335,10 @@ namespace Classes
                 {
                     productID = Convert.ToInt32(reader[0]);
                     productDescription = Convert.ToString(reader[1]);
-                    productPrice= Convert.ToDecimal(reader[2]);
+                    productPrice = Convert.ToDecimal(reader[2]);
                     quantity = Convert.ToInt32(reader[3]);
 
-                    Item tempItem = new Item(productID, productPrice, productDescription, quantity);
+                    Product tempItem = new Product(productID, productPrice, productDescription, quantity);
                     tempList.Add(tempItem);
                 }
                 return tempList;
@@ -356,6 +356,7 @@ namespace Classes
                 connection.Close();
             }
         }
+
         public void AddMoneyPaypal(int id, decimal amount)
         {
             try

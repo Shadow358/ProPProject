@@ -33,7 +33,7 @@ namespace Entrance
             }
             catch (PhidgetException)
             {
-                 lbOnOff.Text = "Error, could not start";
+                lbOnOff.Text = "Error, could not start";
             }
         }
 
@@ -50,28 +50,28 @@ namespace Entrance
                 {
                     if (myvisitor.Balance >= 0)
                     {
-                        ((VisitorAtEntrance)myvisitor).enterEvent();
+                        dbhelper.enterEvent(myvisitor);
                         this.BackColor = Color.Green;
                         lbInfo.Text = "Visitor can enter!";
                         timer.Start();
                     }
                     else
                     {
-                        this.BackColor = Color.Red;
                         Console.Beep(2000, 500);
-                        lbInfo.Text = "Visitor cannot enter!";
+                        lbInfo.Text = "Visitor cannot enter yet!";
+                        this.BackColor = Color.Orange;
                         myRFIDReader.Antenna = false;
                         DialogResult dialogResult = MessageBox.Show
                             ("Visitor did not pay (whole) ticket for event.\nAmount to be paid: " + -(myvisitor.Balance - 10) + " Euros cash.\nClick OK if visitor wants to pay now.",
                             "Pay to enter...", MessageBoxButtons.OKCancel);
                         if (dialogResult == DialogResult.OK)
                         {
-                            DialogResult confirm = MessageBox.Show("Click OK to confirm if you received payment or Cancel to cancel this transaction", "Confirm", MessageBoxButtons.OKCancel);
+                            DialogResult confirm = MessageBox.Show("Click OK to confirm if you received payment or Cancel to cancel this transaction.", "Confirm", MessageBoxButtons.OKCancel);
 
                             if (confirm == DialogResult.OK)
                             {
-                                myvisitor.setBalanceToZero();
-                                MessageBox.Show("Transaction completed.\nPlease scan the RFID again.");
+                                dbhelper.setBalanceToZero(myvisitor);
+                                MessageBox.Show("Transaction completed.\nPlease scan the tag again.");
                             }
                             else if (confirm == DialogResult.Cancel)
                             {
@@ -87,8 +87,9 @@ namespace Entrance
                 }
                 else
                 {
-                    this.BackColor = Color.Red;
                     Console.Beep(2000, 500);
+                    lbInfo.Text = "Visitor cannot enter!";
+                    this.BackColor = Color.Red;
                     myRFIDReader.Antenna = false;
                     MessageBox.Show("Visitor already inside!");
                     myRFIDReader.Antenna = true;
@@ -101,7 +102,7 @@ namespace Entrance
             }
             catch (NullReferenceException)
             {
-                MessageBox.Show("No visitor found with this RFID");
+                MessageBox.Show("No visitor found with this tag.");
             }
             catch (Exception x)
             {
@@ -140,7 +141,7 @@ namespace Entrance
             }
             catch (PhidgetException)
             {
-                
+
             }
             catch (Exception x)
             {

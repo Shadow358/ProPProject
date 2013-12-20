@@ -8,9 +8,6 @@ namespace Classes
 {
     public class VisitorAtEntrance : Visitor
     {
-        //database connection & all queries to database
-        DBHelper dbhelper = new DBHelper();
-
         //fields
         bool? inside;
 
@@ -28,18 +25,6 @@ namespace Classes
         public override string ToString()
         {
             return base.ToString();
-        }
-
-        public bool enterEvent()
-        {
-            if (dbhelper.enterEvent(this))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }
