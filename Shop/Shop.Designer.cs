@@ -173,6 +173,7 @@
             this.btIncreaseQuantity.TabIndex = 12;
             this.btIncreaseQuantity.Text = "+";
             this.btIncreaseQuantity.UseVisualStyleBackColor = true;
+            this.btIncreaseQuantity.Click += new System.EventHandler(this.btIncreaseQuantity_Click);
             // 
             // btDecreaseQuantity
             // 
@@ -184,6 +185,7 @@
             this.btDecreaseQuantity.TabIndex = 13;
             this.btDecreaseQuantity.Text = "-";
             this.btDecreaseQuantity.UseVisualStyleBackColor = true;
+            this.btDecreaseQuantity.Click += new System.EventHandler(this.btDecreaseQuantity_Click);
             // 
             // btDeleteItem
             // 
@@ -195,6 +197,7 @@
             this.btDeleteItem.TabIndex = 14;
             this.btDeleteItem.Text = "Delete";
             this.btDeleteItem.UseVisualStyleBackColor = true;
+            this.btDeleteItem.Click += new System.EventHandler(this.btDeleteItem_Click);
             // 
             // label10
             // 
