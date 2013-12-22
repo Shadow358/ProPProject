@@ -77,7 +77,6 @@
             this.libBasket.ItemHeight = 18;
             this.libBasket.Location = new System.Drawing.Point(600, 37);
             this.libBasket.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.libBasket.MultiColumn = true;
             this.libBasket.Name = "libBasket";
             this.libBasket.Size = new System.Drawing.Size(400, 472);
             this.libBasket.TabIndex = 2;
@@ -162,6 +161,7 @@
             this.btConfirm.TabIndex = 11;
             this.btConfirm.Text = "Confirm transaction";
             this.btConfirm.UseVisualStyleBackColor = true;
+            this.btConfirm.Click += new System.EventHandler(this.btConfirm_Click);
             // 
             // btIncreaseQuantity
             // 
@@ -268,7 +268,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Shop";
             this.Text = "Shop Application";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Shop_FormClosed);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.shop_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
