@@ -32,22 +32,15 @@ namespace Shop
             // Connect to shop
             dbhelper = new DBHelper();
 
-            try
-            {
-                showProductsDatabase();
-                tbCurCost.Text = "0.00";
-            }
-            catch (Exception x)
-            {
-                MessageBox.Show(x.Message);
-            }
+            showProductsDatabase();
+            tbCurCost.Text = "0.00";
 
             try
             {
                 myRFIDReader = new RFID();
                 myRFIDReader.Tag += new TagEventHandler(readTag);
                 myRFIDReader.open();
-                myRFIDReader.waitForAttachment(3000);
+                myRFIDReader.waitForAttachment(1000);
                 myRFIDReader.Antenna = true;
             }
             catch (PhidgetException)
@@ -98,35 +91,34 @@ namespace Shop
         private void btDeleteItem_Click(object sender, EventArgs e) // Deletes an item from the basket (works on the same idea as the addItemToBasket
         {
             int selectedIndex = libBasket.SelectedIndex;
-            if (libBasket.SelectedItem != null)
-            { // Check if an item is selected
-                foreach (BasketItem item in basketList)
+            if (!selectedIndex.Equals(-1)) // Check if an item is selected
+            {
+                BasketItem tempBasketItem = basketList[selectedIndex];
+                if (productList.All(product => tempBasketItem.Product.ProductID != product.ProductID))
                 {
-                    if (item.ToString().Equals(libBasket.SelectedItem.ToString()))
-                    { // Check for the right basketItem
-                        if (productList.All(product => item.Product.ProductID != product.ProductID))
-                        {
-                            Product tempProduct = new Product(item.Product.ProductID, item.TotalPrice, item.Product.ProductName, item.Quantity);
-                            productList.Add(tempProduct);
-                            basketList.Remove(item);
-                            showListboxes();
-                            setSelected("basket", selectedIndex);
-                            return;
-                        }
-                        else
-                        {
-                            foreach (Product product in productList)
-                            {
-                                if (item.Product.ProductID.Equals(product.ProductID))
-                                {
-                                    product.StockInShop = product.StockInShop + item.Quantity;
-                                    basketList.Remove(item);
-                                    showListboxes();
-                                    setSelected("basket", selectedIndex);
-                                    return;
-                                }
-                            }
-                        }
+                    Product tempProduct = new Product(tempBasketItem.Product.ProductID, tempBasketItem.TotalPrice, tempBasketItem.Product.ProductName, tempBasketItem.Quantity);
+                    productList.Add(tempProduct);
+                    productList.Sort(productListInOrder);
+                    basketList.Remove(tempBasketItem);
+                    showListboxes();
+                    setSelected("basket", selectedIndex);
+                    return;
+                }
+                else
+                {
+                    Product tempProduct = findProduct(tempBasketItem);
+                    if (tempProduct != null)
+                    {
+                        tempProduct.StockInShop = tempProduct.StockInShop + tempBasketItem.Quantity;
+                        basketList.Remove(tempBasketItem);
+                        showListboxes();
+                        setSelected("basket", selectedIndex);
+                        return;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't add, something went wrong");
+                        return;
                     }
                 }
             }
@@ -135,78 +127,60 @@ namespace Shop
         private void btIncreaseQuantity_Click(object sender, EventArgs e) // Increases the quantity of an item in the basket, and decreases the quantity of the corresponding item in the productList
         {
             int selectedIndex = libBasket.SelectedIndex;
-            if (libBasket.SelectedItem != null)
-            { // Check if an item is selected
-                foreach (BasketItem item in basketList)
+            if (!selectedIndex.Equals(-1)) // Check if an item is selected
+            {
+                BasketItem tempBasketItem = basketList[selectedIndex];
+                if (!(myVisitor.Balance < Convert.ToDecimal(tbCurCost.Text) + tempBasketItem.TotalPrice)) // If the user has enough balance
                 {
-                    if (item.ToString().Equals(libBasket.SelectedItem.ToString()))
-                    { // Check for the right basketItem
-                        if (myVisitor.Balance > Convert.ToDecimal(tbCurCost.Text) + item.TotalPrice)
-                        {
-                            if (productList.All(product => item.Product.ProductID != product.ProductID))
-                            {
-                                MessageBox.Show("Can't increase quantity, out of stock!");
-                                return;
-                            }
-                            else
-                            {
-                                foreach (Product product in productList)
-                                {
-                                    if (item.Product.ProductID.Equals(product.ProductID))
-                                    {
-                                        if (product.StockInShop != 0)
-                                        {
-                                            product.StockInShop--;
-                                            item.Quantity++;
-                                            showListboxes();
-                                            setSelected("basket", selectedIndex);
-                                            return;
-                                        }
-                                        else
-                                            MessageBox.Show("YOU SHALL NOT PASS!");
-                                    }
-                                }
-                            }
-                        }
-                        else
-                            MessageBox.Show("Can't add item, balance is too low!");
+                    Product tempProduct = findProduct(tempBasketItem);
+                    if (tempProduct != null)
+                    {
+                        tempProduct.StockInShop--;
+                        tempBasketItem.Quantity++;
+                        showListboxes();
+                        setSelected("basket", selectedIndex);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't increase, something went wrong");
+                        return;
                     }
                 }
+                else
+                    MessageBox.Show("YOU SHALL NOT PASS!");
             }
         }
 
         private void btDecreaseQuantity_Click(object sender, EventArgs e) // Decrease the quantity of an item in the basket, and increase the quantity of the corresponding item in the productList
         {
             int selectedIndex = libBasket.SelectedIndex;
-            if (libBasket.SelectedItem != null)
-            { // Check if an item is selected
-                foreach (BasketItem item in basketList)
+            if (!selectedIndex.Equals(-1)) // Check if an item is selected
+            {
+                BasketItem tempBasketItem = basketList[selectedIndex];
+                if (productList.All(product => tempBasketItem.Product.ProductID != product.ProductID))
                 {
-                    if (item.ToString().Equals(libBasket.SelectedItem.ToString()))
-                    { // Check for the right basketItem
-                        if (productList.All(product => item.Product.ProductID != product.ProductID))
-                        {
-                            Product tempProduct = new Product(item.Product.ProductID, item.TotalPrice, item.Product.ProductName, 1);
-                            productList.Add(tempProduct);
-                            item.Quantity--;
-                            showListboxes();
-                            setSelected("basket", selectedIndex);
-                            return;
-                        }
-                        else
-                        {
-                            foreach (Product product in productList)
-                            {
-                                if (item.Product.ProductID.Equals(product.ProductID))
-                                {
-                                    product.StockInShop++;
-                                    item.Quantity--;
-                                    showListboxes();
-                                    setSelected("basket", selectedIndex);
-                                    return;
-                                }
-                            }
-                        }
+                    Product tempProduct = new Product(tempBasketItem.Product.ProductID, tempBasketItem.TotalPrice, tempBasketItem.Product.ProductName, 1);
+                    productList.Add(tempProduct);
+                    productList.Sort(productListInOrder);
+                    tempBasketItem.Quantity--;
+                    showListboxes();
+                    setSelected("basket", selectedIndex);
+                    return;
+                }
+                else
+                {
+                    Product tempProduct = findProduct(tempBasketItem);
+                    if (tempProduct != null)
+                    {
+                        tempProduct.StockInShop++;
+                        tempBasketItem.Quantity--;
+                        showListboxes();
+                        setSelected("basket", selectedIndex);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can't decrease, something went wrong");
+                        return;
                     }
                 }
             }
@@ -232,52 +206,79 @@ namespace Shop
             }
         }
 
+        private void btConfirm_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                decimal amount = basketList.Sum(basketItem => (basketItem.TotalPrice * basketItem.Quantity));
+                if (dbhelper.ConfirmShopTransaction(shopID, myVisitor, basketList, amount) && dbhelper.RemoveMoneyFromBalance(myVisitor, amount))
+                {
+                    btCancelTransaction_Click(sender, e); // And reset the application, so a new visitor can scan it's bracelet
+                    MessageBox.Show("Transaction succesful!");
+                }
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.Message);
+            }
+        }
+
         private void addItemToBasket() // Adds the item to the basket
         {
             int selectedIndex = libProducts.SelectedIndex;
-            if (libProducts.SelectedItem != null){ // Check if an item is selected
-                foreach (Product item in productList){ // Check for all products in the list
-                    if (item.ToString().Equals(libProducts.SelectedItem.ToString())){ // Checks for the right item
-                        //if basketList is empty
-                        if (!basketList.Any()){ // If the basket is empty, create, add and decrease quantity (old item)
-                            BasketItem basketitem = new BasketItem(item, 1, item.ProductPrice); // Create new basketitem
-                            basketList.Add(basketitem); // Add to list
-                            item.StockInShop--; // Decrease quantity
+            if (!selectedIndex.Equals(-1)) // Check if an item is selected
+            {
+                Product tempProduct = productList[selectedIndex];
+                if (!(myVisitor.Balance < Convert.ToDecimal(tbCurCost.Text) + tempProduct.ProductPrice)) // If the user has enough balance
+                {
+                    if (basketList.All(bitem => bitem.Product.ProductID != tempProduct.ProductID))
+                    { // If the basket is empty, create, add and decrease quantity (old item)
+                        BasketItem basketitem = new BasketItem(tempProduct, 1, tempProduct.ProductPrice); // Create new basketitem
+                        basketList.Add(basketitem); // Add to list
+                        tempProduct.StockInShop--; // Decrease quantity
+                        showListboxes();
+                        setSelected("product", selectedIndex);
+                        return;
+                    }
+                    else
+                    {
+                        BasketItem tempBasketItem = findBasketItem(tempProduct);
+                        if (tempBasketItem != null)
+                        {
+                            tempBasketItem.Quantity++;
+                            tempProduct.StockInShop--;
                             showListboxes();
                             setSelected("product", selectedIndex);
-                            return;}
-                        else{
-                            if (basketList.All(bitem => bitem.Product.ProductID != item.ProductID)){ // If there doesn't exist such an item yet, create, add and decrease quantity of item in shop
-                                basketList.Add(new BasketItem(item, 1, item.ProductPrice));
-                                item.StockInShop--;
-                                showListboxes();
-                                setSelected("product", selectedIndex);
-                                return;}
-                            else{
-                                foreach (BasketItem bitem in basketList){ // Check get the right item, increase quantity of item in basket, decrease quantity of item in shop
-                                    if (bitem.Product.ProductID == item.ProductID){
-                                        bitem.Quantity++;
-                                        item.StockInShop--;
-                                        showListboxes();
-                                        setSelected("product", selectedIndex);
-                                        return;}}}}}}}
+                            return;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Can't add, something went wrong");
+                            return;
+                        }
+                    }
+                }
+                else
+                    MessageBox.Show("YOU SHALL NOT PASS!");
+            }
         }
 
         private void showProductsDatabase() // Fetches the products from the database and stores it in a list 
         {
             productList = dbhelper.GetAllProducts(shopID);
-            foreach (Product item in productList)
+            foreach (Product item in productList) /////////////////PUT THIS IN A TRY CATCH, ERROR IF DATABASE NOT CONNECED!!!!
             {
                 libProducts.Items.Add(item.ToString());
             }
         }
 
-        private void showListboxes() // Clears and shows all items in both listboxes, and updates the price of the basket
+        private void showListboxes() // Adds the items to the listboxes, or deletes them if the quantity is 0, furthermore it calculated the price of the basket
         {
             decimal tempAmount = 0.00M;
+
             libBasket.Items.Clear();
             libProducts.Items.Clear();
-            foreach (BasketItem item in basketList) // Calculate the price of the basket
+            foreach (BasketItem item in basketList)
             {
                 if (item.Quantity.Equals(0))
                     basketItemToDeleteList.Add(item);
@@ -286,7 +287,7 @@ namespace Shop
                     tempAmount += (item.TotalPrice * item.Quantity);
                     libBasket.Items.Add(item.ToString());
                 }
-            } 
+            }
             foreach (Product product in productList)
             {
                 if (product.StockInShop.Equals(0))
@@ -294,16 +295,27 @@ namespace Shop
                 else
                     libProducts.Items.Add(product.ToString());
             }
+
+            // Only if the todeletelists contain something, delete that from that list
+            if (basketItemToDeleteList.Count != 0)
+            {
+                basketList.Remove(basketItemToDeleteList[0]);
+                basketItemToDeleteList.Clear();
+            }
+            if (productToDeleteList.Count != 0)
+            {
+                productList.Remove(productToDeleteList[0]);
+                productToDeleteList.Clear();
+            }
+
             tbCurCost.Text = tempAmount.ToString();
-            basketItemToDeleteList.Clear();
-            productToDeleteList.Clear();
         }
 
         private void setSelected(string list, int place) // Sets the selected items in the listboxes, gotta fix the "length" in the program, so that the whole line can be selected 
         {
             if (list.Equals("basket") && !libBasket.Items.Count.Equals(0)) // Checks if there are items to select
             {
-               if (place == libBasket.Items.Count) // If the item was the last in the list, then place it to the new last
+                if (place == libBasket.Items.Count) // If the item was the last in the list, then place it to the new last
                     place--;
                 libBasket.SetSelected(place, true);
             }
@@ -332,30 +344,34 @@ namespace Shop
             }
         }
 
+        private int productListInOrder(Product product, Product otherProduct)
+        {
+            return (product.ProductID).CompareTo(otherProduct.ProductID);
+        }
+
+        private Product findProduct(BasketItem item)
+        {
+            foreach (Product product in productList)
+            {
+                if (item.Product.ProductID.Equals(product.ProductID))
+                    return product;
+            }
+            return null;
+        }
+
+        private BasketItem findBasketItem(Product product)
+        {
+            foreach (BasketItem item in basketList)
+            {
+                if (product.ProductID.Equals(item.Product.ProductID))
+                    return item;
+            }
+            return null;
+        }
+
         private void shop_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
-        }
-
-        private void btConfirm_Click(object sender, EventArgs e)
-        {
-            /* What it should do: 
-             * - Update Transaction, insert a transaction for this user
-             * - Update Transaction_Details, for each item
-             * - Update Stock, for each item
-             * - Update Visitor, set balance
-             */
-            
-            try
-            {
-                
-                btCancelTransaction_Click(sender, e); // And reset the application, so a new visitor can scan it's bracelet
-                MessageBox.Show("Transaction succesful!");
-            }
-            catch(Exception x)
-            {
-                MessageBox.Show(x.Message);
-            }
         }
     }
 }

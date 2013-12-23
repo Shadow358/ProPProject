@@ -529,5 +529,46 @@ namespace Classes
                 connection.Close();
             }
         }
+
+        public String GetDate()
+        {
+            return DateTime.Now.ToString("yyyy-M-dd");
+        }
+
+        public bool ConfirmShopTransaction(int shopID, Visitor myVisitor, List<BasketItem> basketList, decimal amount)
+        {
+            try
+            {
+                String sqlTransaction = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.Visitor_id + " , " + shopID + ") ;";
+                sqlTransaction.Replace(@"\", string.Empty);
+                // INSERT INTO transaction VALUES (0, "2013-07-08" , 7 , 1); works
+                MySqlCommand commandTransaction = new MySqlCommand(sqlTransaction, connection);
+                String sqlTransactionID = "SELECT MAX(trans_id) FROM transaction WHERE visitor_id = " + myVisitor.Visitor_id + " GROUP BY visitor_id;";
+                MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
+
+                connection.Open();
+                commandTransaction.ExecuteNonQuery();
+                int transactionID = (int)commandTransactionID.ExecuteScalar();
+                foreach (BasketItem basketItem in basketList)
+                {
+                    String sqlTransDetails = "INSERT INTO transaction_details (trans_id, product_id, quantity) VALUES (" + transactionID + ", " + basketItem.Product.ProductID + ", " + basketItem.Quantity + ") ;";
+                    MySqlCommand commandTransDetails = new MySqlCommand(sqlTransDetails, connection);
+                    commandTransDetails.ExecuteNonQuery();
+                    String sqlUpdateStock = "UPDATE stock set stock_quantity = " + basketItem.Quantity + " WHERE product_id = " + basketItem.Product.ProductID + " AND shop_id = " + shopID + " ;";
+                    MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
+                    commandUpdateStock.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
