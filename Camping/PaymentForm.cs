@@ -114,17 +114,15 @@ namespace Camping
 
         private void btPay_Click(object sender, EventArgs e)
         {
-            myRFIDReader.Antenna = false;
+            if (ScannerOn)
+            {
+                ScanOff();
+            }
             if (reservation.ShouldBePaid - reservation.AmountPaid > myvisitor.Balance)
             {
                 lbInfo.Text = "";
                 this.BackColor = Color.Red;
                 MessageBox.Show("Visitor does not have enough money on his/her account.");
-                myRFIDReader.Antenna = true;
-                if (ScannerOn)
-                {
-                    ScanOff();
-                }
                 this.Dispose();
             }
             else
@@ -137,11 +135,6 @@ namespace Camping
                     if (dbhelper.PayCampingSpot(reservation.ShouldBePaid - reservation.AmountPaid) && dbhelper.RemoveMoneyFromBalance(myvisitor, (reservation.ShouldBePaid - reservation.AmountPaid)))
                     {
                         MessageBox.Show("Transaction successfully");
-                        myRFIDReader.Antenna = true;
-                        if (ScannerOn)
-                        {
-                            ScanOff();
-                        }
                         this.Dispose();
                     }
                     else
@@ -157,10 +150,6 @@ namespace Camping
                 if (confirm == DialogResult.Cancel)
                 {
                     MessageBox.Show("Transaction Canceled");
-                    if (ScannerOn)
-                    {
-                        ScanOff();
-                    }
                     this.Dispose();
                 }
             }
