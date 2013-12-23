@@ -38,16 +38,19 @@
             // lb_Start
             // 
             this.lb_Start.FormattingEnabled = true;
-            this.lb_Start.Location = new System.Drawing.Point(97, 76);
+            this.lb_Start.ItemHeight = 16;
+            this.lb_Start.Location = new System.Drawing.Point(129, 94);
+            this.lb_Start.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lb_Start.Name = "lb_Start";
-            this.lb_Start.Size = new System.Drawing.Size(248, 290);
+            this.lb_Start.Size = new System.Drawing.Size(329, 356);
             this.lb_Start.TabIndex = 0;
             // 
             // bt_Process
             // 
-            this.bt_Process.Location = new System.Drawing.Point(389, 180);
+            this.bt_Process.Location = new System.Drawing.Point(558, 224);
+            this.bt_Process.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.bt_Process.Name = "bt_Process";
-            this.bt_Process.Size = new System.Drawing.Size(112, 53);
+            this.bt_Process.Size = new System.Drawing.Size(149, 65);
             this.bt_Process.TabIndex = 2;
             this.bt_Process.Text = "Process >>";
             this.bt_Process.UseVisualStyleBackColor = true;
@@ -56,39 +59,46 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(94, 51);
+            this.label1.Location = new System.Drawing.Point(125, 63);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(34, 13);
+            this.label1.Size = new System.Drawing.Size(43, 17);
             this.label1.TabIndex = 3;
             this.label1.Text = "Input:";
             // 
             // lb_End
             // 
             this.lb_End.FormattingEnabled = true;
-            this.lb_End.Location = new System.Drawing.Point(558, 76);
+            this.lb_End.ItemHeight = 16;
+            this.lb_End.Location = new System.Drawing.Point(805, 94);
+            this.lb_End.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lb_End.Name = "lb_End";
-            this.lb_End.Size = new System.Drawing.Size(248, 290);
+            this.lb_End.Size = new System.Drawing.Size(329, 356);
             this.lb_End.TabIndex = 4;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(555, 51);
+            this.label2.Location = new System.Drawing.Point(801, 63);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 13);
+            this.label2.Size = new System.Drawing.Size(55, 17);
             this.label2.TabIndex = 5;
             this.label2.Text = "Output:";
             // 
             // PayPalConverter
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(901, 436);
+            this.ClientSize = new System.Drawing.Size(1262, 673);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lb_End);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.bt_Process);
             this.Controls.Add(this.lb_Start);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MaximizeBox = false;
             this.Name = "PayPalConverter";
             this.Text = "Form1";
             this.ResumeLayout(false);

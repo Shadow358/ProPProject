@@ -265,7 +265,9 @@
             this.Controls.Add(this.libBasket);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.libProducts);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MaximizeBox = false;
             this.Name = "Shop";
             this.Text = "Shop Application";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.shop_FormClosed);

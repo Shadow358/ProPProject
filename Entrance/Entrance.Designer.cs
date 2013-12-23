@@ -36,7 +36,7 @@
             this.tbName = new System.Windows.Forms.TextBox();
             this.btOn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.BtOff = new System.Windows.Forms.Button();
+            this.btOff = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.lbOnOff = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
@@ -100,7 +100,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.BtOff);
+            this.groupBox1.Controls.Add(this.btOff);
             this.groupBox1.Controls.Add(this.btOn);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
@@ -109,15 +109,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "On/Off";
             // 
-            // BtOff
+            // btOff
             // 
-            this.BtOff.Location = new System.Drawing.Point(6, 97);
-            this.BtOff.Name = "BtOff";
-            this.BtOff.Size = new System.Drawing.Size(150, 56);
-            this.BtOff.TabIndex = 67;
-            this.BtOff.Text = "Turn Scanner Off";
-            this.BtOff.UseVisualStyleBackColor = true;
-            this.BtOff.Click += new System.EventHandler(this.BtOff_Click);
+            this.btOff.Location = new System.Drawing.Point(6, 97);
+            this.btOff.Name = "btOff";
+            this.btOff.Size = new System.Drawing.Size(150, 56);
+            this.btOff.TabIndex = 67;
+            this.btOff.Text = "Turn Scanner Off";
+            this.btOff.UseVisualStyleBackColor = true;
+            this.btOff.Click += new System.EventHandler(this.btOff_Click);
             // 
             // timer
             // 
@@ -147,6 +147,8 @@
             this.Controls.Add(this.tbBalance);
             this.Controls.Add(this.tbName);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "Entrance";
             this.Text = "Entrance Application";
             this.groupBox1.ResumeLayout(false);
@@ -164,7 +166,7 @@
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.Button btOn;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button BtOff;
+        private System.Windows.Forms.Button btOff;
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Label lbOnOff;
 

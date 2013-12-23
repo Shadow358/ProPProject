@@ -98,7 +98,7 @@ namespace Classes
 
                     if (reader[5] == DBNull.Value)
                     {
-                        inside = (reader[5]) as bool? ?? false; //if null it will be false...
+                        inside = (reader[5]) as bool? ?? false; //if null it will be false (default)...
                     }
                     else
                     {
@@ -161,6 +161,61 @@ namespace Classes
                     }
 
                     TheVisitor = new VisitorAtExit(visitor_id, rfid, first_name, last_name, balance, inside);
+                }
+                return TheVisitor;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public Visitor getVisitorCamping(String rfidChip)
+        {
+            try
+            {
+                Visitor TheVisitor = null;
+                rfidChip = "'" + rfidChip + "'";
+
+                String sql = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, spot_id FROM visitor WHERE rfid_chip = " + rfidChip + ";";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+
+                int visitor_id;
+                String rfid;
+                String first_name;
+                String last_name;
+                decimal balance;
+                int spot_id;
+
+                while (reader.Read())
+                {
+                    visitor_id = Convert.ToInt32(reader[0]);
+                    rfid = Convert.ToString(reader[1]);
+                    first_name = Convert.ToString(reader[2]);
+                    last_name = Convert.ToString(reader[3]);
+                    balance = Convert.ToDecimal(reader[4]);
+
+                    if (reader[5] == DBNull.Value)
+                    {
+                        spot_id = (reader[5]) as int? ?? -1; //if null it will be -1 (default)...
+                    }
+                    else
+                    {
+                        spot_id = Convert.ToInt32(reader[5]);
+                    }
+
+                    TheVisitor = new VisitorAtCamping(visitor_id, rfid, first_name, last_name, balance, spot_id);
                 }
                 return TheVisitor;
             }
@@ -377,6 +432,102 @@ namespace Classes
                 connection.Close();
             }
         }
-       
+
+        public CampReservation getCampingReservation(int? spotid)
+        {
+            try
+            {
+                CampReservation Reservation = null;
+                VisitorAtCamping TheVisitor = null;
+
+                String sql = "SELECT booking_id, visitor_id, booking_date, spot_id, shouldbe_paid, amount_paid FROM camping_reservation WHERE spot_id = " + spotid + ";";
+
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+
+                int bookingID;
+                int visitorID;
+                DateTime bookingDate;
+                int spotID;
+                Decimal shouldbePaid;
+                Decimal amountPaid;
+
+                while (reader.Read())
+                {
+                    bookingID = Convert.ToInt32(reader[0]);
+                    visitorID = Convert.ToInt32(reader[1]);
+                    bookingDate = Convert.ToDateTime(reader[2]);
+                    spotID = Convert.ToInt32(reader[3]);
+                    shouldbePaid = Convert.ToDecimal(reader[4]);
+                    amountPaid = Convert.ToDecimal(reader[5]);
+
+                    connection.Close();
+                    connection.Open();
+
+                    String visitorwhopaid = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, spot_id FROM visitor WHERE visitor_id = " + visitorID + ";";
+                    MySqlCommand commandvisitor = new MySqlCommand(visitorwhopaid, connection);
+                    MySqlDataReader readervisitor = commandvisitor.ExecuteReader();
+
+                    int visitor_id;
+                    String rfid;
+                    String first_name;
+                    String last_name;
+                    decimal balance;
+                    int spot_id;
+
+                    while (readervisitor.Read())
+                    {
+                        visitor_id = Convert.ToInt32(readervisitor[0]);
+                        rfid = Convert.ToString(readervisitor[1]);
+                        first_name = Convert.ToString(readervisitor[2]);
+                        last_name = Convert.ToString(readervisitor[3]);
+                        balance = Convert.ToDecimal(readervisitor[4]);
+                        spot_id = Convert.ToInt32(readervisitor[5]);
+
+                        TheVisitor = new VisitorAtCamping(visitor_id, rfid, first_name, last_name, balance, spot_id);
+                        Reservation = new CampReservation(bookingID, TheVisitor, bookingDate, spotID, shouldbePaid, amountPaid);
+
+                        break;
+                    }
+                    break;
+                }
+                return Reservation;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool PayCampingSpot(Decimal amount)
+        {
+            try
+            {
+                String sql = "UPDATE camping_reservation SET amount_paid = amount_paid + " + amount + ";";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

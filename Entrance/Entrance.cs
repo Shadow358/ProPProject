@@ -130,7 +130,7 @@ namespace Entrance
             }
         }
 
-        private void BtOff_Click(object sender, EventArgs e)
+        private void btOff_Click(object sender, EventArgs e)
         {
             try
             {

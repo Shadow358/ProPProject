@@ -152,6 +152,8 @@
             this.Controls.Add(this.tbBalance);
             this.Controls.Add(this.tbName);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "Exit";
             this.Text = "Exit Application";
             this.groupBox1.ResumeLayout(false);

@@ -67,6 +67,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btConfirmShopID);
             this.Controls.Add(this.tbShopID);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "EnterShopID";
             this.Text = "EnterShopID";
             this.ResumeLayout(false);
