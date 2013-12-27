@@ -412,6 +412,50 @@ namespace Classes
             }
         }
 
+        public List<Product> GetAllRentals()
+        {
+            try
+            {
+                String sql = "SELECT * FROM  article;";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+
+                List<Rental> tempList = new List<Rental>();
+                int productID;
+                String productDescription;
+                decimal productPrice;
+                int quantity;
+                string comment;
+
+                while (reader.Read())
+                {
+                    productID = Convert.ToInt32(reader[0]);
+                    productDescription = Convert.ToString(reader[1]);
+                    productPrice = Convert.ToDecimal(reader[2]);
+                    quantity = Convert.ToInt32(reader[3]);
+                    comment = Convert.ToString(reader[4]);
+
+                    Rental tempItem = new Rental(productID, productPrice, productDescription, quantity, comment);
+                    tempList.Add(tempItem);
+                }
+                return tempList;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
         public void AddMoneyPaypal(int id, decimal amount)
         {
             try

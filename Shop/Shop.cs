@@ -78,14 +78,12 @@ namespace Shop
 
         private void btProductsToBasket_Click(object sender, EventArgs e) // Adds the selected item of the productList to the basket
         {
-            if (myVisitor != null)
-                addItemToBasket();
+            addItemToBasket();
         }
 
         private void libProducts_DoubleClick(object sender, EventArgs e) // Adds the double clicked item of the productList to the basket
         {
-            if (myVisitor != null)
-                addItemToBasket();
+            addItemToBasket();
         }
 
         private void btDeleteItem_Click(object sender, EventArgs e) // Deletes an item from the basket (works on the same idea as the addItemToBasket
@@ -225,41 +223,44 @@ namespace Shop
 
         private void addItemToBasket() // Adds the item to the basket
         {
-            int selectedIndex = libProducts.SelectedIndex;
-            if (!selectedIndex.Equals(-1)) // Check if an item is selected
+            if (myVisitor != null)
             {
-                Product tempProduct = productList[selectedIndex];
-                if (!(myVisitor.Balance < Convert.ToDecimal(tbCurCost.Text) + tempProduct.ProductPrice)) // If the user has enough balance
+                int selectedIndex = libProducts.SelectedIndex;
+                if (!selectedIndex.Equals(-1)) // Check if an item is selected
                 {
-                    if (basketList.All(bitem => bitem.Product.ProductID != tempProduct.ProductID))
-                    { // If the basket is empty, create, add and decrease quantity (old item)
-                        BasketItem basketitem = new BasketItem(tempProduct, 1, tempProduct.ProductPrice); // Create new basketitem
-                        basketList.Add(basketitem); // Add to list
-                        tempProduct.StockInShop--; // Decrease quantity
-                        showListboxes();
-                        setSelected("product", selectedIndex);
-                        return;
-                    }
-                    else
+                    Product tempProduct = productList[selectedIndex];
+                    if (!(myVisitor.Balance < Convert.ToDecimal(tbCurCost.Text) + tempProduct.ProductPrice)) // If the user has enough balance
                     {
-                        BasketItem tempBasketItem = findBasketItem(tempProduct);
-                        if (tempBasketItem != null)
-                        {
-                            tempBasketItem.Quantity++;
-                            tempProduct.StockInShop--;
+                        if (basketList.All(bitem => bitem.Product.ProductID != tempProduct.ProductID))
+                        { // If the basket is empty, create, add and decrease quantity (old item)
+                            BasketItem basketitem = new BasketItem(tempProduct, 1, tempProduct.ProductPrice); // Create new basketitem
+                            basketList.Add(basketitem); // Add to list
+                            tempProduct.StockInShop--; // Decrease quantity
                             showListboxes();
                             setSelected("product", selectedIndex);
                             return;
                         }
                         else
                         {
-                            MessageBox.Show("Can't add, something went wrong");
-                            return;
+                            BasketItem tempBasketItem = findBasketItem(tempProduct);
+                            if (tempBasketItem != null)
+                            {
+                                tempBasketItem.Quantity++;
+                                tempProduct.StockInShop--;
+                                showListboxes();
+                                setSelected("product", selectedIndex);
+                                return;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Can't add, something went wrong");
+                                return;
+                            }
                         }
                     }
+                    else
+                        MessageBox.Show("YOU SHALL NOT PASS!");
                 }
-                else
-                    MessageBox.Show("YOU SHALL NOT PASS!");
             }
         }
 
