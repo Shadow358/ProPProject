@@ -39,6 +39,7 @@ namespace Entrance
 
         private void ReadTag(object sender, TagEventArgs e)
         {
+            timer.Stop();
             try
             {
                 myvisitor = dbhelper.getVisitorEntrance(e.Tag);

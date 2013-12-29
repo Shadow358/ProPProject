@@ -19,11 +19,13 @@ namespace Camping
         DBHelper dbhelper;
         Visitor myvisitor;
         CampReservation reservation;
+        bool ScannerOn;
 
         public Camping()
         {
             InitializeComponent();
             dbhelper = new DBHelper();
+            ScannerOn = false;
 
             try
             {
@@ -38,31 +40,26 @@ namespace Camping
             }
         }
 
-        //This is used so that the reservation can be used in the PaymentForm.
-        public CampReservation GetcurrentReservation()
-        {
-            return this.reservation;
-        }
-
         private void ReadTag(object sender, TagEventArgs e)
         {
-            if (btPayBooked.Visible)
-            {
-                btPayBooked.Visible = false;
-            }
+            timer.Stop();
+            ClearReset();
 
             Console.Beep(2500, 200);
             try
             {
                 myvisitor = dbhelper.getVisitorCamping(e.Tag);
 
-                if (((VisitorAtCamping)myvisitor).SpotID == -1)
+                if (((VisitorAtCamping)myvisitor).SpotID == "NULL")
                 {
+                    tbBalance.Text = myvisitor.Balance.ToString();
+                    tbVisitor.Text = myvisitor.ToString();
                     Console.Beep(2000, 500);
                     this.BackColor = Color.Orange;
                     lbInfo.Text = "Visitor cannot enter camping!";
                     myRFIDReader.Antenna = false;
                     MessageBox.Show("Visitor does not have a camping spot!");
+                    ClearReset();
                     lbInfo.Text = "Ready to scan a tag...";
                     myRFIDReader.Antenna = true;
                 }
@@ -75,6 +72,7 @@ namespace Camping
                         this.BackColor = Color.Green;
                         lbInfo.Text = "Visitor can enter camping!";
                         tbSpotid.Text = reservation.SpotID.ToString();
+                        tbBalance.Text = myvisitor.Balance.ToString();
                         tbVisitor.Text = myvisitor.ToString();
                         tbSpotPaidBy.Text = reservation.Visitor.ToString();
                     }
@@ -83,19 +81,39 @@ namespace Camping
                         Console.Beep(2000, 500);
                         this.BackColor = Color.Red;
                         tbSpotid.Text = reservation.SpotID.ToString();
+                        tbBalance.Text = myvisitor.Balance.ToString();
                         tbVisitor.Text = myvisitor.ToString();
                         tbSpotPaidBy.Text = reservation.Visitor.ToString();
-                        lbInfo.Text = "Visitor cannot enter yet!";
-                        btPayBooked.Visible = true;
-                        DialogResult dialogResult = MessageBox.Show("Reservation not (completely) paid.\n" + "Amount to pay: " + (reservation.ShouldBePaid - reservation.AmountPaid) + " Euros.\nClick on 'Pay now'", "Attention", MessageBoxButtons.OKCancel);
+                        lbInfo.Text = "Visitor cannot enter yet...!";
+
+                        DialogResult dialogResult = MessageBox.Show("Reservation not (completely) paid.\n" + "Amount to pay: " + (reservation.ShouldBePaid - reservation.AmountPaid) + " Euros.\nClick 'OK' to check who can pay.", "Attention", MessageBoxButtons.OKCancel);
+
+                        if (dialogResult == DialogResult.OK)
+                        {
+                            if (reservation.Visitor.Visitor_id == myvisitor.Visitor_id)
+                            {
+                                lbOnOff.Text = "RFID-Reader is OFF";
+                                lbInfo.Text = "";
+                                ClearReset();
+
+                                PaymentForm paymentform = new PaymentForm(reservation, (VisitorAtCamping)myvisitor);
+                                paymentform.ShowDialog(this);
+
+                                lbOnOff.Text = "RFID-Reader is ON";
+                                lbInfo.Text = "Ready to scan a tag...";
+                            }
+                            else
+                            {
+                                MessageBox.Show("Camping reservation not booked by this visitor.\nPlease scan reservation visitor (" + reservation.Visitor.ToString() + ") for payment.");
+                                lbInfo.Text = "Ready to scan a tag...";
+                                ClearReset();
+                            }
+                        }
+
                         if (dialogResult == DialogResult.Cancel)
                         {
-                            btPayBooked.Visible = false;
-                            this.BackColor = DefaultBackColor;
                             lbInfo.Text = "Ready to scan a tag...";
-                            tbSpotid.Text = "";
-                            tbVisitor.Text = "";
-                            tbSpotPaidBy.Text = "";
+                            ClearReset();
                         }
                     }
                 }
@@ -110,15 +128,43 @@ namespace Camping
             }
         }
 
+        public void ClearReset()
+        {
+            tbSpotid.Clear();
+            tbBalance.Clear();
+            tbVisitor.Clear();
+            tbSpotPaidBy.Clear();
+            this.BackColor = DefaultBackColor;
+        }
+
+        public void ScanOn()
+        {
+            myRFIDReader.open();
+            myRFIDReader.waitForAttachment(3000);
+            myRFIDReader.Antenna = true;
+            ScannerOn = !ScannerOn;
+        }
+
+        public void ScanOff()
+        {
+            myRFIDReader.Antenna = false;
+            myRFIDReader.close();
+            ScannerOn = !ScannerOn;
+            return;
+        }
+
         private void btOn_Click(object sender, EventArgs e)
         {
             try
             {
-                myRFIDReader.open();
-                myRFIDReader.waitForAttachment(3000);
-                myRFIDReader.Antenna = true;
+                if (ScannerOn == false)
+                {
+                    ScanOn();
+                }
+
                 lbOnOff.Text = "RFID-Reader is ON";
                 lbInfo.Text = "Ready to scan a tag...";
+                ClearReset();
             }
             catch (PhidgetException)
             {
@@ -134,10 +180,13 @@ namespace Camping
         {
             try
             {
-                myRFIDReader.Antenna = false;
-                myRFIDReader.close();
+                if (ScannerOn)
+                {
+                    ScanOff();
+                }
                 lbOnOff.Text = "RFID-Reader is OFF";
                 lbInfo.Text = "";
+                ClearReset();
             }
             catch (PhidgetException)
             {
@@ -152,35 +201,70 @@ namespace Camping
         private void timer_Tick(object sender, EventArgs e)
         {
             timer.Stop();
-            this.BackColor = DefaultBackColor;
             lbInfo.Text = "Ready to scan a tag...";
-            tbSpotid.Text = "";
-            tbVisitor.Text = "";
-            tbSpotPaidBy.Text = "";
+            ClearReset();
         }
 
-        private void btPayBooked_Click(object sender, EventArgs e)
+        private void btCreateNewReservation_Click(object sender, EventArgs e)
         {
+            timer.Stop();
             try
             {
-                myRFIDReader.Antenna = false;
-                myRFIDReader.close();
+                if (ScannerOn)
+                {
+                    ScanOff();
+                }
+
                 lbOnOff.Text = "RFID-Reader is OFF";
                 lbInfo.Text = "";
-                this.BackColor = DefaultBackColor;
+                ClearReset();
 
-                PaymentForm paymentform = new PaymentForm(reservation, (VisitorAtCamping)myvisitor);
-                paymentform.ShowDialog(this);
-
-                btPayBooked.Visible = false;
+                ReservationForm reservationform = new ReservationForm();
+                reservationform.ShowDialog(this);
             }
-            catch (PhidgetException)
-            {
-
-            }
-            catch (Exception x)
+            catch (PhidgetException x)
             {
                 MessageBox.Show(x.Message);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occured, please try again.");
+            }
+        }
+
+        private void btUpdateExistingReservation_Click(object sender, EventArgs e)
+        {
+            timer.Stop();
+            try
+            {
+                if (ScannerOn)
+                {
+                    ScanOff();
+                }
+
+                lbOnOff.Text = "RFID-Reader is OFF";
+                lbInfo.Text = "";
+                ClearReset();
+
+                List<CampReservation> allreservations = dbhelper.GetAllReservations();
+
+                if (allreservations.Count == 0)
+                {
+                    MessageBox.Show("There are no camping reservations!");
+                }
+                else
+                {
+                    Reservations loadreservations = new Reservations(allreservations);
+                    loadreservations.ShowDialog(this);
+                }
+            }
+            catch (PhidgetException x)
+            {
+                MessageBox.Show(x.Message);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occured, please try again.");
             }
         }
     }

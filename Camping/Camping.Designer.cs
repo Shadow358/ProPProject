@@ -41,7 +41,9 @@
             this.btOff = new System.Windows.Forms.Button();
             this.btOn = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
-            this.btPayBooked = new System.Windows.Forms.Button();
+            this.tbBalance = new System.Windows.Forms.TextBox();
+            this.btCreateNewReservation = new System.Windows.Forms.Button();
+            this.btUpdateExistingReservation = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,7 +69,7 @@
             // 
             this.lbInfo.AutoSize = true;
             this.lbInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbInfo.Location = new System.Drawing.Point(7, 479);
+            this.lbInfo.Location = new System.Drawing.Point(7, 514);
             this.lbInfo.Name = "lbInfo";
             this.lbInfo.Size = new System.Drawing.Size(80, 29);
             this.lbInfo.TabIndex = 73;
@@ -77,7 +79,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(7, 320);
+            this.label1.Location = new System.Drawing.Point(7, 355);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 25);
             this.label1.TabIndex = 74;
@@ -85,7 +87,7 @@
             // 
             // tbSpotid
             // 
-            this.tbSpotid.Location = new System.Drawing.Point(12, 348);
+            this.tbSpotid.Location = new System.Drawing.Point(12, 383);
             this.tbSpotid.Name = "tbSpotid";
             this.tbSpotid.ReadOnly = true;
             this.tbSpotid.Size = new System.Drawing.Size(120, 24);
@@ -95,7 +97,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(7, 388);
+            this.label2.Location = new System.Drawing.Point(7, 423);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(166, 25);
             this.label2.TabIndex = 76;
@@ -103,7 +105,7 @@
             // 
             // tbSpotPaidBy
             // 
-            this.tbSpotPaidBy.Location = new System.Drawing.Point(12, 416);
+            this.tbSpotPaidBy.Location = new System.Drawing.Point(12, 451);
             this.tbSpotPaidBy.Name = "tbSpotPaidBy";
             this.tbSpotPaidBy.ReadOnly = true;
             this.tbSpotPaidBy.Size = new System.Drawing.Size(209, 24);
@@ -155,24 +157,44 @@
             this.timer.Interval = 2500;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
-            // btPayBooked
+            // tbBalance
             // 
-            this.btPayBooked.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btPayBooked.Location = new System.Drawing.Point(548, 47);
-            this.btPayBooked.Name = "btPayBooked";
-            this.btPayBooked.Size = new System.Drawing.Size(362, 131);
-            this.btPayBooked.TabIndex = 80;
-            this.btPayBooked.Text = "Pay now";
-            this.btPayBooked.UseVisualStyleBackColor = true;
-            this.btPayBooked.Visible = false;
-            this.btPayBooked.Click += new System.EventHandler(this.btPayBooked_Click);
+            this.tbBalance.Location = new System.Drawing.Point(12, 311);
+            this.tbBalance.Name = "tbBalance";
+            this.tbBalance.ReadOnly = true;
+            this.tbBalance.Size = new System.Drawing.Size(120, 24);
+            this.tbBalance.TabIndex = 81;
+            // 
+            // btCreateNewReservation
+            // 
+            this.btCreateNewReservation.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btCreateNewReservation.Location = new System.Drawing.Point(1039, 12);
+            this.btCreateNewReservation.Name = "btCreateNewReservation";
+            this.btCreateNewReservation.Size = new System.Drawing.Size(211, 153);
+            this.btCreateNewReservation.TabIndex = 82;
+            this.btCreateNewReservation.Text = "Create New Reservation";
+            this.btCreateNewReservation.UseVisualStyleBackColor = true;
+            this.btCreateNewReservation.Click += new System.EventHandler(this.btCreateNewReservation_Click);
+            // 
+            // btUpdateExistingReservation
+            // 
+            this.btUpdateExistingReservation.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btUpdateExistingReservation.Location = new System.Drawing.Point(1039, 171);
+            this.btUpdateExistingReservation.Name = "btUpdateExistingReservation";
+            this.btUpdateExistingReservation.Size = new System.Drawing.Size(211, 153);
+            this.btUpdateExistingReservation.TabIndex = 83;
+            this.btUpdateExistingReservation.Text = "Update Existing Reservation";
+            this.btUpdateExistingReservation.UseVisualStyleBackColor = true;
+            this.btUpdateExistingReservation.Click += new System.EventHandler(this.btUpdateExistingReservation_Click);
             // 
             // Camping
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1262, 673);
-            this.Controls.Add(this.btPayBooked);
+            this.Controls.Add(this.btUpdateExistingReservation);
+            this.Controls.Add(this.btCreateNewReservation);
+            this.Controls.Add(this.tbBalance);
             this.Controls.Add(this.lbOnOff);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label2);
@@ -207,7 +229,9 @@
         private System.Windows.Forms.Button btOff;
         private System.Windows.Forms.Button btOn;
         private System.Windows.Forms.Timer timer;
-        private System.Windows.Forms.Button btPayBooked;
+        private System.Windows.Forms.TextBox tbBalance;
+        private System.Windows.Forms.Button btCreateNewReservation;
+        private System.Windows.Forms.Button btUpdateExistingReservation;
     }
 }
 

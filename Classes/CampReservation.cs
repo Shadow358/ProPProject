@@ -12,12 +12,12 @@ namespace Classes
         int bookingID;
         VisitorAtCamping visitor;
         DateTime bookingDate;
-        int spotID;
+        String spotID;
         Decimal shouldbePaid;
         Decimal amountPaid;
 
         //Constructor
-        public CampReservation(int bookingID, VisitorAtCamping visitor, DateTime bookingDate, int spotID, Decimal shouldbePaid, Decimal amountPaid)
+        public CampReservation(int bookingID, VisitorAtCamping visitor, DateTime bookingDate, String spotID, Decimal shouldbePaid, Decimal amountPaid)
         {
             this.bookingID = bookingID;
             this.visitor = visitor;
@@ -31,14 +31,14 @@ namespace Classes
         public int BookingID { get { return this.bookingID; } }
         public Visitor Visitor { get { return this.visitor; } }
         public DateTime BookingDate { get { return this.bookingDate; } }
-        public int SpotID { get { return this.spotID; } }
+        public String SpotID { get { return this.spotID; } }
         public Decimal ShouldBePaid { get { return this.shouldbePaid; } }
         public Decimal AmountPaid { get { return this.amountPaid; } }
 
-        //Methods ----------------------DID NOT USE THIS SO DID NOT PROGRAM YET-------------------------
-        public override string ToString()
+        //Methods
+        public override String ToString()
         {
-            return "Reservation booking nr: " + BookingID.ToString();
+            return "Date booked: " + BookingDate.Date.ToString("dd-M-yyyy") + " - reserved by: " + visitor.ToString() + " - spotID : " + SpotID;
         }
     }
 }

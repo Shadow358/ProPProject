@@ -159,6 +159,7 @@ namespace Entrance
                     MessageBox.Show("Visitor does not have money on account to cash out.");
                 }
                 lbInfo.Text = "Ready to scan a tag...";
+                this.BackColor = DefaultBackColor;
                 tbBalance.Text = "";
                 tbName.Text = "";
                 myvisitor = null;

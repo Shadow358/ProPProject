@@ -9,17 +9,17 @@ namespace Classes
     public class VisitorAtCamping : Visitor
     {
         //Field
-        int? spotid;
+        String spotid;
 
         //Constructor
-        public VisitorAtCamping(int visitor_id, String rfid, String first_name, String last_name, Decimal balance, int spotid)
+        public VisitorAtCamping(int visitor_id, String rfid, String first_name, String last_name, Decimal balance, String spotid)
             : base(visitor_id, rfid, first_name, last_name, balance)
         {
             this.spotid = spotid;
         }
 
         //Properties
-        public int? SpotID { get { return this.spotid; } }
+        public String SpotID { get { return this.spotid; } }
 
         //Methods
         public override string ToString()
