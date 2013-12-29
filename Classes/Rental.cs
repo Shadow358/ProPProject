@@ -9,10 +9,6 @@ namespace Classes
     public class Rental : Product
     {
         //Fields
-        private int productID;
-        private decimal productPrice;
-        private string productName;
-        private int availability;
         private string comment;
 
         //Constructor
@@ -23,12 +19,15 @@ namespace Classes
         }
         
         //Properties
-        public string Comment { get { return this.comment; } }
+        public string Comment {
+            get { return this.comment; }
+            set { this.comment = value; }
+        }
 
         //Methods
         public override string ToString()
         {
-            return base.ToString() + " " + this.comment;
+            return base.ToString() + ", " + this.comment;
         }
     }
 }

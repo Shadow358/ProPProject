@@ -20,18 +20,16 @@ namespace RentalShop
         DBHelper dbhelper;
         Visitor myVisitor;
         List<Rental> productList = new List<Rental>();
-        List<BasketItem> basketList = new List<BasketItem>();
+        List<Rental> basketList = new List<Rental>();
         List<Rental> productToDeleteList = new List<Rental>();
-        List<BasketItem> basketItemToDeleteList = new List<BasketItem>();
+        List<Rental> basketItemToDeleteList = new List<Rental>();
 
         public RentalShop()
         {
             InitializeComponent();
             // Connect to shop
             dbhelper = new DBHelper();
-
             showProductsDatabase();
-            tbCurDeposit.Text = "0.00";
 
             try
             {
@@ -89,34 +87,19 @@ namespace RentalShop
             int selectedIndex = libBasket.SelectedIndex;
             if (!selectedIndex.Equals(-1)) // Check if an item is selected
             {
-                BasketItem tempBasketItem = basketList[selectedIndex];
-                if (productList.All(product => tempBasketItem.Product.ProductID != product.ProductID))
-                {
-                    Product tempProduct = new Product(tempBasketItem.Product.ProductID, tempBasketItem.TotalPrice, tempBasketItem.Product.ProductName, tempBasketItem.Quantity);
-                    productList.Add(tempProduct);
-                    productList.Sort(productListInOrder);
-                    basketList.Remove(tempBasketItem);
-                    showListboxes();
-                    setSelected("basket", selectedIndex);
-                    return;
-                }
-                else
-                {
-                    Product tempProduct = findProduct(tempBasketItem);
-                    if (tempProduct != null)
-                    {
-                        tempProduct.StockInShop = tempProduct.StockInShop + tempBasketItem.Quantity;
-                        basketList.Remove(tempBasketItem);
-                        showListboxes();
-                        setSelected("basket", selectedIndex);
-                        return;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Can't add, something went wrong");
-                        return;
-                    }
-                }
+                Rental tempBasketItem = basketList[selectedIndex];
+                Rental tempProduct = new Rental(tempBasketItem.ProductID, tempBasketItem.ProductPrice, tempBasketItem.ProductName, tempBasketItem.StockInShop, tempBasketItem.Comment);
+                productList.Add(tempProduct);
+                productList.Sort(productListInOrder);
+                basketList.Remove(tempBasketItem);
+                showListboxes();
+                setSelected("basket", selectedIndex);
+                return;
+            }
+            else
+            {
+                MessageBox.Show("Can't remove, something went wrong, probably the list is empty or you didn't select anything");
+                return;
             }
         }
 
@@ -140,16 +123,19 @@ namespace RentalShop
             }
         }
 
-        private void btConfirm_Click(object sender, EventArgs e)
+        private void btConfirmTransaction_Click(object sender, EventArgs e)
         {
             try
             {
-                decimal amount = basketList.Sum(basketItem => (basketItem.TotalPrice * basketItem.Quantity));
-                /* if (dbhelper.ConfirmShopTransaction(shopID, myVisitor, basketList, amount) && dbhelper.RemoveMoneyFromBalance(myVisitor, amount))
+                if (myVisitor != null && basketList.Count > 0)
                 {
-                    btCancelTransaction_Click(sender, e); // And reset the application, so a new visitor can scan it's bracelet
-                    MessageBox.Show("Transaction succesful!");
-                }*/
+                    decimal amount = Convert.ToDecimal(tbCurDeposit.Text);
+                    if (dbhelper.ConfirmRentalTransaction(myVisitor, basketList, amount) && dbhelper.RemoveMoneyFromBalance(myVisitor, amount))
+                    {
+                        btCancelTransaction_Click(sender, e); // And reset the application, so a new visitor can scan it's bracelet
+                        MessageBox.Show("Transaction succesful!");
+                    }
+                }
             }
             catch (Exception x)
             {
@@ -164,48 +150,39 @@ namespace RentalShop
                 int selectedIndex = libProducts.SelectedIndex;
                 if (!selectedIndex.Equals(-1)) // Check if an item is selected
                 {
-                    Product tempProduct = productList[selectedIndex];
+                    Rental tempProduct = productList[selectedIndex];
                     if (!(myVisitor.Balance < Convert.ToDecimal(tbCurDeposit.Text) + tempProduct.ProductPrice)) // If the user has enough balance
                     {
-                        if (basketList.All(bitem => bitem.Product.ProductID != tempProduct.ProductID))
-                        { // If the basket is empty, create, add and decrease quantity (old item)
-                            BasketItem basketitem = new BasketItem(tempProduct, 1, tempProduct.ProductPrice); // Create new basketitem
-                            basketList.Add(basketitem); // Add to list
-                            tempProduct.StockInShop--; // Decrease quantity
-                            showListboxes();
-                            setSelected("product", selectedIndex);
-                            return;
-                        }
-                        else
-                        {
-                            BasketItem tempBasketItem = findBasketItem(tempProduct);
-                            if (tempBasketItem != null)
-                            {
-                                tempBasketItem.Quantity++;
-                                tempProduct.StockInShop--;
-                                showListboxes();
-                                setSelected("product", selectedIndex);
-                                return;
-                            }
-                            else
-                            {
-                                MessageBox.Show("Can't add, something went wrong");
-                                return;
-                            }
-                        }
+                        Rental basketitem = new Rental(tempProduct.ProductID, tempProduct.ProductPrice, tempProduct.ProductName, tempProduct.StockInShop, tempProduct.Comment); // Create new basketitem
+                        basketList.Add(basketitem); // Add to list
+                        productList.Remove(tempProduct); /// Delete from list
+                        tempProduct.StockInShop--; // Decrease quantity
+                        showListboxes();
+                        setSelected("product", selectedIndex);
+                        return;
                     }
                     else
-                        MessageBox.Show("YOU SHALL NOT PASS!");
+                    {
+                        MessageBox.Show("Can't add, something went wrong");
+                        return;
+                    }
                 }
             }
         }
 
         private void showProductsDatabase() // Fetches the products from the database and stores it in a list 
         {
-            productList = dbhelper.GetAllRentals;
-            foreach (Product item in productList) /////////////////PUT THIS IN A TRY CATCH, ERROR IF DATABASE NOT CONNECED!!!!
+            try
             {
-                libProducts.Items.Add(item.ToString());
+                productList = dbhelper.GetAllRentals();
+                foreach (Rental item in productList)
+                {
+                    libProducts.Items.Add(item.ToString());
+                }
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
             }
         }
 
@@ -215,24 +192,24 @@ namespace RentalShop
 
             libBasket.Items.Clear();
             libProducts.Items.Clear();
-            foreach (BasketItem item in basketList)
+            foreach (Rental item in basketList)
             {
-                if (item.Quantity.Equals(0))
+                /*if (item.StockInShop.Equals(0)) Commented area can be deleted I guess
                     basketItemToDeleteList.Add(item);
                 else
-                {
-                    tempAmount += (item.TotalPrice * item.Quantity);
+                {*/
+                    tempAmount += (item.ProductPrice);
                     libBasket.Items.Add(item.ToString());
-                }
+                //}
             }
-            foreach (Product product in productList)
+            foreach (Rental product in productList)
             {
-                if (product.StockInShop.Equals(0))
+                /*if (product.StockInShop.Equals(0))
                     productToDeleteList.Add(product);
-                else
+                else*/
                     libProducts.Items.Add(product.ToString());
             }
-
+            /*
             // Only if the todeletelists contain something, delete that from that list
             if (basketItemToDeleteList.Count != 0)
             {
@@ -243,7 +220,7 @@ namespace RentalShop
             {
                 productList.Remove(productToDeleteList[0]);
                 productToDeleteList.Clear();
-            }
+            }*/
 
             tbCurDeposit.Text = tempAmount.ToString();
         }
@@ -264,7 +241,12 @@ namespace RentalShop
             }
         }
 
-        private void tbProductSearch_TextChanged(object sender, EventArgs e) // If text in search box is changed, it updates the listbox with items which contain the criteria
+        private int productListInOrder(Product product, Product otherProduct)
+        {
+            return (product.ProductID).CompareTo(otherProduct.ProductID);
+        }
+
+        private void tbProductSearch_TextChanged(object sender, EventArgs e)
         {
             libProducts.Items.Clear();
             List<Rental> tempList = new List<Rental>();
@@ -281,29 +263,11 @@ namespace RentalShop
             }
         }
 
-        private int productListInOrder(Product product, Product otherProduct)
+        private void btReturnItems_Click(object sender, EventArgs e)
         {
-            return (product.ProductID).CompareTo(otherProduct.ProductID);
+            ReturnRentals returnItems = new ReturnRentals(myVisitor);
+            returnItems.ShowDialog(this);
         }
 
-        private Product findProduct(BasketItem item)
-        {
-            foreach (Product product in productList)
-            {
-                if (item.Product.ProductID.Equals(product.ProductID))
-                    return product;
-            }
-            return null;
-        }
-
-        private BasketItem findBasketItem(Product product)
-        {
-            foreach (BasketItem item in basketList)
-            {
-                if (product.ProductID.Equals(item.Product.ProductID))
-                    return item;
-            }
-            return null;
-        }
     }
 }

@@ -412,11 +412,11 @@ namespace Classes
             }
         }
 
-        public List<Product> GetAllRentals()
+        public List<Rental> GetAllRentals()
         {
             try
             {
-                String sql = "SELECT * FROM  article;";
+                String sql = "SELECT * FROM  article WHERE article_availability > 0;";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
@@ -448,6 +448,89 @@ namespace Classes
             }
             catch (Exception)
             {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public List<Rental> GetAllRentalsOfVisitor(Visitor myVisitor)
+        {
+            try
+            {
+                // SELECT * FROM rental_transaction, then put that in a list of transactions
+                // For each transaction, SELECT * FROM rental_details WHERE article_returned < 1 AND rent_id = currentRent_id, make a list of article ID's which are not returned yet
+                // Then add each article to a list which will be returned
+                List<Rental> tempListRental = new List<Rental>();
+                int productID;
+                String productDescription;
+                decimal productPrice;
+                int quantity;
+                string comment;
+
+                String selectRentID = "SELECT rent_id FROM rental_transaction WHERE visitor_id = " + myVisitor.Visitor_id + ";"; // Select all rent_id's of the visitor
+                MySqlCommand commandRentID = new MySqlCommand(selectRentID, connection);
+
+                connection.Open();
+                MySqlDataReader readerRentID = commandRentID.ExecuteReader();
+
+                List<Int32> transactionIDList = new List<Int32>(); // A list that will contain all the transaction ID's of the user
+
+                while (readerRentID.Read())
+                {
+                    transactionIDList.Add(Convert.ToInt32(readerRentID[0]));
+                }
+                readerRentID.Close();
+                if (transactionIDList.Count == 0) // If he doesn't have any rentals, return an empty list
+                {
+                    return tempListRental;
+                }
+
+                List<Int32> articleIDList = new List<Int32>(); // Now it's time to store all the article ID's
+
+                foreach (Int32 transactionID in transactionIDList)
+                {
+                    String selectArticleID = "SELECT article_id FROM rental_details WHERE rent_id = " + transactionID + " AND article_returned = 0;";
+                    MySqlCommand commandArticleID = new MySqlCommand(selectArticleID, connection);
+                    MySqlDataReader readerArticleID = commandArticleID.ExecuteReader();
+                    while (readerArticleID.Read())
+                    {
+                        articleIDList.Add(Convert.ToInt32(readerArticleID[0]));
+                    }
+                    readerArticleID.Close(); // Now we've got a list of all article ID's, time to get the articles and add them to the tempListRental
+                }
+
+                foreach (Int32 articleID in articleIDList)
+                {
+                    String selectArticle = "SELECT * FROM article WHERE article_id = " + articleID + ";";
+                    MySqlCommand commandArticle = new MySqlCommand(selectArticle, connection);
+                    MySqlDataReader readerArticle = commandArticle.ExecuteReader();
+                    while (readerArticle.Read())
+                    {
+                        productID = Convert.ToInt32(readerArticle[0]);
+                        productDescription = Convert.ToString(readerArticle[1]);
+                        productPrice = Convert.ToDecimal(readerArticle[2]);
+                        quantity = Convert.ToInt32(readerArticle[3]);
+                        comment = Convert.ToString(readerArticle[4]);
+
+                        Rental tempItem = new Rental(productID, productPrice, productDescription, quantity, comment);
+                        tempListRental.Add(tempItem);
+                    }
+                    readerArticle.Close();
+                }
+
+                return tempListRental;
+            }
+            catch (MySqlException x)
+            {
+                MessageBox.Show(x.ToString());
+                return null;
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
                 return null;
             }
             finally
@@ -601,6 +684,71 @@ namespace Classes
                     String sqlUpdateStock = "UPDATE stock set stock_quantity = " + basketItem.Quantity + " WHERE product_id = " + basketItem.Product.ProductID + " AND shop_id = " + shopID + " ;";
                     MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
                     commandUpdateStock.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool ConfirmRentalTransaction(Visitor myVisitor, List<Rental> basketList, decimal amount)
+        {
+            try
+            {
+                String sqlTransaction = @"INSERT INTO rental_transaction VALUES (NULL, " + myVisitor.Visitor_id + ", \"" + GetDate() + "\", " + amount +  ") ;";
+                sqlTransaction.Replace(@"\", string.Empty);
+                MySqlCommand commandTransaction = new MySqlCommand(sqlTransaction, connection);
+
+                String sqlTransactionID = "SELECT MAX(rent_id) FROM rental_transaction WHERE visitor_id = " + myVisitor.Visitor_id + " GROUP BY visitor_id;";
+                MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
+
+                connection.Open();
+                commandTransaction.ExecuteNonQuery();
+                int transactionID = (int)commandTransactionID.ExecuteScalar();
+                foreach (Rental basketItem in basketList)
+                {
+                    String sqlTransDetails = "INSERT INTO rental_details (article_id, rent_id, article_returned) VALUES (" + basketItem.ProductID + ", " + transactionID + ", " + 0 + ") ;";
+                    MySqlCommand commandTransDetails = new MySqlCommand(sqlTransDetails, connection);
+                    commandTransDetails.ExecuteNonQuery();
+                    String sqlUpdateStock = "UPDATE article set article_availability = " + 0 + " WHERE article_id = " + basketItem.ProductID + ";";
+                    MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
+                    commandUpdateStock.ExecuteNonQuery();
+                }
+
+                return true;
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool ConfirmRentalReturnal(List<Rental> basketList)
+        {
+            try
+            {
+                connection.Open();
+                foreach (Rental item in basketList)
+                {
+                    String sqlUpdateArticle = "UPDATE article SET article_availability = 1, comment = \"" +item.Comment + "\" WHERE article_id = " + item.ProductID + " ;";
+                    sqlUpdateArticle.Replace(@"\", string.Empty);
+                    MySqlCommand commandUpdateArticle = new MySqlCommand(sqlUpdateArticle, connection);
+                    String sqlUpdateRentalDetails = "UPDATE rental_details SET article_returned = 1 WHERE article_id = " + item.ProductID + ";";
+                    MySqlCommand commandUpdateRentalDetails = new MySqlCommand(sqlUpdateRentalDetails, connection);
+                    commandUpdateArticle.ExecuteNonQuery();
+                    commandUpdateRentalDetails.ExecuteNonQuery();
                 }
                 return true;
             }
