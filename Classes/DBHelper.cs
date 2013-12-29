@@ -196,7 +196,7 @@ namespace Classes
                 String first_name;
                 String last_name;
                 decimal balance;
-                int spot_id;
+                String spot_id;
 
                 while (reader.Read())
                 {
@@ -206,13 +206,13 @@ namespace Classes
                     last_name = Convert.ToString(reader[3]);
                     balance = Convert.ToDecimal(reader[4]);
 
-                    if (reader[5] == DBNull.Value)
+                    if (String.IsNullOrEmpty(Convert.ToString(reader[5])))
                     {
-                        spot_id = (reader[5]) as int? ?? -1; //if null it will be -1 (default)...
+                        spot_id = "NULL"; //if null it will be NULL (default)...
                     }
                     else
                     {
-                        spot_id = Convert.ToInt32(reader[5]);
+                        spot_id = Convert.ToString(reader[5]);
                     }
 
                     TheVisitor = new VisitorAtCamping(visitor_id, rfid, first_name, last_name, balance, spot_id);
@@ -560,14 +560,14 @@ namespace Classes
             }
         }
 
-        public CampReservation getCampingReservation(int? spotid)
+        public CampReservation getCampingReservation(String spotid)
         {
             try
             {
                 CampReservation Reservation = null;
                 VisitorAtCamping TheVisitor = null;
 
-                String sql = "SELECT booking_id, visitor_id, booking_date, spot_id, shouldbe_paid, amount_paid FROM camping_reservation WHERE spot_id = " + spotid + ";";
+                String sql = "SELECT booking_id, visitor_id, booking_date, spot_id, shouldbe_paid, amount_paid FROM camping_reservation WHERE spot_id = '" + spotid + "';";
 
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
@@ -577,7 +577,7 @@ namespace Classes
                 int bookingID;
                 int visitorID;
                 DateTime bookingDate;
-                int spotID;
+                String spotID;
                 Decimal shouldbePaid;
                 Decimal amountPaid;
 
@@ -586,7 +586,7 @@ namespace Classes
                     bookingID = Convert.ToInt32(reader[0]);
                     visitorID = Convert.ToInt32(reader[1]);
                     bookingDate = Convert.ToDateTime(reader[2]);
-                    spotID = Convert.ToInt32(reader[3]);
+                    spotID = Convert.ToString(reader[3]);
                     shouldbePaid = Convert.ToDecimal(reader[4]);
                     amountPaid = Convert.ToDecimal(reader[5]);
 
@@ -602,7 +602,7 @@ namespace Classes
                     String first_name;
                     String last_name;
                     decimal balance;
-                    int spot_id;
+                    String spot_id;
 
                     while (readervisitor.Read())
                     {
@@ -611,7 +611,7 @@ namespace Classes
                         first_name = Convert.ToString(readervisitor[2]);
                         last_name = Convert.ToString(readervisitor[3]);
                         balance = Convert.ToDecimal(readervisitor[4]);
-                        spot_id = Convert.ToInt32(readervisitor[5]);
+                        spot_id = Convert.ToString(readervisitor[5]);
 
                         TheVisitor = new VisitorAtCamping(visitor_id, rfid, first_name, last_name, balance, spot_id);
                         Reservation = new CampReservation(bookingID, TheVisitor, bookingDate, spotID, shouldbePaid, amountPaid);
@@ -636,11 +636,11 @@ namespace Classes
             }
         }
 
-        public bool PayCampingSpot(Decimal amount)
+        public bool UpdatePaymentCampingSpot(Decimal amount, String spotID)
         {
             try
             {
-                String sql = "UPDATE camping_reservation SET amount_paid = amount_paid + " + amount + ";";
+                String sql = "UPDATE camping_reservation SET amount_paid = amount_paid + " + amount + ", shouldbe_paid = amount_paid WHERE spot_id = '" + spotID + "';";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
@@ -755,6 +755,212 @@ namespace Classes
             catch (Exception x)
             {
                 MessageBox.Show(x.ToString());
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public List<String> GetAvailableSpots()
+        {
+            try
+            {
+                String sql = "SELECT spot_id FROM camping_spot WHERE spot_id NOT IN (SELECT spot_id FROM camping_reservation);";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+
+                List<String> tempList = new List<String>();
+                String spot_id;
+
+                while (reader.Read())
+                {
+                    spot_id = Convert.ToString(reader[0]);
+
+                    tempList.Add(spot_id);
+                }
+                return tempList;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool MakeCampingReservation(int visitorid, String spotid, Decimal shouldbePaid, Decimal amountPaid)
+        {
+            try
+            {
+                String sql = "INSERT INTO camping_reservation (visitor_id, booking_date, spot_id, shouldbe_paid, amount_paid) VALUES (" + visitorid + ", '" +
+                    DateTime.Now.ToString("yyyy-M-dd") + "', '" + spotid + "', " + shouldbePaid + ", " + amountPaid + ");";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool VisitorSpotIDUpdate(int[] visitorIDs, String spotID)
+        {
+            try
+            {
+                connection.Open();
+
+                for (int i = 0; i < visitorIDs.Length; i++)
+                {
+                    if (visitorIDs[i] != 0)
+                    {
+                        String sql = "UPDATE visitor SET spot_id = '" + spotID + "' WHERE visitor_id = " + visitorIDs[i] + ";";
+                        MySqlCommand command = new MySqlCommand(sql, connection);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public List<CampReservation> GetAllReservations()
+        {
+            try
+            {
+                List<CampReservation> templist = new List<CampReservation>();
+
+                CampReservation Reservation = null;
+                VisitorAtCamping TheVisitor = null;
+
+                //for reservation
+                int bookingID;
+                int visitorID;
+                DateTime bookingDate;
+                String spotID;
+                Decimal shouldbePaid;
+                Decimal amountPaid;
+
+                //for visitor that booked reservation
+                int visitor_id;
+                String rfid;
+                String first_name;
+                String last_name;
+                decimal balance;
+                String spot_id;
+
+                connection.Open();
+
+                String sql = "SELECT cr.booking_id, cr.visitor_id, cr.booking_date, cr.spot_id, cr.shouldbe_paid, cr.amount_paid, v.visitor_id, v.rfid_chip, v.first_name, v.last_name, v.balance, v.spot_id FROM camping_reservation cr JOIN visitor v ON (cr.visitor_id = v.visitor_id);";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                MySqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    bookingID = Convert.ToInt32(reader[0]);
+                    visitorID = Convert.ToInt32(reader[1]);
+                    bookingDate = Convert.ToDateTime(reader[2]);
+                    spotID = Convert.ToString(reader[3]);
+                    shouldbePaid = Convert.ToDecimal(reader[4]);
+                    amountPaid = Convert.ToDecimal(reader[5]);
+                    visitor_id = Convert.ToInt32(reader[6]);
+                    rfid = Convert.ToString(reader[7]);
+                    first_name = Convert.ToString(reader[8]);
+                    last_name = Convert.ToString(reader[9]);
+                    balance = Convert.ToDecimal(reader[10]);
+                    spot_id = Convert.ToString(reader[11]);
+
+                    TheVisitor = new VisitorAtCamping(visitor_id, rfid, first_name, last_name, balance, spot_id);
+                    Reservation = new CampReservation(bookingID, TheVisitor, bookingDate, spotID, shouldbePaid, amountPaid);
+
+                    templist.Add(Reservation);
+                }
+                return templist;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public int CountVisitorsWithSpotID(String spotID)
+        {
+            try
+            {
+                int count = 0;
+
+                connection.Open();
+
+                String sql = "SELECT COUNT(*) FROM visitor WHERE spot_id =  '" + spotID + "';";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                MySqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    count = Convert.ToInt32(reader[0]);
+                }
+                return count;
+            }
+            catch (MySqlException)
+            {
+                return -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool DeleteReservation(String spotID)
+        {
+            try
+            {
+                String sql = "DELETE FROM camping_reservation WHERE spot_id = '" + spotID + "';";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception)
+            {
                 return false;
             }
             finally

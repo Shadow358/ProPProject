@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btScan = new System.Windows.Forms.Button();
             this.btPay = new System.Windows.Forms.Button();
             this.btCancel = new System.Windows.Forms.Button();
             this.tbAmountToPay = new System.Windows.Forms.TextBox();
@@ -38,17 +37,6 @@
             this.tbVbalance = new System.Windows.Forms.TextBox();
             this.tbVname = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // btScan
-            // 
-            this.btScan.Location = new System.Drawing.Point(12, 365);
-            this.btScan.Name = "btScan";
-            this.btScan.Size = new System.Drawing.Size(113, 37);
-            this.btScan.TabIndex = 0;
-            this.btScan.Text = "Start Scanner";
-            this.btScan.UseVisualStyleBackColor = true;
-            this.btScan.Visible = false;
-            this.btScan.Click += new System.EventHandler(this.btScan_Click);
             // 
             // btPay
             // 
@@ -82,6 +70,7 @@
             // 
             this.lbInfo.AutoSize = true;
             this.lbInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbInfo.ForeColor = System.Drawing.Color.Green;
             this.lbInfo.Location = new System.Drawing.Point(7, 162);
             this.lbInfo.Name = "lbInfo";
             this.lbInfo.Size = new System.Drawing.Size(67, 25);
@@ -137,7 +126,6 @@
             this.Controls.Add(this.tbAmountToPay);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btPay);
-            this.Controls.Add(this.btScan);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "PaymentForm";
@@ -151,7 +139,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btScan;
         private System.Windows.Forms.Button btPay;
         private System.Windows.Forms.Button btCancel;
         private System.Windows.Forms.TextBox tbAmountToPay;
