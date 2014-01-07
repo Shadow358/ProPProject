@@ -12,8 +12,8 @@ namespace Classes
         bool? inside;
 
         //constructor
-        public VisitorAtEntrance(int visitor_id, String rfid, String first_name, String last_name, Decimal balance, bool inside)
-            : base(visitor_id, rfid, first_name, last_name, balance)
+        public VisitorAtEntrance(int visitorid, String rfid, String firstname, String lastname, Decimal balance, bool inside)
+            : base(visitorid, rfid, firstname, lastname, balance)
         {
             this.inside = inside;
         }

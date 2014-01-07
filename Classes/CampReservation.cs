@@ -9,31 +9,31 @@ namespace Classes
     public class CampReservation
     {
         //Field
-        int bookingID;
+        int bookingid;
         VisitorAtCamping visitor;
-        DateTime bookingDate;
-        String spotID;
-        Decimal shouldbePaid;
-        Decimal amountPaid;
+        DateTime bookingdate;
+        String spotid;
+        Decimal shouldbepaid;
+        Decimal amountpaid;
 
         //Constructor
-        public CampReservation(int bookingID, VisitorAtCamping visitor, DateTime bookingDate, String spotID, Decimal shouldbePaid, Decimal amountPaid)
+        public CampReservation(int bookingid, VisitorAtCamping visitor, DateTime bookingdate, String spotid, Decimal shouldbepaid, Decimal amountpaid)
         {
-            this.bookingID = bookingID;
+            this.bookingid = bookingid;
             this.visitor = visitor;
-            this.bookingDate = bookingDate;
-            this.spotID = spotID;
-            this.shouldbePaid = shouldbePaid;
-            this.amountPaid = amountPaid;
+            this.bookingdate = bookingdate;
+            this.spotid = spotid;
+            this.shouldbepaid = shouldbepaid;
+            this.amountpaid = amountpaid;
         }
 
         //Properties
-        public int BookingID { get { return this.bookingID; } }
+        public int BookingID { get { return this.bookingid; } }
         public Visitor Visitor { get { return this.visitor; } }
-        public DateTime BookingDate { get { return this.bookingDate; } }
-        public String SpotID { get { return this.spotID; } }
-        public Decimal ShouldBePaid { get { return this.shouldbePaid; } }
-        public Decimal AmountPaid { get { return this.amountPaid; } }
+        public DateTime BookingDate { get { return this.bookingdate; } }
+        public String SpotID { get { return this.spotid; } }
+        public Decimal ShouldBePaid { get { return this.shouldbepaid; } }
+        public Decimal AmountPaid { get { return this.amountpaid; } }
 
         //Methods
         public override String ToString()

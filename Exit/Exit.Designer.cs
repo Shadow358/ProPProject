@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btOff = new System.Windows.Forms.Button();
             this.btOn = new System.Windows.Forms.Button();
@@ -38,6 +39,7 @@
             this.tbName = new System.Windows.Forms.TextBox();
             this.lbOnOff = new System.Windows.Forms.Label();
             this.btCash = new System.Windows.Forms.Button();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -136,7 +138,13 @@
             this.btCash.TabIndex = 76;
             this.btCash.Text = "Cash out?";
             this.btCash.UseVisualStyleBackColor = true;
+            this.btCash.Visible = false;
             this.btCash.Click += new System.EventHandler(this.btCash_Click);
+            // 
+            // timer
+            // 
+            this.timer.Interval = 5000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // Exit
             // 
@@ -174,6 +182,7 @@
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.Label lbOnOff;
         private System.Windows.Forms.Button btCash;
+        private System.Windows.Forms.Timer timer;
 
     }
 }

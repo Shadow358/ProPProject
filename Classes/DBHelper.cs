@@ -23,7 +23,7 @@ namespace Classes
             connection = new MySqlConnection(connectionInfo);
         }
 
-        public Visitor getVisitor(String rfidChip)
+        public Visitor GetVisitor(String rfidChip)
         {
             try
             {
@@ -36,21 +36,21 @@ namespace Classes
                 connection.Open();
                 MySqlDataReader reader = command.ExecuteReader();
 
-                int visitor_id;
+                int visitorid;
                 String rfid;
-                String first_name;
-                String last_name;
+                String firstname;
+                String lastname;
                 decimal balance;
 
                 while (reader.Read())
                 {
-                    visitor_id = Convert.ToInt32(reader[0]);
+                    visitorid = Convert.ToInt32(reader[0]);
                     rfid = Convert.ToString(reader[1]);
-                    first_name = Convert.ToString(reader[2]);
-                    last_name = Convert.ToString(reader[3]);
+                    firstname = Convert.ToString(reader[2]);
+                    lastname = Convert.ToString(reader[3]);
                     balance = Convert.ToDecimal(reader[4]);
 
-                    TheVisitor = new Visitor(visitor_id, rfid, first_name, last_name, balance);
+                    TheVisitor = new Visitor(visitorid, rfid, firstname, lastname, balance);
                 }
                 return TheVisitor;
             }
@@ -68,7 +68,7 @@ namespace Classes
             }
         }
 
-        public Visitor getVisitorEntrance(String rfidChip)
+        public Visitor GetVisitorEntrance(String rfidChip)
         {
             try
             {
@@ -81,31 +81,31 @@ namespace Classes
                 connection.Open();
                 MySqlDataReader reader = command.ExecuteReader();
 
-                int visitor_id;
+                int visitorid;
                 String rfid;
-                String first_name;
-                String last_name;
+                String firstname;
+                String lastname;
                 decimal balance;
                 bool inside;
 
                 while (reader.Read())
                 {
-                    visitor_id = Convert.ToInt32(reader[0]);
+                    visitorid = Convert.ToInt32(reader[0]);
                     rfid = Convert.ToString(reader[1]);
-                    first_name = Convert.ToString(reader[2]);
-                    last_name = Convert.ToString(reader[3]);
+                    firstname = Convert.ToString(reader[2]);
+                    lastname = Convert.ToString(reader[3]);
                     balance = Convert.ToDecimal(reader[4]);
 
                     if (reader[5] == DBNull.Value)
                     {
-                        inside = (reader[5]) as bool? ?? false; //if null it will be false (default)...
+                        inside = (reader[5]) as bool? ?? false; //if null it will be false.
                     }
                     else
                     {
                         inside = Convert.ToBoolean(reader[5]);
                     }
 
-                    TheVisitor = new VisitorAtEntrance(visitor_id, rfid, first_name, last_name, balance, inside);
+                    TheVisitor = new VisitorAtEntrance(visitorid, rfid, firstname, lastname, balance, inside);
                 }
                 return TheVisitor;
             }
@@ -123,7 +123,7 @@ namespace Classes
             }
         }
 
-        public Visitor getVisitorExit(String rfidChip)
+        public Visitor GetVisitorExit(String rfidChip)
         {
             try
             {
@@ -136,31 +136,31 @@ namespace Classes
                 connection.Open();
                 MySqlDataReader reader = command.ExecuteReader();
 
-                int visitor_id;
+                int visitorid;
                 String rfid;
-                String first_name;
-                String last_name;
+                String firstname;
+                String lastname;
                 decimal balance;
                 bool inside;
 
                 while (reader.Read())
                 {
-                    visitor_id = Convert.ToInt32(reader[0]);
+                    visitorid = Convert.ToInt32(reader[0]);
                     rfid = Convert.ToString(reader[1]);
-                    first_name = Convert.ToString(reader[2]);
-                    last_name = Convert.ToString(reader[3]);
+                    firstname = Convert.ToString(reader[2]);
+                    lastname = Convert.ToString(reader[3]);
                     balance = Convert.ToDecimal(reader[4]);
 
                     if (reader[5] == DBNull.Value)
                     {
-                        inside = (reader[5]) as bool? ?? false; //if null it will be false...
+                        inside = (reader[5]) as bool? ?? false; //if null it will be false.
                     }
                     else
                     {
                         inside = Convert.ToBoolean(reader[5]);
                     }
 
-                    TheVisitor = new VisitorAtExit(visitor_id, rfid, first_name, last_name, balance, inside);
+                    TheVisitor = new VisitorAtExit(visitorid, rfid, firstname, lastname, balance, inside);
                 }
                 return TheVisitor;
             }
@@ -178,7 +178,7 @@ namespace Classes
             }
         }
 
-        public Visitor getVisitorCamping(String rfidChip)
+        public Visitor GetVisitorCamping(String rfidChip)
         {
             try
             {
@@ -191,31 +191,31 @@ namespace Classes
                 connection.Open();
                 MySqlDataReader reader = command.ExecuteReader();
 
-                int visitor_id;
+                int visitorid;
                 String rfid;
-                String first_name;
-                String last_name;
+                String firstname;
+                String lastname;
                 decimal balance;
-                String spot_id;
+                String spotid;
 
                 while (reader.Read())
                 {
-                    visitor_id = Convert.ToInt32(reader[0]);
+                    visitorid = Convert.ToInt32(reader[0]);
                     rfid = Convert.ToString(reader[1]);
-                    first_name = Convert.ToString(reader[2]);
-                    last_name = Convert.ToString(reader[3]);
+                    firstname = Convert.ToString(reader[2]);
+                    lastname = Convert.ToString(reader[3]);
                     balance = Convert.ToDecimal(reader[4]);
 
                     if (String.IsNullOrEmpty(Convert.ToString(reader[5])))
                     {
-                        spot_id = "NULL"; //if null it will be NULL (default)...
+                        spotid = "NULL"; //if null it will be "NULL".
                     }
                     else
                     {
-                        spot_id = Convert.ToString(reader[5]);
+                        spotid = Convert.ToString(reader[5]);
                     }
 
-                    TheVisitor = new VisitorAtCamping(visitor_id, rfid, first_name, last_name, balance, spot_id);
+                    TheVisitor = new VisitorAtCamping(visitorid, rfid, firstname, lastname, balance, spotid);
                 }
                 return TheVisitor;
             }
@@ -237,7 +237,7 @@ namespace Classes
         {
             try
             {
-                String sql = "UPDATE visitor SET balance = balance - " + amount + " WHERE visitor_id = " + currentVisitor.Visitor_id + ";";
+                String sql = "UPDATE visitor SET balance = balance - " + amount + " WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
@@ -258,7 +258,7 @@ namespace Classes
         {
             try
             {
-                String sql = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + currentVisitor.Visitor_id + ";";
+                String sql = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
@@ -275,11 +275,11 @@ namespace Classes
             }
         }
 
-        public bool setBalanceToZero(Visitor currentVisitor)
+        public bool SetBalanceToZero(Visitor currentVisitor)
         {
             try
             {
-                String sql = "UPDATE visitor SET balance = 0 WHERE visitor_id = " + currentVisitor.Visitor_id + ";";
+                String sql = "UPDATE visitor SET balance = 0 WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
@@ -296,11 +296,11 @@ namespace Classes
             }
         }
 
-        public bool enterEvent(Visitor currentVisitor)
+        public bool EnterEvent(Visitor currentVisitor)
         {
             try
             {
-                String sql = "UPDATE visitor SET inside_event = TRUE WHERE visitor_id = " + currentVisitor.Visitor_id + ";";
+                String sql = "UPDATE visitor SET inside_event = TRUE WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
@@ -317,11 +317,11 @@ namespace Classes
             }
         }
 
-        public bool exitEvent(Visitor currentVisitor)
+        public bool ExitEvent(Visitor currentVisitor)
         {
             try
             {
-                String sql = "UPDATE visitor SET inside_event = FALSE WHERE visitor_id = " + currentVisitor.Visitor_id + ";";
+                String sql = "UPDATE visitor SET inside_event = FALSE WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
@@ -338,13 +338,13 @@ namespace Classes
             }
         }
 
-        public int countArticlesNotReturned(Visitor currentVisitor)
+        public int CountArticlesNotReturned(Visitor currentVisitor)
         {
             int count = 0;
 
             try
             {
-                String sql = "SELECT count(*) FROM rental_details rd JOIN rental_transaction rt ON (rd.rent_id = rt.rent_id) JOIN visitor v ON (rt.visitor_id = v.visitor_id) WHERE rd.article_returned = false AND v.visitor_id = " + currentVisitor.Visitor_id + ";";
+                String sql = "SELECT count(*) FROM rental_details rd JOIN rental_transaction rt ON (rd.rent_id = rt.rent_id) JOIN visitor v ON (rt.visitor_id = v.visitor_id) WHERE rd.article_returned = false AND v.visitor_id = " + currentVisitor.VisitorID + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
@@ -370,30 +370,30 @@ namespace Classes
             }
         }
 
-        public List<Product> GetAllProducts(int shopID)
+        public List<Product> GetAllProducts(int shopid)
         {
             try
             {
-                String sql = "SELECT p.product_id, p.product_description, p.product_price, s.stock_quantity FROM Product p NATURAL JOIN Stock s WHERE s.shop_id = " + shopID + ";";
+                String sql = "SELECT p.product_id, p.product_description, p.product_price, s.stock_quantity FROM Product p NATURAL JOIN Stock s WHERE s.shop_id = " + shopid + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
                 MySqlDataReader reader = command.ExecuteReader();
 
                 List<Product> tempList = new List<Product>();
-                int productID;
-                String productDescription;
-                decimal productPrice;
+                int productid;
+                String productdescription;
+                decimal productprice;
                 int quantity;
 
                 while (reader.Read())
                 {
-                    productID = Convert.ToInt32(reader[0]);
-                    productDescription = Convert.ToString(reader[1]);
-                    productPrice = Convert.ToDecimal(reader[2]);
+                    productid = Convert.ToInt32(reader[0]);
+                    productdescription = Convert.ToString(reader[1]);
+                    productprice = Convert.ToDecimal(reader[2]);
                     quantity = Convert.ToInt32(reader[3]);
 
-                    Product tempItem = new Product(productID, productPrice, productDescription, quantity);
+                    Product tempItem = new Product(productid, productprice, productdescription, quantity);
                     tempList.Add(tempItem);
                 }
                 return tempList;
@@ -423,21 +423,21 @@ namespace Classes
                 MySqlDataReader reader = command.ExecuteReader();
 
                 List<Rental> tempList = new List<Rental>();
-                int productID;
-                String productDescription;
-                decimal productPrice;
+                int productid;
+                String productdescription;
+                decimal productprice;
                 int quantity;
                 string comment;
 
                 while (reader.Read())
                 {
-                    productID = Convert.ToInt32(reader[0]);
-                    productDescription = Convert.ToString(reader[1]);
-                    productPrice = Convert.ToDecimal(reader[2]);
+                    productid = Convert.ToInt32(reader[0]);
+                    productdescription = Convert.ToString(reader[1]);
+                    productprice = Convert.ToDecimal(reader[2]);
                     quantity = Convert.ToInt32(reader[3]);
                     comment = Convert.ToString(reader[4]);
 
-                    Rental tempItem = new Rental(productID, productPrice, productDescription, quantity, comment);
+                    Rental tempItem = new Rental(productid, productprice, productdescription, quantity, comment);
                     tempList.Add(tempItem);
                 }
                 return tempList;
@@ -470,7 +470,7 @@ namespace Classes
                 int quantity;
                 string comment;
 
-                String selectRentID = "SELECT rent_id FROM rental_transaction WHERE visitor_id = " + myVisitor.Visitor_id + ";"; // Select all rent_id's of the visitor
+                String selectRentID = "SELECT rent_id FROM rental_transaction WHERE visitor_id = " + myVisitor.VisitorID + ";"; // Select all rent_id's of the visitor
                 MySqlCommand commandRentID = new MySqlCommand(selectRentID, connection);
 
                 connection.Open();
@@ -560,7 +560,7 @@ namespace Classes
             }
         }
 
-        public CampReservation getCampingReservation(String spotid)
+        public CampReservation GetCampingReservation(String spotid)
         {
             try
             {
@@ -574,47 +574,47 @@ namespace Classes
                 connection.Open();
                 MySqlDataReader reader = command.ExecuteReader();
 
-                int bookingID;
-                int visitorID;
+                int bookingId;
+                int visitorId;
                 DateTime bookingDate;
-                String spotID;
+                String spotId;
                 Decimal shouldbePaid;
                 Decimal amountPaid;
 
                 while (reader.Read())
                 {
-                    bookingID = Convert.ToInt32(reader[0]);
-                    visitorID = Convert.ToInt32(reader[1]);
+                    bookingId = Convert.ToInt32(reader[0]);
+                    visitorId = Convert.ToInt32(reader[1]);
                     bookingDate = Convert.ToDateTime(reader[2]);
-                    spotID = Convert.ToString(reader[3]);
+                    spotId = Convert.ToString(reader[3]);
                     shouldbePaid = Convert.ToDecimal(reader[4]);
                     amountPaid = Convert.ToDecimal(reader[5]);
 
                     connection.Close();
                     connection.Open();
 
-                    String visitorwhopaid = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, spot_id FROM visitor WHERE visitor_id = " + visitorID + ";";
+                    String visitorwhopaid = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, spot_id FROM visitor WHERE visitor_id = " + visitorId + ";";
                     MySqlCommand commandvisitor = new MySqlCommand(visitorwhopaid, connection);
                     MySqlDataReader readervisitor = commandvisitor.ExecuteReader();
 
-                    int visitor_id;
+                    int visitorid;
                     String rfid;
-                    String first_name;
-                    String last_name;
+                    String firstname;
+                    String lastname;
                     decimal balance;
-                    String spot_id;
+                    String spot;
 
                     while (readervisitor.Read())
                     {
-                        visitor_id = Convert.ToInt32(readervisitor[0]);
+                        visitorid = Convert.ToInt32(readervisitor[0]);
                         rfid = Convert.ToString(readervisitor[1]);
-                        first_name = Convert.ToString(readervisitor[2]);
-                        last_name = Convert.ToString(readervisitor[3]);
+                        firstname = Convert.ToString(readervisitor[2]);
+                        lastname = Convert.ToString(readervisitor[3]);
                         balance = Convert.ToDecimal(readervisitor[4]);
-                        spot_id = Convert.ToString(readervisitor[5]);
+                        spot = Convert.ToString(readervisitor[5]);
 
-                        TheVisitor = new VisitorAtCamping(visitor_id, rfid, first_name, last_name, balance, spot_id);
-                        Reservation = new CampReservation(bookingID, TheVisitor, bookingDate, spotID, shouldbePaid, amountPaid);
+                        TheVisitor = new VisitorAtCamping(visitorid, rfid, firstname, lastname, balance, spot);
+                        Reservation = new CampReservation(bookingId, TheVisitor, bookingDate, spotId, shouldbePaid, amountPaid);
 
                         break;
                     }
@@ -666,11 +666,11 @@ namespace Classes
         {
             try
             {
-                String sqlTransaction = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.Visitor_id + " , " + shopID + ") ;";
+                String sqlTransaction = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.VisitorID + " , " + shopID + ") ;";
                 sqlTransaction.Replace(@"\", string.Empty);
                 // INSERT INTO transaction VALUES (0, "2013-07-08" , 7 , 1); works
                 MySqlCommand commandTransaction = new MySqlCommand(sqlTransaction, connection);
-                String sqlTransactionID = "SELECT MAX(trans_id) FROM transaction WHERE visitor_id = " + myVisitor.Visitor_id + " GROUP BY visitor_id;";
+                String sqlTransactionID = "SELECT MAX(trans_id) FROM transaction WHERE visitor_id = " + myVisitor.VisitorID + " GROUP BY visitor_id;";
                 MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
 
                 connection.Open();
@@ -702,11 +702,11 @@ namespace Classes
         {
             try
             {
-                String sqlTransaction = @"INSERT INTO rental_transaction VALUES (NULL, " + myVisitor.Visitor_id + ", \"" + GetDate() + "\", " + amount +  ") ;";
+                String sqlTransaction = @"INSERT INTO rental_transaction VALUES (NULL, " + myVisitor.VisitorID + ", \"" + GetDate() + "\", " + amount +  ") ;";
                 sqlTransaction.Replace(@"\", string.Empty);
                 MySqlCommand commandTransaction = new MySqlCommand(sqlTransaction, connection);
 
-                String sqlTransactionID = "SELECT MAX(rent_id) FROM rental_transaction WHERE visitor_id = " + myVisitor.Visitor_id + " GROUP BY visitor_id;";
+                String sqlTransactionID = "SELECT MAX(rent_id) FROM rental_transaction WHERE visitor_id = " + myVisitor.VisitorID + " GROUP BY visitor_id;";
                 MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
 
                 connection.Open();
@@ -865,12 +865,12 @@ namespace Classes
                 Decimal amountPaid;
 
                 //for visitor that booked reservation
-                int visitor_id;
+                int visitorid;
                 String rfid;
-                String first_name;
-                String last_name;
+                String firstname;
+                String lastname;
                 decimal balance;
-                String spot_id;
+                String spotid;
 
                 connection.Open();
 
@@ -887,14 +887,14 @@ namespace Classes
                     spotID = Convert.ToString(reader[3]);
                     shouldbePaid = Convert.ToDecimal(reader[4]);
                     amountPaid = Convert.ToDecimal(reader[5]);
-                    visitor_id = Convert.ToInt32(reader[6]);
+                    visitorid = Convert.ToInt32(reader[6]);
                     rfid = Convert.ToString(reader[7]);
-                    first_name = Convert.ToString(reader[8]);
-                    last_name = Convert.ToString(reader[9]);
+                    firstname = Convert.ToString(reader[8]);
+                    lastname = Convert.ToString(reader[9]);
                     balance = Convert.ToDecimal(reader[10]);
-                    spot_id = Convert.ToString(reader[11]);
+                    spotid = Convert.ToString(reader[11]);
 
-                    TheVisitor = new VisitorAtCamping(visitor_id, rfid, first_name, last_name, balance, spot_id);
+                    TheVisitor = new VisitorAtCamping(visitorid, rfid, firstname, lastname, balance, spotid);
                     Reservation = new CampReservation(bookingID, TheVisitor, bookingDate, spotID, shouldbePaid, amountPaid);
 
                     templist.Add(Reservation);

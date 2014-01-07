@@ -48,7 +48,7 @@ namespace Camping
             Console.Beep(2500, 200);
             try
             {
-                myvisitor = dbhelper.getVisitorCamping(e.Tag);
+                myvisitor = dbhelper.GetVisitorCamping(e.Tag);
 
                 if (((VisitorAtCamping)myvisitor).SpotID == "NULL")
                 {
@@ -65,7 +65,7 @@ namespace Camping
                 }
                 else
                 {
-                    reservation = dbhelper.getCampingReservation(((VisitorAtCamping)myvisitor).SpotID);
+                    reservation = dbhelper.GetCampingReservation(((VisitorAtCamping)myvisitor).SpotID);
                     if (reservation.AmountPaid == reservation.ShouldBePaid)
                     {
                         timer.Start();
@@ -90,7 +90,7 @@ namespace Camping
 
                         if (dialogResult == DialogResult.OK)
                         {
-                            if (reservation.Visitor.Visitor_id == myvisitor.Visitor_id)
+                            if (reservation.Visitor.VisitorID == myvisitor.VisitorID)
                             {
                                 lbOnOff.Text = "RFID-Reader is OFF";
                                 lbInfo.Text = "";

@@ -15,10 +15,10 @@ namespace Classes
         int countnotreturnedArticles;
 
         //constructor
-        public VisitorAtExit(int visitor_id, String rfid, String first_name, String last_name, Decimal balance, bool inside)
-            : base(visitor_id, rfid, first_name, last_name, balance, inside)
+        public VisitorAtExit(int visitorid, String rfid, String firstname, String lastname, Decimal balance, bool inside)
+            : base(visitorid, rfid, firstname, lastname, balance, inside)
         {
-            this.countnotreturnedArticles = dbhelper.countArticlesNotReturned(this);
+            this.countnotreturnedArticles = dbhelper.CountArticlesNotReturned(this);
         }
 
         //properties

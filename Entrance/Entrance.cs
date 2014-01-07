@@ -42,7 +42,7 @@ namespace Entrance
             timer.Stop();
             try
             {
-                myvisitor = dbhelper.getVisitorEntrance(e.Tag);
+                myvisitor = dbhelper.GetVisitorEntrance(e.Tag);
                 Console.Beep(2500, 200);
                 tbName.Text = myvisitor.ToString();
                 tbBalance.Text = myvisitor.Balance.ToString();
@@ -51,7 +51,7 @@ namespace Entrance
                 {
                     if (myvisitor.Balance >= 0)
                     {
-                        dbhelper.enterEvent(myvisitor);
+                        dbhelper.EnterEvent(myvisitor);
                         this.BackColor = Color.Green;
                         lbInfo.Text = "Visitor can enter!";
                         timer.Start();
@@ -59,31 +59,20 @@ namespace Entrance
                     else
                     {
                         Console.Beep(2000, 500);
+                        tbBalance.Text = "";
                         lbInfo.Text = "Visitor cannot enter yet!";
                         this.BackColor = Color.Orange;
                         myRFIDReader.Antenna = false;
                         DialogResult dialogResult = MessageBox.Show
-                            ("Visitor did not pay (whole) ticket for event.\nAmount to be paid: " + -(myvisitor.Balance - 10) + " Euros cash.\nClick OK if visitor wants to pay now.",
+                            ("Visitor did not pay (whole) ticket for event.\nClick OK if visitor wants to pay cash now.",
                             "Pay to enter...", MessageBoxButtons.OKCancel);
                         if (dialogResult == DialogResult.OK)
                         {
-                            DialogResult confirm = MessageBox.Show("Click OK to confirm if you received payment or Cancel to cancel this transaction.", "Confirm", MessageBoxButtons.OKCancel);
-
-                            if (confirm == DialogResult.OK)
-                            {
-                                dbhelper.setBalanceToZero(myvisitor);
-                                MessageBox.Show("Transaction completed.\nPlease scan the tag again.");
-                            }
-                            else if (confirm == DialogResult.Cancel)
-                            {
-                                MessageBox.Show("Canceled");
-                            }
+                            PayEntrance payentrance = new PayEntrance(((VisitorAtEntrance)myvisitor));
+                            payentrance.ShowDialog(this);
                         }
                         myRFIDReader.Antenna = true;
-                        this.BackColor = DefaultBackColor;
-                        lbInfo.Text = "Ready to scan a tag...";
-                        tbBalance.Text = "";
-                        tbName.Text = "";
+                        ClearReset();
                     }
                 }
                 else
@@ -94,20 +83,12 @@ namespace Entrance
                     myRFIDReader.Antenna = false;
                     MessageBox.Show("Visitor already inside!");
                     myRFIDReader.Antenna = true;
-                    lbInfo.Text = "Ready to scan a tag...";
-                    tbBalance.Text = "";
-                    tbName.Text = "";
-                    this.BackColor = DefaultBackColor;
+                    ClearReset();
                 }
-                myvisitor = null;
             }
-            catch (NullReferenceException)
+            catch (Exception)
             {
-                MessageBox.Show("No visitor found with this tag.");
-            }
-            catch (Exception x)
-            {
-                MessageBox.Show(x.Message);
+                MessageBox.Show("Error, something went wrong.\nPlease try again.");
             }
         }
 
@@ -153,10 +134,16 @@ namespace Entrance
         private void timer_Tick(object sender, EventArgs e)
         {
             timer.Stop();
-            this.BackColor = DefaultBackColor;
+            ClearReset();
+        }
+
+        public void ClearReset()
+        {
             lbInfo.Text = "Ready to scan a tag...";
+            this.BackColor = DefaultBackColor;
             tbBalance.Text = "";
             tbName.Text = "";
+            myvisitor = null;
         }
     }
 }

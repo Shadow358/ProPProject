@@ -9,33 +9,33 @@ namespace Classes
     public class Visitor
     {
         //fields
-        int visitor_id;
+        int visitorid;
         String rfid;
-        String first_name;
-        String last_name;
+        String firstname;
+        String lastname;
         Decimal balance;
 
         //constructor
-        public Visitor(int visitor_id, String rfid, String first_name, String last_name, Decimal balance)
+        public Visitor(int visitorid, String rfid, String firstname, String lastname, Decimal balance)
         {
-            this.visitor_id = visitor_id;
+            this.visitorid = visitorid;
             this.rfid = rfid;
-            this.first_name = first_name;
-            this.last_name = last_name;
+            this.firstname = firstname;
+            this.lastname = lastname;
             this.balance = balance;
         }
 
         //properties
-        public int Visitor_id { get { return this.visitor_id; } }
+        public int VisitorID { get { return this.visitorid; } }
         public String Rfid { get { return this.rfid; } }
-        public String First_name { get { return this.first_name; } }
-        public String Last_name { get { return this.last_name; } }
+        public String FirstName { get { return this.firstname; } }
+        public String LastName { get { return this.lastname; } }
         public Decimal Balance { get { return this.balance; } }
 
         //methods
         public override string ToString()
         {
-            return first_name + " " + last_name;
+            return firstname + " " + lastname;
         }
     }
 }

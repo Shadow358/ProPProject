@@ -49,7 +49,7 @@ namespace RentalShop
         {
             try
             {
-                myVisitor = dbhelper.getVisitor(e.Tag);
+                myVisitor = dbhelper.GetVisitor(e.Tag);
                 Console.Beep(2500, 200);
                 if (myVisitor.Balance > 0)
                 {

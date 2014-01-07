@@ -137,10 +137,7 @@ namespace Camping
                 btDeleteVisitor2.Hide();
             }
 
-            if (canAdd == 5)
-            {
-                //Nothing to bo done. (just normal behavoir).
-            }
+            //if canAdd == 5 -> Nothing extra to bo done.
 
             try
             {
@@ -199,7 +196,7 @@ namespace Camping
             Console.Beep(2500, 200);
             try
             {
-                myScannedvisitors[visitorIndex] = dbhelper.getVisitorCamping(e.Tag);
+                myScannedvisitors[visitorIndex] = dbhelper.GetVisitorCamping(e.Tag);
                 myRFIDReader.Antenna = false;
                 textboxesVisitors[visitorIndex].Text = myScannedvisitors[visitorIndex].ToString();
 
@@ -263,7 +260,7 @@ namespace Camping
                 {
                     if (mySavedvisitors[i] != null)
                     {
-                        if (mySavedvisitors[i].Visitor_id == myScannedvisitors[visitorIndex].Visitor_id)
+                        if (mySavedvisitors[i].VisitorID == myScannedvisitors[visitorIndex].VisitorID)
                         {
                             MessageBox.Show("Cannot add visitor,\nvisitor was just saved to this reservation!");
                             DeleteButtonsMethod();
@@ -449,13 +446,13 @@ namespace Camping
                     {
                         if (mySavedvisitors[i] != null)
                         {
-                            visitorIDs[i] = mySavedvisitors[i].Visitor_id;
+                            visitorIDs[i] = mySavedvisitors[i].VisitorID;
                         }
                     }
 
                     if (totalamount <= mySavedvisitors[0].Balance)
                     {
-                        if (dbhelper.MakeCampingReservation(mySavedvisitors[0].Visitor_id, spotID, totalamount, totalamount)
+                        if (dbhelper.MakeCampingReservation(mySavedvisitors[0].VisitorID, spotID, totalamount, totalamount)
                             && dbhelper.VisitorSpotIDUpdate(visitorIDs, spotID)
                             && dbhelper.RemoveMoneyFromBalance(mySavedvisitors[0], totalamount))
                         {
@@ -554,9 +551,9 @@ namespace Camping
             Console.Beep(2500, 200);
             try
             {
-                mypayingvisitor = dbhelper.getVisitorCamping(e.Tag);
+                mypayingvisitor = dbhelper.GetVisitorCamping(e.Tag);
 
-                if (mypayingvisitor.Visitor_id == thereservation.Visitor.Visitor_id)
+                if (mypayingvisitor.VisitorID == thereservation.Visitor.VisitorID)
                 {
                     lbInfoScanTag.Hide();
                     lbConfirm.Show();
@@ -645,7 +642,7 @@ namespace Camping
                     {
                         if (mySavedvisitors[i] != null)
                         {
-                            visitorIDs[i] = mySavedvisitors[i].Visitor_id;
+                            visitorIDs[i] = mySavedvisitors[i].VisitorID;
                         }
                     }
 

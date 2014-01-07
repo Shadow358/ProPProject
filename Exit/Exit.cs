@@ -41,17 +41,23 @@ namespace Entrance
         {
             try
             {
-                myvisitor = dbhelper.getVisitorExit(e.Tag);
+                timer.Stop();
+                myvisitor = dbhelper.GetVisitorExit(e.Tag);
                 Console.Beep(2500, 200);
                 tbName.Text = myvisitor.ToString();
                 tbBalance.Text = myvisitor.Balance.ToString();
-                btCash.Visible = true;
+                timer.Start();
+
+                if (myvisitor.Balance > 0)
+                {
+                    btCash.Show();
+                }
 
                 if (((VisitorAtExit)myvisitor).Inside == true)
                 {
                     if (((VisitorAtExit)myvisitor).CountNotReturnedArticles == 0)
                     {
-                        dbhelper.exitEvent(myvisitor);
+                        dbhelper.ExitEvent(myvisitor);
                         this.BackColor = Color.Green;
                         lbInfo.Text = "Visitor can exit!";
                     }
@@ -60,17 +66,13 @@ namespace Entrance
                         if (((VisitorAtExit)myvisitor).CountNotReturnedArticles > 0)
                         {
                             Console.Beep(2000, 500);
-                            btCash.Visible = false;
                             this.BackColor = Color.Red;
+                            timer.Stop();
                             lbInfo.Text = "Visitor cannot exit!";
                             myRFIDReader.Antenna = false;
-                            MessageBox.Show("Visitor has to return " + ((VisitorAtExit)myvisitor).CountNotReturnedArticles + " item(s)\nbefore he/she can exit!");
+                            MessageBox.Show("Visitor has to return " + ((VisitorAtExit)myvisitor).CountNotReturnedArticles + " item(s)\nbefore he/she can exit!", "Attention");
                             myRFIDReader.Antenna = true;
-                            tbName.Text = "";
-                            tbBalance.Text = "";
-                            lbInfo.Text = "Ready to scan a tag...";
-                            this.BackColor = DefaultBackColor;
-                            myvisitor = null;
+                            ClearReset();
                         }
                     }
                 }
@@ -80,9 +82,9 @@ namespace Entrance
                     lbInfo.Text = "Visitor already checked out or never checked in...";
                 }
             }
-            catch (NullReferenceException)
+            catch (Exception)
             {
-                MessageBox.Show("No visitor found with this tag.");
+                MessageBox.Show("Error, something went wrong.\nPlease try again.");
             }
         }
 
@@ -113,11 +115,8 @@ namespace Entrance
                 myRFIDReader.Antenna = false;
                 myRFIDReader.close();
                 lbOnOff.Text = "RFID-Reader is OFF";
-                lbInfo.Text = "";
-                this.BackColor = DefaultBackColor;
-                tbName.Text = "";
-                tbBalance.Text = "";
-                myvisitor = null;
+                ClearReset();
+                lbInfo.Text = "Ready to scan a tag...";
             }
             catch (PhidgetException)
             {
@@ -133,36 +132,22 @@ namespace Entrance
         {
             try
             {
+                timer.Stop();
                 myRFIDReader.Antenna = false;
                 if (myvisitor.Balance > 0)
                 {
                     DialogResult dialogResult = MessageBox.Show
-                            ("Visitor still has " + myvisitor.Balance + " Euros on his/her account\nClick OK if visitor wants his/her\nmoney back in cash.",
+                            ("Visitor still has " + myvisitor.Balance + " Euros on his/her account.\nClick OK to confirm that the visitor\nhas received his/her money.\nClick Cancel to cancel this transaction.",
                             "Money back?", MessageBoxButtons.OKCancel);
                     if (dialogResult == DialogResult.OK)
                     {
-                        DialogResult confirm = MessageBox.Show("Click OK to confirm if you gave the visitor cash back or Cancel to cancel this transaction.", "Confirm", MessageBoxButtons.OKCancel);
-
-                        if (confirm == DialogResult.OK)
+                        if (dbhelper.SetBalanceToZero(myvisitor))
                         {
-                            dbhelper.setBalanceToZero(myvisitor);
                             MessageBox.Show("Transaction completed.");
-                        }
-                        else if (confirm == DialogResult.Cancel)
-                        {
-                            MessageBox.Show("Canceled");
                         }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Visitor does not have money on account to cash out.");
-                }
-                lbInfo.Text = "Ready to scan a tag...";
-                this.BackColor = DefaultBackColor;
-                tbBalance.Text = "";
-                tbName.Text = "";
-                myvisitor = null;
+                ClearReset();
                 myRFIDReader.Antenna = true;
             }
             catch (NullReferenceException)
@@ -178,6 +163,22 @@ namespace Entrance
             {
                 MessageBox.Show(x.Message);
             }
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            timer.Stop();
+            ClearReset();
+        }
+
+        public void ClearReset()
+        {
+            lbInfo.Text = "Ready to scan a tag...";
+            this.BackColor = DefaultBackColor;
+            tbBalance.Text = "";
+            tbName.Text = "";
+            myvisitor = null;
+            btCash.Hide();
         }
     }
 }

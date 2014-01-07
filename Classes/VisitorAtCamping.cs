@@ -12,8 +12,8 @@ namespace Classes
         String spotid;
 
         //Constructor
-        public VisitorAtCamping(int visitor_id, String rfid, String first_name, String last_name, Decimal balance, String spotid)
-            : base(visitor_id, rfid, first_name, last_name, balance)
+        public VisitorAtCamping(int visitorid, String rfid, String firstname, String lastname, Decimal balance, String spotid)
+            : base(visitorid, rfid, firstname, lastname, balance)
         {
             this.spotid = spotid;
         }
