@@ -47,7 +47,7 @@
             0,
             0,
             131072});
-            this.numericUpDown.Location = new System.Drawing.Point(33, 179);
+            this.numericUpDown.Location = new System.Drawing.Point(33, 285);
             this.numericUpDown.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -59,7 +59,7 @@
             // 
             // btCancel
             // 
-            this.btCancel.Location = new System.Drawing.Point(401, 179);
+            this.btCancel.Location = new System.Drawing.Point(401, 365);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(113, 37);
             this.btCancel.TabIndex = 4;
@@ -69,11 +69,11 @@
             // 
             // btPay
             // 
-            this.btPay.Location = new System.Drawing.Point(282, 179);
+            this.btPay.Location = new System.Drawing.Point(245, 365);
             this.btPay.Name = "btPay";
-            this.btPay.Size = new System.Drawing.Size(113, 37);
+            this.btPay.Size = new System.Drawing.Size(150, 37);
             this.btPay.TabIndex = 3;
-            this.btPay.Text = "Pay";
+            this.btPay.Text = "Confirm Payment";
             this.btPay.UseVisualStyleBackColor = true;
             this.btPay.Click += new System.EventHandler(this.btPay_Click);
             // 
@@ -81,7 +81,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(28, 141);
+            this.label1.Location = new System.Drawing.Point(28, 247);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(331, 25);
             this.label1.TabIndex = 5;
@@ -91,7 +91,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(159, 179);
+            this.label2.Location = new System.Drawing.Point(159, 285);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(63, 25);
             this.label2.TabIndex = 6;
@@ -101,7 +101,7 @@
             // 
             this.lbInfo.AutoSize = true;
             this.lbInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbInfo.Location = new System.Drawing.Point(28, 62);
+            this.lbInfo.Location = new System.Drawing.Point(28, 123);
             this.lbInfo.Name = "lbInfo";
             this.lbInfo.Size = new System.Drawing.Size(67, 25);
             this.lbInfo.TabIndex = 7;
@@ -111,7 +111,7 @@
             // 
             this.lbVisitorName.AutoSize = true;
             this.lbVisitorName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbVisitorName.Location = new System.Drawing.Point(28, 27);
+            this.lbVisitorName.Location = new System.Drawing.Point(28, 70);
             this.lbVisitorName.Name = "lbVisitorName";
             this.lbVisitorName.Size = new System.Drawing.Size(67, 25);
             this.lbVisitorName.TabIndex = 8;
@@ -121,7 +121,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(30, 202);
+            this.label3.Location = new System.Drawing.Point(30, 308);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(103, 17);
             this.label3.TabIndex = 9;
@@ -131,7 +131,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(526, 228);
+            this.ClientSize = new System.Drawing.Size(526, 414);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lbVisitorName);
             this.Controls.Add(this.lbInfo);

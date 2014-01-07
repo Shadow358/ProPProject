@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btPay = new System.Windows.Forms.Button();
+            this.btConfirmPayment = new System.Windows.Forms.Button();
             this.btCancel = new System.Windows.Forms.Button();
             this.tbAmountToPay = new System.Windows.Forms.TextBox();
             this.lbInfo = new System.Windows.Forms.Label();
@@ -38,15 +38,15 @@
             this.tbVname = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // btPay
+            // btConfirmPayment
             // 
-            this.btPay.Location = new System.Drawing.Point(282, 365);
-            this.btPay.Name = "btPay";
-            this.btPay.Size = new System.Drawing.Size(113, 37);
-            this.btPay.TabIndex = 1;
-            this.btPay.Text = "Pay";
-            this.btPay.UseVisualStyleBackColor = true;
-            this.btPay.Click += new System.EventHandler(this.btPay_Click);
+            this.btConfirmPayment.Location = new System.Drawing.Point(248, 365);
+            this.btConfirmPayment.Name = "btConfirmPayment";
+            this.btConfirmPayment.Size = new System.Drawing.Size(147, 37);
+            this.btConfirmPayment.TabIndex = 1;
+            this.btConfirmPayment.Text = "Confirm Payment";
+            this.btConfirmPayment.UseVisualStyleBackColor = true;
+            this.btConfirmPayment.Click += new System.EventHandler(this.btConfirmPayment_Click);
             // 
             // btCancel
             // 
@@ -125,7 +125,7 @@
             this.Controls.Add(this.lbInfo);
             this.Controls.Add(this.tbAmountToPay);
             this.Controls.Add(this.btCancel);
-            this.Controls.Add(this.btPay);
+            this.Controls.Add(this.btConfirmPayment);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "PaymentForm";
@@ -139,7 +139,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btPay;
+        private System.Windows.Forms.Button btConfirmPayment;
         private System.Windows.Forms.Button btCancel;
         private System.Windows.Forms.TextBox tbAmountToPay;
         private System.Windows.Forms.Label lbInfo;

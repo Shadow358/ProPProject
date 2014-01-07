@@ -40,7 +40,7 @@ namespace Camping
             {
                 tbVname.Text = myvisitor.ToString();
                 tbVbalance.Text = myvisitor.Balance.ToString();
-                lbInfo.Text = "This visitor booked the reservation.\n\nClick 'Pay' to confirm payment.";
+                lbInfo.Text = "This visitor booked the reservation.\n\nClick 'Confirm Payment' to confirm payment.";
             }
             catch (Exception)
             {
@@ -48,7 +48,7 @@ namespace Camping
             }
         }
 
-        private void btPay_Click(object sender, EventArgs e)
+        private void btConfirmPayment_Click(object sender, EventArgs e)
         {
             try
             {

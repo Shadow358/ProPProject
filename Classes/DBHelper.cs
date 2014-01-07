@@ -968,5 +968,78 @@ namespace Classes
                 connection.Close();
             }
         }
+
+        public List<int> GetCampingReservationVisitorIDs()
+        {
+            try
+            {
+                connection.Open();
+
+                List<int> VisitorIDs = new List<int>();
+
+                String sql = "SELECT visitor_id FROM camping_reservation";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                MySqlDataReader reader = command.ExecuteReader();
+
+                int visitorid;
+
+                while (reader.Read())
+                {
+                    visitorid = Convert.ToInt32(reader[0]);
+                    VisitorIDs.Add(visitorid);
+                }
+                return VisitorIDs;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public List<int> GetVisitorIDsReservation(String spotid)
+        {
+            try
+            {
+                connection.Open();
+
+                List<int> VisitorIDs = new List<int>();
+                spotid = "'"+spotid+"'";
+
+                String sql = "SELECT visitor_id FROM visitor WHERE spot_id = " + spotid + ";";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                MySqlDataReader reader = command.ExecuteReader();
+
+                int visitorid;
+
+                while (reader.Read())
+                {
+                    visitorid = Convert.ToInt32(reader[0]);
+                    VisitorIDs.Add(visitorid);
+                }
+                return VisitorIDs;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

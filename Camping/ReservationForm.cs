@@ -42,7 +42,10 @@ namespace Camping
             myScannedvisitors = new Visitor[6];
             mySavedvisitors = new Visitor[6];
             textboxesVisitors = new TextBox[6] { tbVisitor1, tbVisitor2, tbVisitor3, tbVisitor4, tbVisitor5, tbVisitor6 };
-            scansavedeleteButtons = new Button[18] { btScanVisitor1, btScanVisitor2, btScanVisitor3, btScanVisitor4, btScanVisitor5, btScanVisitor6, btSaveVisitor1, btSaveVisitor2, btSaveVisitor3, btSaveVisitor4, btSaveVisitor5, btSaveVisitor6, btDeleteVisitor1, btDeleteVisitor2, btDeleteVisitor3, btDeleteVisitor4, btDeleteVisitor5, btDeleteVisitor6 };
+            scansavedeleteButtons = new Button[18] { 
+                btScanVisitor1, btScanVisitor2, btScanVisitor3, btScanVisitor4, btScanVisitor5, btScanVisitor6, 
+                btSaveVisitor1, btSaveVisitor2, btSaveVisitor3, btSaveVisitor4, btSaveVisitor5, btSaveVisitor6, 
+                btDeleteVisitor1, btDeleteVisitor2, btDeleteVisitor3, btDeleteVisitor4, btDeleteVisitor5, btDeleteVisitor6 };
             btReset.Hide();
             btConfirm.Hide();
             btDone.Hide();
@@ -256,6 +259,7 @@ namespace Camping
 
             if (myScannedvisitors[visitorIndex] != null)
             {
+                //Go through the Savedvisitors list and check if the scanned visitor that is going to be saved is ALREADY saved on one of the other indexes.
                 for (int i = 0; i < mySavedvisitors.Count; i++)
                 {
                     if (mySavedvisitors[i] != null)
@@ -269,17 +273,29 @@ namespace Camping
                     }
                 }
 
-                if ((myScannedvisitors[visitorIndex] as VisitorAtCamping).SpotID == "NULL")
+                //If reservation already exist (Then you are working with an existing reservation, it check first if the visitor
+                //that you are trying to add is already in the reservation.
+                if (thereservation != null)
+                {
+                    if (dbhelper.GetVisitorIDsReservation(thereservation.SpotID).Any(id => id == myScannedvisitors[visitorIndex].VisitorID))
+                    {
+                        MessageBox.Show("This visitor already belongs to this reservation.");
+                        DeleteButtonsMethod();
+                    }
+                    else
+                    {
+                        textboxesVisitors[visitorIndex].BackColor = Color.PaleGreen;
+                        mySavedvisitors[visitorIndex] = myScannedvisitors[visitorIndex];
+                        totalamount = totalamount + 20;
+                        tbTotalAmount.Text = totalamount.ToString();
+                    }
+                }
+                else
                 {
                     textboxesVisitors[visitorIndex].BackColor = Color.PaleGreen;
                     mySavedvisitors[visitorIndex] = myScannedvisitors[visitorIndex];
                     totalamount = totalamount + 20;
                     tbTotalAmount.Text = totalamount.ToString();
-                }
-                else
-                {
-                    MessageBox.Show("Cannot add visitor, visitor already\nbelongs to a camping spot!");
-                    DeleteButtonsMethod();
                 }
             }
         }
@@ -348,8 +364,16 @@ namespace Camping
         private void btSaveVisitor1_Click(object sender, EventArgs e)
         {
             visitorIndex = 0;
-            SaveButtonsMethod();
 
+            if (dbhelper.GetCampingReservationVisitorIDs().Any(id => id == myScannedvisitors[visitorIndex].VisitorID))
+            {
+                MessageBox.Show("This visitor cannot pay for this reservation.\nVisitor already has a booked reservation.");
+                DeleteButtonsMethod();
+            }
+            else
+            {
+                SaveButtonsMethod();
+            }
         }
 
         private void btSaveVisitor2_Click(object sender, EventArgs e)
