@@ -42,8 +42,8 @@ namespace Entrance
             timer.Stop();
             try
             {
-                myvisitor = dbhelper.GetVisitorEntrance(e.Tag);
                 Console.Beep(2500, 200);
+                myvisitor = dbhelper.GetVisitorEntrance(e.Tag);
                 tbName.Text = myvisitor.ToString();
                 tbBalance.Text = myvisitor.Balance.ToString();
 
@@ -51,10 +51,12 @@ namespace Entrance
                 {
                     if (myvisitor.Balance >= 0)
                     {
-                        dbhelper.EnterEvent(myvisitor);
-                        this.BackColor = Color.Green;
-                        lbInfo.Text = "Visitor can enter!";
-                        timer.Start();
+                        if (dbhelper.EnterEvent(myvisitor))
+                        {
+                            this.BackColor = Color.Green;
+                            lbInfo.Text = "Visitor can enter!";
+                            timer.Start();
+                        }
                     }
                     else
                     {

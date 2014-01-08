@@ -36,7 +36,7 @@ namespace Entrance
             {
                 if (dbhelper.AddMoneyToBalance(myvisitor, numericUpDown.Value - 10))
                 {
-                    MessageBox.Show("Transaction successfully!");
+                    MessageBox.Show("Transaction successful!");
                     this.Dispose();
                 }
             }

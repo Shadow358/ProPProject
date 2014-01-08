@@ -61,9 +61,9 @@ namespace Camping
                 }
                 else
                 {
-                    if (dbhelper.UpdatePaymentCampingSpot(reservation.ShouldBePaid - reservation.AmountPaid, reservation.SpotID) && dbhelper.RemoveMoneyFromBalance(myvisitor, (reservation.ShouldBePaid - reservation.AmountPaid)))
+                    if (dbhelper.UpdatePaymentCampingAndBalance(myvisitor, reservation.ShouldBePaid - reservation.AmountPaid, reservation.SpotID))
                     {
-                        MessageBox.Show("Transaction successfull!");
+                        MessageBox.Show("Transaction successful!");
                     }
                     else
                     {

@@ -57,9 +57,11 @@ namespace Entrance
                 {
                     if (((VisitorAtExit)myvisitor).CountNotReturnedArticles == 0)
                     {
-                        dbhelper.ExitEvent(myvisitor);
-                        this.BackColor = Color.Green;
-                        lbInfo.Text = "Visitor can exit!";
+                        if (dbhelper.ExitEvent(myvisitor))
+                        {
+                            this.BackColor = Color.Green;
+                            lbInfo.Text = "Visitor can exit!";
+                        }
                     }
                     else
                     {
@@ -143,7 +145,7 @@ namespace Entrance
                     {
                         if (dbhelper.SetBalanceToZero(myvisitor))
                         {
-                            MessageBox.Show("Transaction completed.");
+                            MessageBox.Show("Transaction successful!");
                         }
                     }
                 }

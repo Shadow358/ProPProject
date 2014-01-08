@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using System.Transactions;
 
 namespace Classes
 {
@@ -12,6 +13,9 @@ namespace Classes
     {
         public MySqlConnection connection;
 
+        /// <summary>
+        /// Constructor created a connection for database
+        /// </summary>
         public DBHelper()
         {
             String connectionInfo = "server=athena01.fhict.local;" +
@@ -23,6 +27,12 @@ namespace Classes
             connection = new MySqlConnection(connectionInfo);
         }
 
+        //Methods
+        /// <summary>
+        /// Select VisitorAtExit from database
+        /// </summary>
+        /// <param name="rfidChip">Scanned rfidchip</param>
+        /// <returns>Returns the visitor with the scanned rfidchip</returns>
         public Visitor GetVisitor(String rfidChip)
         {
             try
@@ -68,6 +78,11 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Select VisitorAtEntrance from database
+        /// </summary>
+        /// <param name="rfidChip">Scanned rfidchip</param>
+        /// <returns>Returns the visitor with the scanned rfidchip</returns>
         public Visitor GetVisitorEntrance(String rfidChip)
         {
             try
@@ -123,6 +138,11 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Select VisitorAtExit from database
+        /// </summary>
+        /// <param name="rfidChip">Scanned rfidchip</param>
+        /// <returns>Returns the visitor with the scanned rfidchip</returns>
         public Visitor GetVisitorExit(String rfidChip)
         {
             try
@@ -178,6 +198,11 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Select VisitorAtCamping from database
+        /// </summary>
+        /// <param name="rfidChip">Scanned rfidchip</param>
+        /// <returns>Returns the visitor with the scanned rfidchip</returns>
         public Visitor GetVisitorCamping(String rfidChip)
         {
             try
@@ -233,19 +258,41 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Remove amount from visitor's balance
+        /// </summary>
+        /// <param name="currentVisitor">Visitor that amount will be deducted from balance</param>
+        /// <param name="amount">Amount to be deducted from balance</param>
+        /// <returns>Returns true if transaction is successful</returns>
         public bool RemoveMoneyFromBalance(Visitor currentVisitor, Decimal amount)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                String sql = "UPDATE visitor SET balance = balance - " + amount + " WHERE visitor_id = " + currentVisitor.VisitorID + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
+                command.CommandText = "UPDATE visitor SET balance = balance - " + amount + " WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 command.ExecuteNonQuery();
+                mytransaction.Commit();
+
                 return true;
             }
             catch (Exception)
             {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -254,19 +301,41 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Adds amount to visitor's balance
+        /// </summary>
+        /// <param name="currentVisitor">Visitor that balance will be updated</param>
+        /// <param name="amount">Amount to add to balance</param>
+        /// <returns>Returns true if transaction is successful</returns>
         public bool AddMoneyToBalance(Visitor currentVisitor, Decimal amount)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                String sql = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + currentVisitor.VisitorID + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
+                command.CommandText = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 command.ExecuteNonQuery();
+                mytransaction.Commit();
+
                 return true;
             }
             catch (Exception)
             {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -275,19 +344,40 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Sets visitor's balance to 0.00
+        /// </summary>
+        /// <param name="currentVisitor">Visitor that balance will be updated</param>
+        /// <returns>returns true if transaction is successful</returns>
         public bool SetBalanceToZero(Visitor currentVisitor)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                String sql = "UPDATE visitor SET balance = 0 WHERE visitor_id = " + currentVisitor.VisitorID + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
+                command.CommandText = "UPDATE visitor SET balance = 0 WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 command.ExecuteNonQuery();
+                mytransaction.Commit();
+
                 return true;
             }
             catch (Exception)
             {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -296,19 +386,40 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Update visitor's status to inside event
+        /// </summary>
+        /// <param name="currentVisitor">Current visitor to update status</param>
+        /// <returns>returns true if transaction is successful</returns>
         public bool EnterEvent(Visitor currentVisitor)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                String sql = "UPDATE visitor SET inside_event = TRUE WHERE visitor_id = " + currentVisitor.VisitorID + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
+                command.CommandText = "UPDATE visitor SET inside_event = TRUE WHERE visitor_id = " + currentVisitor.VisitorID + ";";               
                 command.ExecuteNonQuery();
+                mytransaction.Commit();
+
                 return true;
             }
             catch (Exception)
             {
+                try
+                {
+                    mytransaction.Rollback();   
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -317,19 +428,40 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Update visitor's status to not-inside event 
+        /// </summary>
+        /// <param name="currentVisitor">Current visitor that status will be updated</param>
+        /// <returns>returns true if transaction is successful</returns>
         public bool ExitEvent(Visitor currentVisitor)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                String sql = "UPDATE visitor SET inside_event = FALSE WHERE visitor_id = " + currentVisitor.VisitorID + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
+                command.CommandText = "UPDATE visitor SET inside_event = FALSE WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 command.ExecuteNonQuery();
+                mytransaction.Commit();
+
                 return true;
             }
             catch (Exception)
             {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -338,6 +470,11 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Select number of articles that a visitor did NOT return to the rental shop
+        /// </summary>
+        /// <param name="currentVisitor">Current visitor that did not return items to rental shop</param>
+        /// <returns>Returns a number of items that is not returned</returns>
         public int CountArticlesNotReturned(Visitor currentVisitor)
         {
             int count = 0;
@@ -370,6 +507,7 @@ namespace Classes
             }
         }
 
+        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
         public List<Product> GetAllProducts(int shopid)
         {
             try
@@ -412,6 +550,7 @@ namespace Classes
             }
         }
 
+        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
         public List<Rental> GetAllRentals()
         {
             try
@@ -456,6 +595,7 @@ namespace Classes
             }
         }
 
+        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
         public List<Rental> GetAllRentalsOfVisitor(Visitor myVisitor)
         {
             try
@@ -539,6 +679,8 @@ namespace Classes
             }
         }
 
+        //THIS ONE NEEDS TO BE CHANGED... TO COMMIT ETC.. SE OTHER EXAMPLES...!!!!!!!!!!!!!!!!!!
+        //PRESLAV I'LL LEAVE THIS FOR YOU SINCE YOU HAVE TO FIX IT :)
         public void AddMoneyPaypal(int id, decimal amount)
         {
             try
@@ -560,6 +702,11 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Return a camping reservation from the database with givin spotID
+        /// </summary>
+        /// <param name="spotid">spotID of the reservation</param>
+        /// <returns>returns a camping reservation</returns>
         public CampReservation GetCampingReservation(String spotid)
         {
             try
@@ -636,32 +783,14 @@ namespace Classes
             }
         }
 
-        public bool UpdatePaymentCampingSpot(Decimal amount, String spotID)
-        {
-            try
-            {
-                String sql = "UPDATE camping_reservation SET amount_paid = amount_paid + " + amount + ", shouldbe_paid = amount_paid WHERE spot_id = '" + spotID + "';";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
-                command.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
+        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
         public String GetDate()
         {
             return DateTime.Now.ToString("yyyy-M-dd");
         }
 
+        //THIS ONE NEEDS TO BE CHANGED... TO COMMIT ETC.. SE OTHER EXAMPLES...!!!!!!!!!!!!!!!!!!
+        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
         public bool ConfirmShopTransaction(int shopID, Visitor myVisitor, List<BasketItem> basketList, decimal amount)
         {
             try
@@ -698,6 +827,8 @@ namespace Classes
             }
         }
 
+        //THIS ONE NEEDS TO BE CHANGED... TO COMMIT ETC.. SE OTHER EXAMPLES...!!!!!!!!!!!!!!!!!!
+        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
         public bool ConfirmRentalTransaction(Visitor myVisitor, List<Rental> basketList, decimal amount)
         {
             try
@@ -735,6 +866,8 @@ namespace Classes
             }
         }
 
+        //THIS ONE NEEDS TO BE CHANGED... TO COMMIT ETC.. SE OTHER EXAMPLES...!!!!!!!!!!!!!!!!!!
+        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
         public bool ConfirmRentalReturnal(List<Rental> basketList)
         {
             try
@@ -763,6 +896,10 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Returns a list with all the available (free) camping spots
+        /// </summary>
+        /// <returns>Returns a list of strings</returns>
         public List<String> GetAvailableSpots()
         {
             try
@@ -798,20 +935,44 @@ namespace Classes
             }
         }
 
-        public bool MakeCampingReservation(int visitorid, String spotid, Decimal shouldbePaid, Decimal amountPaid)
+        /// <summary>
+        /// Update the camping reservation payment and also update the balance of the visitor who paid/reserved the camping spot.
+        /// </summary>
+        /// <param name="currentVisitor">The visitor who reserved and will pay the amount to be paid</param>
+        /// <param name="amount">Amount that needs to be paid by the visitor</param>
+        /// <param name="spotID">The spotID of the camping spot that needs to be updated</param>
+        /// <returns>returns true if transaction was successful</returns>
+        public bool UpdatePaymentCampingAndBalance(Visitor currentVisitor, Decimal amount, String spotID)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                String sql = "INSERT INTO camping_reservation (visitor_id, booking_date, spot_id, shouldbe_paid, amount_paid) VALUES (" + visitorid + ", '" +
-                    DateTime.Now.ToString("yyyy-M-dd") + "', '" + spotid + "', " + shouldbePaid + ", " + amountPaid + ");";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
+                command.CommandText = "UPDATE camping_reservation SET amount_paid = amount_paid + " + amount + ", shouldbe_paid = amount_paid WHERE spot_id = '" + spotID + "';";
                 command.ExecuteNonQuery();
+                command.CommandText = "UPDATE visitor SET balance = balance - " + amount + " WHERE visitor_id = " + currentVisitor.VisitorID + ";";
+                command.ExecuteNonQuery();
+                mytransaction.Commit();
+
                 return true;
             }
             catch (Exception)
             {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -820,21 +981,45 @@ namespace Classes
             }
         }
 
-        public bool VisitorSpotIDUpdate(int[] visitorIDs, String spotID)
+        /// <summary>
+        /// Make a reservation, update the balance of the visitor who is paying and adds the spotID to the visitor's who are staying at the camping spot
+        /// </summary>
+        /// <param name="spotid">Campingspot for the reservation</param>
+        /// <param name="paymentamount">Total amount to be paid</param>
+        /// <param name="visitorIDs">VisitorIDs that will stay on the camping spot</param>
+        /// <param name="currentVisitor">Currentvisitor that has to pay/booked the reservation</param>
+        /// <returns>Returns true if the transaction is successful</returns>
+        public bool MakeCampingReservationCompleteUpdate(String spotid, Decimal paymentamount, int[] visitorIDs, Visitor payingVisitor)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                connection.Open();
+                command.CommandText = "INSERT INTO camping_reservation (visitor_id, booking_date, spot_id, shouldbe_paid, amount_paid) VALUES (" + payingVisitor.VisitorID + ", '" +
+                    DateTime.Now.ToString("yyyy-M-dd") + "', '" + spotid + "', " + paymentamount + ", " + paymentamount + ");";
+                command.ExecuteNonQuery();
 
                 for (int i = 0; i < visitorIDs.Length; i++)
                 {
                     if (visitorIDs[i] != 0)
                     {
-                        String sql = "UPDATE visitor SET spot_id = '" + spotID + "' WHERE visitor_id = " + visitorIDs[i] + ";";
-                        MySqlCommand command = new MySqlCommand(sql, connection);
+                        command.CommandText = "UPDATE visitor SET spot_id = '" + spotid + "' WHERE visitor_id = " + visitorIDs[i] + ";";
                         command.ExecuteNonQuery();
                     }
                 }
+
+                command.CommandText = "UPDATE visitor SET balance = balance - " + paymentamount + " WHERE visitor_id = " + payingVisitor.VisitorID + ";";
+                command.ExecuteNonQuery();
+
+                mytransaction.Commit();
+
                 return true;
             }
             catch (Exception)
@@ -847,6 +1032,60 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Working with an existing camping reservation, adds visitors to the camping spot, deduct balance of the visitor who is paying
+        /// </summary>
+        /// <param name="spotid">The camping spot id of the reservation</param>
+        /// <param name="paymentamount">The amount that needs to be paid</param>
+        /// <param name="visitorIDs">The visitorIDs of the visitors that are going to be added to the reservation</param>
+        /// <param name="currentVisitor">The visitor who is booked/reserved the reservation and is paying</param>
+        /// <returns>returns true if transaction is successful</returns>
+        public bool ExistingCampingReservationCompleteUpdate(String spotid, Decimal paymentamount, int[] visitorIDs, Visitor payingVisitor)
+        {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
+            try
+            {
+                command.CommandText = "UPDATE camping_reservation SET amount_paid = amount_paid + " + paymentamount + ", shouldbe_paid = amount_paid WHERE spot_id = '" + spotid + "';";
+                command.ExecuteNonQuery();
+
+                for (int i = 0; i < visitorIDs.Length; i++)
+                {
+                    if (visitorIDs[i] != 0)
+                    {
+                        command.CommandText = "UPDATE visitor SET spot_id = '" + spotid + "' WHERE visitor_id = " + visitorIDs[i] + ";";
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                command.CommandText = "UPDATE visitor SET balance = balance - " + paymentamount + " WHERE visitor_id = " + payingVisitor.VisitorID + ";";
+                command.ExecuteNonQuery();
+
+                mytransaction.Commit();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Select the camping reservations from the database and put them in a list
+        /// </summary>
+        /// <returns>Returns a list of camping reservations</returns>
         public List<CampReservation> GetAllReservations()
         {
             try
@@ -915,6 +1154,11 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Count the number of visitors that has the same camping spot id
+        /// </summary>
+        /// <param name="spotID">The givin spotid to use in the database</param>
+        /// <returns>returns an integer</returns>
         public int CountVisitorsWithSpotID(String spotID)
         {
             try
@@ -948,19 +1192,40 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Deletes a reservation with a givin spotid
+        /// </summary>
+        /// <param name="spotID">Spotid of a camping spot</param>
+        /// <returns>Returns true if transaction was successful</returns>
         public bool DeleteReservation(String spotID)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                String sql = "DELETE FROM camping_reservation WHERE spot_id = '" + spotID + "';";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
+                command.CommandText = "DELETE FROM camping_reservation WHERE spot_id = '" + spotID + "';";
                 command.ExecuteNonQuery();
+                mytransaction.Commit();
+
                 return true;
             }
             catch (Exception)
             {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -969,6 +1234,10 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Returns all the visitorID's of visitors that reserved/booked a camping spot
+        /// </summary>
+        /// <returns>Returns a list of integers</returns>
         public List<int> GetCampingReservationVisitorIDs()
         {
             try
@@ -1005,6 +1274,11 @@ namespace Classes
             }
         }
 
+        /// <summary>
+        /// Returns a list of visitorID's that belongs to a givin spotID
+        /// </summary>
+        /// <param name="spotid">The spotID that we want to know about.</param>
+        /// <returns>Returns a list of integers</returns>
         public List<int> GetVisitorIDsReservation(String spotid)
         {
             try

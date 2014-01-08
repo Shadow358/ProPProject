@@ -175,10 +175,11 @@ namespace Camping
             btConfirmExistingReservation.Hide();
             lbConfirm.Hide();
             lbInfoScanTag.Hide();
-            campingSpots = dbhelper.GetAvailableSpots();
-
+            
             try
             {
+                campingSpots = dbhelper.GetAvailableSpots();
+
                 foreach (String item in campingSpots)
                 {
                     lbAvailSpot.Items.Add(item);
@@ -476,16 +477,14 @@ namespace Camping
 
                     if (totalamount <= mySavedvisitors[0].Balance)
                     {
-                        if (dbhelper.MakeCampingReservation(mySavedvisitors[0].VisitorID, spotID, totalamount, totalamount)
-                            && dbhelper.VisitorSpotIDUpdate(visitorIDs, spotID)
-                            && dbhelper.RemoveMoneyFromBalance(mySavedvisitors[0], totalamount))
+                        if (dbhelper.MakeCampingReservationCompleteUpdate(spotID, totalamount, visitorIDs, mySavedvisitors[0]))
                         {
-                            MessageBox.Show("Transaction was successfully!");
+                            MessageBox.Show("Transaction successful!");
                             this.Dispose();
                         }
                         else
                         {
-                            MessageBox.Show("Unsuccessfully, something went wrong.");
+                            MessageBox.Show("Error, something went wrong.");
                             btCancel.PerformClick();
                         }
                     }
@@ -670,9 +669,9 @@ namespace Camping
                         }
                     }
 
-                    if (dbhelper.RemoveMoneyFromBalance(mypayingvisitor, totalamount) && dbhelper.VisitorSpotIDUpdate(visitorIDs, thereservation.SpotID) && dbhelper.UpdatePaymentCampingSpot(totalamount, thereservation.SpotID))
+                    if (dbhelper.ExistingCampingReservationCompleteUpdate(thereservation.SpotID, totalamount, visitorIDs, mypayingvisitor))
                     {
-                        MessageBox.Show("Transaction was successfully!");
+                        MessageBox.Show("Transaction successful!");
                         this.Dispose();
                     }
                 }
