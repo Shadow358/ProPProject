@@ -404,7 +404,7 @@ namespace Classes
 
             try
             {
-                command.CommandText = "UPDATE visitor SET inside_event = TRUE WHERE visitor_id = " + currentVisitor.VisitorID + ";";               
+                command.CommandText = "UPDATE visitor SET inside_event = TRUE WHERE visitor_id = " + currentVisitor.VisitorID + ";";
                 command.ExecuteNonQuery();
                 mytransaction.Commit();
 
@@ -414,7 +414,7 @@ namespace Classes
             {
                 try
                 {
-                    mytransaction.Rollback();   
+                    mytransaction.Rollback();
                 }
                 catch (Exception)
                 {
@@ -507,7 +507,11 @@ namespace Classes
             }
         }
 
-        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
+        /// <summary>
+        /// Select a list of products of the specified shop.
+        /// </summary>
+        /// <param name="shopid">The ID of the specified shop</param>
+        /// <returns>Returns a list of products of the specified shop</returns>
         public List<Product> GetAllProducts(int shopid)
         {
             try
@@ -550,7 +554,10 @@ namespace Classes
             }
         }
 
-        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
+        /// <summary>
+        /// Select a list of rentals of the rental shop.
+        /// </summary>
+        /// <returns>Returns a list of rentals of the rental shop</returns>
         public List<Rental> GetAllRentals()
         {
             try
@@ -595,14 +602,15 @@ namespace Classes
             }
         }
 
-        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
+        /// <summary>
+        /// Select a list of rentals of a specified visitor
+        /// </summary>
+        /// <param name="myVisitor">The current visitor</param>
+        /// <returns>Returns a list of rentals of the specified visitor</returns>
         public List<Rental> GetAllRentalsOfVisitor(Visitor myVisitor)
         {
             try
             {
-                // SELECT * FROM rental_transaction, then put that in a list of transactions
-                // For each transaction, SELECT * FROM rental_details WHERE article_returned < 1 AND rent_id = currentRent_id, make a list of article ID's which are not returned yet
-                // Then add each article to a list which will be returned
                 List<Rental> tempListRental = new List<Rental>();
                 int productID;
                 String productDescription;
@@ -679,21 +687,36 @@ namespace Classes
             }
         }
 
-        //THIS ONE NEEDS TO BE CHANGED... TO COMMIT ETC.. SE OTHER EXAMPLES...!!!!!!!!!!!!!!!!!!
-        //PRESLAV I'LL LEAVE THIS FOR YOU SINCE YOU HAVE TO FIX IT :)
+        //PRESLAV I'LL LEAVE THIS FOR YOU SINCE YOU HAVE TO FIX IT :) (for comments? I guess x Vincent)
         public void AddMoneyPaypal(int id, decimal amount)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
                 String sql = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + id + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
 
-                connection.Open();
                 command.ExecuteNonQuery();
+                mytransaction.Commit();
                 return;
             }
             catch (Exception)
             {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return;
             }
             finally
@@ -783,42 +806,73 @@ namespace Classes
             }
         }
 
-        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
+        /// <summary>
+        /// Selects the current time
+        /// </summary>
+        /// <returns>Returns the current time</returns>
         public String GetDate()
         {
             return DateTime.Now.ToString("yyyy-M-dd");
         }
 
-        //THIS ONE NEEDS TO BE CHANGED... TO COMMIT ETC.. SE OTHER EXAMPLES...!!!!!!!!!!!!!!!!!!
-        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
+        /// <summary>
+        /// Tries to confirm the transaction of a shop
+        /// </summary>
+        /// <param name="shopID">The ID of the specified shop</param>
+        /// <param name="myVisitor">The current visitor</param>
+        /// <param name="basketList">The products the visitor wants to buy</param>
+        /// <param name="amount">The amount the visitor has to pay</param>
+        /// <returns>Returns true if successful</returns>
         public bool ConfirmShopTransaction(int shopID, Visitor myVisitor, List<BasketItem> basketList, decimal amount)
         {
+            connection.Open();
+            MySqlCommand commandTransaction = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+            
+            //Start sqlTransaction
+            mytransaction = connection.BeginTransaction();
+            commandTransaction.Connection = connection;
+            commandTransaction.Transaction = mytransaction;
+
             try
             {
-                String sqlTransaction = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.VisitorID + " , " + shopID + ") ;";
+                /*String sqlTransaction = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.VisitorID + " , " + shopID + ") ;";
                 sqlTransaction.Replace(@"\", string.Empty);
-                // INSERT INTO transaction VALUES (0, "2013-07-08" , 7 , 1); works
-                MySqlCommand commandTransaction = new MySqlCommand(sqlTransaction, connection);
+                INSERT INTO transaction VALUES (0, "2013-07-08" , 7 , 1); also works*/
+                commandTransaction.CommandText = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.VisitorID + " , " + shopID + ") ;";
+                commandTransaction.CommandText.Replace(@"\", string.Empty);
+                commandTransaction.ExecuteNonQuery();
+
                 String sqlTransactionID = "SELECT MAX(trans_id) FROM transaction WHERE visitor_id = " + myVisitor.VisitorID + " GROUP BY visitor_id;";
                 MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
 
-                connection.Open();
-                commandTransaction.ExecuteNonQuery();
                 int transactionID = (int)commandTransactionID.ExecuteScalar();
                 foreach (BasketItem basketItem in basketList)
                 {
-                    String sqlTransDetails = "INSERT INTO transaction_details (trans_id, product_id, quantity) VALUES (" + transactionID + ", " + basketItem.Product.ProductID + ", " + basketItem.Quantity + ") ;";
+                    commandTransaction.CommandText = "INSERT INTO transaction_details (trans_id, product_id, quantity) VALUES (" + transactionID + ", " + basketItem.Product.ProductID + ", " + basketItem.Quantity + ") ;";
+                    commandTransaction.ExecuteNonQuery();
+                    commandTransaction.CommandText = "UPDATE stock set stock_quantity = (stock_quantity -" + basketItem.Quantity + ") WHERE product_id = " + basketItem.Product.ProductID + " AND shop_id = " + shopID + " ;";
+                    commandTransaction.ExecuteNonQuery();
+                    /*String sqlTransDetails = "INSERT INTO transaction_details (trans_id, product_id, quantity) VALUES (" + transactionID + ", " + basketItem.Product.ProductID + ", " + basketItem.Quantity + ") ;";
                     MySqlCommand commandTransDetails = new MySqlCommand(sqlTransDetails, connection);
                     commandTransDetails.ExecuteNonQuery();
                     String sqlUpdateStock = "UPDATE stock set stock_quantity = " + basketItem.Quantity + " WHERE product_id = " + basketItem.Product.ProductID + " AND shop_id = " + shopID + " ;";
                     MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
-                    commandUpdateStock.ExecuteNonQuery();
+                    commandUpdateStock.ExecuteNonQuery();*/
                 }
+                mytransaction.Commit();
                 return true;
             }
-            catch (Exception x)
+            catch (Exception)
             {
-                MessageBox.Show(x.ToString());
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -827,20 +881,33 @@ namespace Classes
             }
         }
 
-        //THIS ONE NEEDS TO BE CHANGED... TO COMMIT ETC.. SE OTHER EXAMPLES...!!!!!!!!!!!!!!!!!!
-        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
+        /// <summary>
+        /// Tries to confirm the rental transaction of the rental shop
+        /// </summary>
+        /// <param name="myVisitor">The current visitor</param>
+        /// <param name="basketList">The products the visitor wants to buy</param>
+        /// <param name="amount">The amount the visitor has to pay</param>
+        /// <returns>Returns true if successful</returns>
         public bool ConfirmRentalTransaction(Visitor myVisitor, List<Rental> basketList, decimal amount)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                String sqlTransaction = @"INSERT INTO rental_transaction VALUES (NULL, " + myVisitor.VisitorID + ", \"" + GetDate() + "\", " + amount +  ") ;";
+                String sqlTransaction = @"INSERT INTO rental_transaction VALUES (NULL, " + myVisitor.VisitorID + ", \"" + GetDate() + "\", " + amount + ") ;";
                 sqlTransaction.Replace(@"\", string.Empty);
                 MySqlCommand commandTransaction = new MySqlCommand(sqlTransaction, connection);
 
                 String sqlTransactionID = "SELECT MAX(rent_id) FROM rental_transaction WHERE visitor_id = " + myVisitor.VisitorID + " GROUP BY visitor_id;";
                 MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
 
-                connection.Open();
                 commandTransaction.ExecuteNonQuery();
                 int transactionID = (int)commandTransactionID.ExecuteScalar();
                 foreach (Rental basketItem in basketList)
@@ -852,12 +919,19 @@ namespace Classes
                     MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
                     commandUpdateStock.ExecuteNonQuery();
                 }
-
+                mytransaction.Commit();
                 return true;
             }
-            catch (Exception x)
+            catch (Exception)
             {
-                MessageBox.Show(x.ToString());
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -866,16 +940,27 @@ namespace Classes
             }
         }
 
-        //THIS ONE NEEDS TO BE CHANGED... TO COMMIT ETC.. SE OTHER EXAMPLES...!!!!!!!!!!!!!!!!!!
-        //VINCENT I'LL LEAVE THIS FOR YOU SINCE YOU WORKED ON IT :)
+        /// <summary>
+        /// Tries to confirm the returnal of rentals of users
+        /// </summary>
+        /// <param name="basketList">The rentals the visitor wants to bring back</param>
+        /// <returns>Returns true if successful</returns>
         public bool ConfirmRentalReturnal(List<Rental> basketList)
         {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
             try
             {
-                connection.Open();
                 foreach (Rental item in basketList)
                 {
-                    String sqlUpdateArticle = "UPDATE article SET article_availability = 1, comment = \"" +item.Comment + "\" WHERE article_id = " + item.ProductID + " ;";
+                    String sqlUpdateArticle = "UPDATE article SET article_availability = 1, comment = \"" + item.Comment + "\" WHERE article_id = " + item.ProductID + " ;";
                     sqlUpdateArticle.Replace(@"\", string.Empty);
                     MySqlCommand commandUpdateArticle = new MySqlCommand(sqlUpdateArticle, connection);
                     String sqlUpdateRentalDetails = "UPDATE rental_details SET article_returned = 1 WHERE article_id = " + item.ProductID + ";";
@@ -883,11 +968,19 @@ namespace Classes
                     commandUpdateArticle.ExecuteNonQuery();
                     commandUpdateRentalDetails.ExecuteNonQuery();
                 }
+                mytransaction.Commit();
                 return true;
             }
-            catch (Exception x)
+            catch (Exception)
             {
-                MessageBox.Show(x.ToString());
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 return false;
             }
             finally
@@ -1286,7 +1379,7 @@ namespace Classes
                 connection.Open();
 
                 List<int> VisitorIDs = new List<int>();
-                spotid = "'"+spotid+"'";
+                spotid = "'" + spotid + "'";
 
                 String sql = "SELECT visitor_id FROM visitor WHERE spot_id = " + spotid + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);

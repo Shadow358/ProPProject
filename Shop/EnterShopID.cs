@@ -17,17 +17,14 @@ namespace Shop
             InitializeComponent();
         }
 
-        public static int shopId;
+        public int shopID {get; set;}
 
         private void btConfirmShopID_Click(object sender, EventArgs e)
         {
             try
             {
-                shopId = Convert.ToInt32(tbShopID.Text);
-                this.Hide();
-                Shop form = new Shop();
-                form.Show();
-
+                this.shopID = Convert.ToInt32(tbShopID.Text);
+                this.Close();
             }
             catch (Exception x)
             {

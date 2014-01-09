@@ -22,30 +22,43 @@ namespace Shop
         List<BasketItem> basketList = new List<BasketItem>();
         List<Product> productToDeleteList = new List<Product>();
         List<BasketItem> basketItemToDeleteList = new List<BasketItem>();
-
-        //int shopID = EnterShopID.shopId; for testing purposes:
-        int shopID = 1;
-
+        int shopID;
+        
         public Shop()
         {
             InitializeComponent();
-            // Connect to shop
-            dbhelper = new DBHelper();
-
-            showProductsDatabase();
-            tbCurCost.Text = "0.00";
-
-            try
+            
+            using (var form = new EnterShopID()) // Opens a form before opening the main form, and then the entered shopID will be used to query the shop.
             {
-                myRFIDReader = new RFID();
-                myRFIDReader.Tag += new TagEventHandler(readTag);
-                myRFIDReader.open();
-                myRFIDReader.waitForAttachment(1000);
-                myRFIDReader.Antenna = true;
+                var result = form.ShowDialog();
+                int getShopID = form.shopID; //values preserved after close
+                this.shopID = getShopID;
             }
-            catch (PhidgetException)
+
+            if (shopID.Equals(0))
             {
-                MessageBox.Show("Error, could not start");
+                MessageBox.Show("Error! Enter a correct shopID! Please restart the application");
+            }
+            else
+            {
+                // Connect to shop
+                dbhelper = new DBHelper();
+
+                showProductsDatabase();
+                tbCurCost.Text = "0.00";
+
+                try
+                {
+                    myRFIDReader = new RFID();
+                    myRFIDReader.Tag += new TagEventHandler(readTag);
+                    myRFIDReader.open();
+                    myRFIDReader.waitForAttachment(1000);
+                    myRFIDReader.Antenna = true;
+                }
+                catch (PhidgetException)
+                {
+                    MessageBox.Show("Error, could not start");
+                }
             }
         }
 
@@ -208,11 +221,18 @@ namespace Shop
         {
             try
             {
-                decimal amount = basketList.Sum(basketItem => (basketItem.TotalPrice * basketItem.Quantity));
-                if (dbhelper.ConfirmShopTransaction(shopID, myVisitor, basketList, amount) && dbhelper.RemoveMoneyFromBalance(myVisitor, amount))
+                if (myVisitor != null && !basketList.Count.Equals(0)) // If there is a visitor and there's something in the basketlist
                 {
-                    btCancelTransaction_Click(sender, e); // And reset the application, so a new visitor can scan it's bracelet
-                    MessageBox.Show("Transaction succesful!");
+                    decimal amount = basketList.Sum(basketItem => (basketItem.TotalPrice * basketItem.Quantity));
+                    if (dbhelper.ConfirmShopTransaction(shopID, myVisitor, basketList, amount) && dbhelper.RemoveMoneyFromBalance(myVisitor, amount))
+                    {
+                        btCancelTransaction_Click(sender, e); // And reset the application, so a new visitor can scan it's bracelet
+                        MessageBox.Show("Transaction succesful!");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Can't confirm payment, there's no visitor or basketlist is empty");
                 }
             }
             catch (Exception x)
@@ -266,10 +286,17 @@ namespace Shop
 
         private void showProductsDatabase() // Fetches the products from the database and stores it in a list 
         {
-            productList = dbhelper.GetAllProducts(shopID);
-            foreach (Product item in productList) /////////////////PUT THIS IN A TRY CATCH, ERROR IF DATABASE NOT CONNECED!!!!
+            try
             {
-                libProducts.Items.Add(item.ToString());
+                productList = dbhelper.GetAllProducts(shopID);
+                foreach (Product item in productList)
+                {
+                    libProducts.Items.Add(item.ToString());
+                }
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.Message);
             }
         }
 
@@ -374,5 +401,6 @@ namespace Shop
         {
             Application.Exit();
         }
+
     }
 }
