@@ -10,25 +10,23 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using Classes;
-
 namespace PayPalConverter
 {
     public partial class PayPalConverter : Form
     {
-
-
         DBHelper dbh = new DBHelper();
-        
+
         public PayPalConverter()
         {
             InitializeComponent();
-            
-       }
 
+        }
         private void bt_Process_Click(object sender, EventArgs e)
         {
             List<String> myList = new List<String>();
-            int visitor_id;
+            List<String> VisitorsIDs = new List<String>();
+            List<Decimal> Amounts = new List<Decimal>();
+            int bankaccount;
             string startdate;
             string enddate;
             int nrOfDeposits;
@@ -37,7 +35,6 @@ namespace PayPalConverter
             lb_End.Items.Clear();
             lb_Start.Items.Clear();
             OpenFileDialog ofd = new OpenFileDialog();
-
             string filename = "";
             string path = "";
             string fullpath = "";
@@ -49,9 +46,9 @@ namespace PayPalConverter
                     filename = System.IO.Path.GetFileName(ofd.FileName);
                     path = System.IO.Path.GetDirectoryName(ofd.FileName);
                 }
+
                 //Combines the filename and the path
                 fullpath = path + "\\" + filename;
-
                 //Populates the Input Listbox with the data from the text file. Each row of the textfile becomes a line in the listbox
                 FileInfo file = new FileInfo(fullpath);
                 StreamReader stRead = file.OpenText();
@@ -60,14 +57,12 @@ namespace PayPalConverter
                     lb_Start.Items.Add(stRead.ReadLine());
                 }
 
-
-               
                 //Adds each line of the Input listbox to a List<>
                 foreach (String item in lb_Start.Items)
                 {
                     myList.Add(item);
                 }
-                visitor_id = Convert.ToInt32(myList.ElementAt(0));
+                bankaccount = Convert.ToInt32(myList.ElementAt(0));
                 startdate = (myList.ElementAt(1));
                 enddate = (myList.ElementAt(2));
                 nrOfDeposits = Convert.ToInt32(myList.ElementAt(3));
@@ -77,24 +72,30 @@ namespace PayPalConverter
                 {
                     String[] temp = myList.ElementAt(i).Split(' ');
                     totalAmount += Convert.ToDecimal(temp[1]);
+                    VisitorsIDs.Add(temp[0]);
+                    Amounts.Add(Convert.ToDecimal(temp[1]));
                 }
-                //Updates the Database
-                dbh.AddMoneyPaypal(visitor_id, totalAmount);
+
 
                 //Populates the Output listbox with general information
-                lb_End.Items.Add("VisitorID: " + visitor_id.ToString());
+                lb_End.Items.Add("Bank Account: " + bankaccount.ToString());
                 lb_End.Items.Add("Start Period: " + startdate.ToString());
                 lb_End.Items.Add("End Period: " + enddate.ToString());
                 lb_End.Items.Add("Number Of Deposits: " + nrOfDeposits.ToString());
                 lb_End.Items.Add("Total Amount Added: " + totalAmount.ToString());
+                //Updates the Database
+                for (int i = 0; i < VisitorsIDs.Count; i++)
+                {
+                    dbh.AddMoneyPaypal(Convert.ToInt16(VisitorsIDs.ElementAt(i)), Amounts.ElementAt(i));
+                    lb_End.Items.Add("Visitor: " + VisitorsIDs.ElementAt(i) + " " + "Added: " + Amounts.ElementAt(i));
+                }
+
             }
-
-
             catch (IOException)
             {
                 MessageBox.Show("Cannot load file");
             }
-            catch
+            catch (Exception)
             {
                 MessageBox.Show("File: " + filename + "cannot be processed");
             }
@@ -102,7 +103,6 @@ namespace PayPalConverter
             {
                 MessageBox.Show("Have a nice day!");
             }
-            }
         }
     }
-
+}

@@ -65,7 +65,7 @@ namespace Camping
             tbTotalAmount.Text = totalamount.ToString();
             tbBalance.Text = thereservation.Visitor.Balance.ToString();
             lbSpotString.Text = "Reservation spotID: " + reservation.SpotID;
-            lbInfoScanTag.Text = "Please scan tag: (" + reservation.Visitor.ToString() + ")\nReady to scan tag...";
+            lbInfoScanTag.Text = "Scan: (" + reservation.Visitor.ToString() + ") for payment.\nReady to scan tag...";
             lblInfo.Text = canAdd.ToString() + " visitor(s) can be add to\nthis existing reservation.\nSave visitors before clicking 'Done'.";
 
             if (canAdd == 1)
@@ -267,7 +267,7 @@ namespace Camping
                     {
                         if (mySavedvisitors[i].VisitorID == myScannedvisitors[visitorIndex].VisitorID)
                         {
-                            MessageBox.Show("Cannot add visitor,\nvisitor was just saved to this reservation!");
+                            MessageBox.Show("Cannot add visitor.\nVisitor was just saved to this reservation!", "Attention");
                             DeleteButtonsMethod();
                             return;
                         }
@@ -280,23 +280,38 @@ namespace Camping
                 {
                     if (dbhelper.GetVisitorIDsReservation(thereservation.SpotID).Any(id => id == myScannedvisitors[visitorIndex].VisitorID))
                     {
-                        MessageBox.Show("This visitor already belongs to this reservation.");
+                        MessageBox.Show("This visitor already belongs to this reservation.", "Attention");
                         DeleteButtonsMethod();
                     }
                     else
+                    {
+                        if ((myScannedvisitors[visitorIndex] as VisitorAtCamping).SpotID == "NULL")
+                        {
+                            textboxesVisitors[visitorIndex].BackColor = Color.PaleGreen;
+                            mySavedvisitors[visitorIndex] = myScannedvisitors[visitorIndex];
+                            totalamount = totalamount + 20;
+                            tbTotalAmount.Text = totalamount.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Cannot add visitor.\nVisitor already belongs to camping spot " + (myScannedvisitors[visitorIndex] as VisitorAtCamping).SpotID + ".", "Attention"); DeleteButtonsMethod();
+                        }
+                    }
+                }
+                else
+                {
+                    if ((myScannedvisitors[visitorIndex] as VisitorAtCamping).SpotID == "NULL")
                     {
                         textboxesVisitors[visitorIndex].BackColor = Color.PaleGreen;
                         mySavedvisitors[visitorIndex] = myScannedvisitors[visitorIndex];
                         totalamount = totalamount + 20;
                         tbTotalAmount.Text = totalamount.ToString();
                     }
-                }
-                else
-                {
-                    textboxesVisitors[visitorIndex].BackColor = Color.PaleGreen;
-                    mySavedvisitors[visitorIndex] = myScannedvisitors[visitorIndex];
-                    totalamount = totalamount + 20;
-                    tbTotalAmount.Text = totalamount.ToString();
+                    else
+                    {
+                        MessageBox.Show("Cannot add visitor.\nVisitor already belongs to camping spot " + (myScannedvisitors[visitorIndex] as VisitorAtCamping).SpotID + ".", "Attention");
+                        DeleteButtonsMethod();
+                    }
                 }
             }
         }
@@ -368,7 +383,7 @@ namespace Camping
 
             if (dbhelper.GetCampingReservationVisitorIDs().Any(id => id == myScannedvisitors[visitorIndex].VisitorID))
             {
-                MessageBox.Show("This visitor cannot pay for this reservation.\nVisitor already has a booked reservation.");
+                MessageBox.Show("This visitor cannot pay for this reservation.\nVisitor already has a booked reservation.", "Attention");
                 DeleteButtonsMethod();
             }
             else
@@ -449,14 +464,14 @@ namespace Camping
             {
                 if (mySavedvisitors[0] == null)
                 {
-                    MessageBox.Show("Visitor who is paying is not saved.");
+                    MessageBox.Show("Visitor who is paying is not saved.", "Attention");
                     btCancel.PerformClick();
                     return;
                 }
 
                 if (mySavedvisitors.All(visitor => visitor == null))
                 {
-                    MessageBox.Show("No visitor is saved in the reservation.");
+                    MessageBox.Show("No visitor is saved in the reservation.", "Attention");
                     btCancel.PerformClick();
                     return;
                 }
@@ -490,7 +505,7 @@ namespace Camping
                     }
                     else
                     {
-                        MessageBox.Show("Visitor does not have enough money to pay for camping spot.");
+                        MessageBox.Show("Visitor does not have enough money to pay for camping spot.", "Attention");
                         btCancel.PerformClick();
                     }
                 }
@@ -639,7 +654,7 @@ namespace Camping
         {
             if (mySavedvisitors.All(visitor => visitor == null))
             {
-                MessageBox.Show("No visitor is saved in the reservation.");
+                MessageBox.Show("No visitor is saved in the reservation.", "Attention");
                 foreach (Button item in scansavedeleteButtons)
                 {
                     item.Enabled = true;
@@ -677,7 +692,7 @@ namespace Camping
                 }
                 else
                 {
-                    MessageBox.Show("Cannot complete transaction.\nBalance of visitor: " + mypayingvisitor.Balance.ToString() + " Euros.\nAmount to pay is bigger than balance.");
+                    MessageBox.Show("Cannot complete transaction.\nBalance of visitor: " + mypayingvisitor.Balance.ToString() + " Euros.\nAmount to pay is bigger than balance.", "Attention");
 
                     foreach (Button item in scansavedeleteButtons)
                     {
@@ -719,7 +734,7 @@ namespace Camping
             }
             else
             {
-                MessageBox.Show("Please select a camping spot.");
+                MessageBox.Show("Please select a camping spot.", "Attention");
             }
         }
 
@@ -744,11 +759,6 @@ namespace Camping
             {
                 this.Dispose();
             }
-        }
-
-        private void btScanPayingVisitor_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

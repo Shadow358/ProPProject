@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Transactions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
-using System.Transactions;
 
 namespace Classes
 {
@@ -1402,6 +1402,42 @@ namespace Classes
             catch (Exception)
             {
                 return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        //PRESLAV FOR YOU TO COMMENT...........
+        public bool RestockShop(int shopID, int prod_id, int quantity)
+        {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+            try
+            {
+                command.CommandText = "UPDATE stock SET stock_quantity = stock_quantity + " + quantity + " WHERE shop_id = " + shopID + " AND product_id = " + prod_id + ";";
+                command.ExecuteNonQuery();
+                mytransaction.Commit();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return false;
             }
             finally
             {

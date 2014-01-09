@@ -40,7 +40,7 @@
             this.lb_Start.FormattingEnabled = true;
             this.lb_Start.ItemHeight = 16;
             this.lb_Start.Location = new System.Drawing.Point(129, 94);
-            this.lb_Start.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lb_Start.Margin = new System.Windows.Forms.Padding(4);
             this.lb_Start.Name = "lb_Start";
             this.lb_Start.Size = new System.Drawing.Size(329, 356);
             this.lb_Start.TabIndex = 0;
@@ -48,7 +48,7 @@
             // bt_Process
             // 
             this.bt_Process.Location = new System.Drawing.Point(558, 224);
-            this.bt_Process.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bt_Process.Margin = new System.Windows.Forms.Padding(4);
             this.bt_Process.Name = "bt_Process";
             this.bt_Process.Size = new System.Drawing.Size(149, 65);
             this.bt_Process.TabIndex = 2;
@@ -71,7 +71,7 @@
             this.lb_End.FormattingEnabled = true;
             this.lb_End.ItemHeight = 16;
             this.lb_End.Location = new System.Drawing.Point(805, 94);
-            this.lb_End.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lb_End.Margin = new System.Windows.Forms.Padding(4);
             this.lb_End.Name = "lb_End";
             this.lb_End.Size = new System.Drawing.Size(329, 356);
             this.lb_End.TabIndex = 4;
@@ -97,10 +97,10 @@
             this.Controls.Add(this.bt_Process);
             this.Controls.Add(this.lb_Start);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "PayPalConverter";
-            this.Text = "Form1";
+            this.Text = "PayPal Converter";
             this.ResumeLayout(false);
             this.PerformLayout();
 

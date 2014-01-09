@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Classes", "Classes\Classes.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayPalConverter", "PayPalConverter\PayPalConverter.csproj", "{9DE1F2FA-0628-4F01-8D53-0877464D6E89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestockShop", "RestockShop\RestockShop.csproj", "{8FC74973-F125-4BBB-A3FA-5D2005D370A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{9DE1F2FA-0628-4F01-8D53-0877464D6E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DE1F2FA-0628-4F01-8D53-0877464D6E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DE1F2FA-0628-4F01-8D53-0877464D6E89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FC74973-F125-4BBB-A3FA-5D2005D370A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FC74973-F125-4BBB-A3FA-5D2005D370A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FC74973-F125-4BBB-A3FA-5D2005D370A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FC74973-F125-4BBB-A3FA-5D2005D370A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
