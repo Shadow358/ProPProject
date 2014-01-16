@@ -24,20 +24,28 @@ namespace Shop
         List<BasketItem> basketItemToDeleteList = new List<BasketItem>();
         int shopID;
         
-        public Shop()
+        public Shop(int shopID)
         {
             InitializeComponent();
             
-            using (var form = new EnterShopID()) // Opens a form before opening the main form, and then the entered shopID will be used to query the shop.
+            /*using (var form = new EnterShopID()) // Opens a form before opening the main form, and then the entered shopID will be used to query the shop.
             {
                 var result = form.ShowDialog();
                 int getShopID = form.shopID; //values preserved after close
                 this.shopID = getShopID;
-            }
+            }*/
 
-            if (shopID.Equals(0))
+            if (shopID <= 0)
             {
                 MessageBox.Show("Error! Enter a correct shopID! Please restart the application");
+                try
+                {
+                    this.Close();
+                }
+                catch(Exception e)
+                {
+                    MessageBox.Show(e.ToString());
+                }
             }
             else
             {
@@ -309,7 +317,7 @@ namespace Shop
             libProducts.Items.Clear();
             foreach (BasketItem item in basketList)
             {
-                if (item.Quantity.Equals(0))
+                if (item.Quantity <= 0)
                     basketItemToDeleteList.Add(item);
                 else
                 {
@@ -319,7 +327,7 @@ namespace Shop
             }
             foreach (Product product in productList)
             {
-                if (product.StockInShop.Equals(0))
+                if (product.StockInShop <= 0)
                     productToDeleteList.Add(product);
                 else
                     libProducts.Items.Add(product.ToString());
