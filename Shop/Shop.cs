@@ -289,10 +289,11 @@ namespace Shop
             try
             {
                 productList = dbhelper.GetAllProducts(shopID);
-                foreach (Product item in productList)
+                /*foreach (Product item in productList)
                 {
                     libProducts.Items.Add(item.ToString());
-                }
+                }*/
+                showListboxes();
             }
             catch (Exception x)
             {

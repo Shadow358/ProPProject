@@ -27,7 +27,8 @@ namespace Classes
         //Methods
         public override string ToString()
         {
-            return base.ToString() + ", " + this.comment;
+            string info = ("productID: " + base.ProductID.ToString() + ", " + base.ProductName + ", " + base.ProductPrice.ToString() + ", " + this.comment);
+            return info;
         }
     }
 }

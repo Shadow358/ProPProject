@@ -88,6 +88,10 @@ namespace RentalShop
                         MessageBox.Show("Returnal succesful!");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Nothing to confirm since there's nothing in the \"Items to return\" list ");
+                }
             }
             catch (Exception x)
             {

@@ -11,7 +11,6 @@ using Phidgets;
 using Phidgets.Events;
 using Classes;
 
-
 namespace RentalShop
 {
     public partial class RentalShop : Form
@@ -27,6 +26,7 @@ namespace RentalShop
         public RentalShop()
         {
             InitializeComponent();
+            
             // Connect to shop
             dbhelper = new DBHelper();
             showProductsDatabase();
@@ -175,10 +175,7 @@ namespace RentalShop
             try
             {
                 productList = dbhelper.GetAllRentals();
-                foreach (Rental item in productList)
-                {
-                    libProducts.Items.Add(item.ToString());
-                }
+                showListboxes();
             }
             catch (Exception x)
             {
@@ -265,9 +262,25 @@ namespace RentalShop
 
         private void btReturnItems_Click(object sender, EventArgs e)
         {
-            ReturnRentals returnItems = new ReturnRentals(myVisitor);
-            returnItems.ShowDialog(this);
+            try
+            {
+                if (myVisitor != null && !dbhelper.GetAllRentalsOfVisitor(myVisitor).Count.Equals(0))
+                {
+                    ReturnRentals returnItems = new ReturnRentals(myVisitor);
+                    returnItems.ShowDialog(this);
+                    showProductsDatabase();
+                }
+                else
+                {
+                    if (myVisitor == null)
+                    { MessageBox.Show("Can't open return items because there's no visitor"); return; }
+                    MessageBox.Show("Can't open return items because the visitor doesn't have items rented");
+                }
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
+            }
         }
-
     }
 }

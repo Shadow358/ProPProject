@@ -226,7 +226,7 @@
             this.btCancelTransaction.Name = "btCancelTransaction";
             this.btCancelTransaction.Size = new System.Drawing.Size(197, 50);
             this.btCancelTransaction.TabIndex = 65;
-            this.btCancelTransaction.Text = "Cancel";
+            this.btCancelTransaction.Text = "Clear current visitor";
             this.btCancelTransaction.UseVisualStyleBackColor = true;
             this.btCancelTransaction.Click += new System.EventHandler(this.btCancelTransaction_Click);
             // 
