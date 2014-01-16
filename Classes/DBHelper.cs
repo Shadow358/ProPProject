@@ -1112,12 +1112,13 @@ namespace Classes
         /// Checks if the inserted product exists in the table
         /// </summary>
         /// <param name="productID">The productID of the product the user is looking for</param>
+        /// <param name="shopID">The shopID of the product the user is looking for</param>
         /// <returns>True if product exists, else false</returns>
-        public bool CheckIfProductExists(int productID)
+        public bool CheckIfProductExists(int shopID,int productID)
         {
             try
             {
-                String sql = "SELECT * FROM stock WHERE product_id = '" + productID + "';";
+                String sql = "SELECT * FROM stock WHERE product_id = '" + productID + "' AND shop_id = '" +shopID + "';";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
