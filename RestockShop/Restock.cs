@@ -50,7 +50,7 @@ namespace RestockShop
                 {
                     MessageBox.Show("Please enter a product ID", "Product ID Error");
                 }
-                else if (Convert.ToInt16(tb_productID.Text) > 5)
+                else if (!dbh.CheckIfShopExists(Convert.ToInt16(tb_ShopID.Text)))
                 {
                     MessageBox.Show("Please enter a valid product ID", "Product ID Error");
                 }
@@ -91,7 +91,7 @@ namespace RestockShop
         {
             try
             {
-                if (Convert.ToInt16(tb_ShopID.Text) > 5)
+                if (!dbh.CheckIfShopExists(Convert.ToInt16(tb_ShopID.Text)))
                 {
                     MessageBox.Show("Please enter a valid Shop ID");
                 }
