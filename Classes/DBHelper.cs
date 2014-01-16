@@ -687,7 +687,12 @@ namespace Classes
             }
         }
 
-        //PRESLAV I'LL LEAVE THIS FOR YOU SINCE YOU HAVE TO FIX IT :) (for comments? I guess x Vincent)
+        /// <summary>
+        /// After paypal sends us a text file of the visitors and their updates we process the file and update the database.
+        /// </summary>
+        /// <param name="id">The visitors ID</param>
+        /// <param name="amount">The amount to be added to his account</param>
+        /// <returns>Executed query </returns>
         public void AddMoneyPaypal(int id, decimal amount)
         {
             connection.Open();
@@ -701,7 +706,7 @@ namespace Classes
 
             try
             {
-                String sql = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + id + ";";
+                command.CommandText = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + id + ";";
 
                 command.ExecuteNonQuery();
                 mytransaction.Commit();
@@ -1409,7 +1414,13 @@ namespace Classes
             }
         }
 
-        //PRESLAV FOR YOU TO COMMENT...........
+        /// <summary>
+        /// Updates the stock of the shops.
+        /// </summary>
+        /// <param name="shopID">The idintification number of the shop.</param>
+        /// <param name="prod_id">The idintification number of the product.</param>
+        /// <param name="quantity">The quantity of the product that will be updated.</param>
+        /// <returns>An executed quary for the database</returns>
         public bool RestockShop(int shopID, int prod_id, int quantity)
         {
             connection.Open();

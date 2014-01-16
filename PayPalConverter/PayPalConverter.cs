@@ -23,6 +23,7 @@ namespace PayPalConverter
         }
         private void bt_Process_Click(object sender, EventArgs e)
         {
+            //Declerations
             List<String> myList = new List<String>();
             List<String> VisitorsIDs = new List<String>();
             List<Decimal> Amounts = new List<Decimal>();
@@ -101,7 +102,7 @@ namespace PayPalConverter
             }
             finally
             {
-                MessageBox.Show("Have a nice day!");
+                MessageBox.Show("File processed!Have a nice day!");
             }
         }
     }
