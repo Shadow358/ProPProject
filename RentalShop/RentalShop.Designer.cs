@@ -119,9 +119,9 @@
             this.btDeleteItem.Location = new System.Drawing.Point(1016, 37);
             this.btDeleteItem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btDeleteItem.Name = "btDeleteItem";
-            this.btDeleteItem.Size = new System.Drawing.Size(100, 50);
+            this.btDeleteItem.Size = new System.Drawing.Size(200, 50);
             this.btDeleteItem.TabIndex = 81;
-            this.btDeleteItem.Text = "Delete";
+            this.btDeleteItem.Text = "Remove from basket";
             this.btDeleteItem.UseVisualStyleBackColor = true;
             this.btDeleteItem.Click += new System.EventHandler(this.btDeleteItem_Click);
             // 

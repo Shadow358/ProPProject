@@ -41,8 +41,9 @@
             this.btProductsToBasket = new System.Windows.Forms.Button();
             this.libItemsRetuning = new System.Windows.Forms.ListBox();
             this.btAddComment = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tbComment = new System.Windows.Forms.TextBox();
+            this.rbNone = new System.Windows.Forms.RadioButton();
+            this.rbDamaged = new System.Windows.Forms.RadioButton();
+            this.rbBroken = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // btCancelReturnal
@@ -82,7 +83,7 @@
             this.btDeleteReturningItem.Location = new System.Drawing.Point(1016, 37);
             this.btDeleteReturningItem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btDeleteReturningItem.Name = "btDeleteReturningItem";
-            this.btDeleteReturningItem.Size = new System.Drawing.Size(100, 50);
+            this.btDeleteReturningItem.Size = new System.Drawing.Size(210, 50);
             this.btDeleteReturningItem.TabIndex = 77;
             this.btDeleteReturningItem.Text = "Delete";
             this.btDeleteReturningItem.UseVisualStyleBackColor = true;
@@ -182,37 +183,52 @@
             this.btAddComment.Location = new System.Drawing.Point(1016, 91);
             this.btAddComment.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btAddComment.Name = "btAddComment";
-            this.btAddComment.Size = new System.Drawing.Size(234, 50);
+            this.btAddComment.Size = new System.Drawing.Size(210, 50);
             this.btAddComment.TabIndex = 88;
-            this.btAddComment.Text = "Add comment to item";
+            this.btAddComment.Text = "Change item state";
             this.btAddComment.UseVisualStyleBackColor = true;
             this.btAddComment.Click += new System.EventHandler(this.btAddComment_Click);
             // 
-            // label1
+            // rbNone
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(1015, 143);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 25);
-            this.label1.TabIndex = 89;
-            this.label1.Text = "Comment:";
+            this.rbNone.AutoSize = true;
+            this.rbNone.Checked = true;
+            this.rbNone.Location = new System.Drawing.Point(1016, 147);
+            this.rbNone.Name = "rbNone";
+            this.rbNone.Size = new System.Drawing.Size(63, 21);
+            this.rbNone.TabIndex = 89;
+            this.rbNone.TabStop = true;
+            this.rbNone.Text = "None";
+            this.rbNone.UseVisualStyleBackColor = true;
             // 
-            // tbComment
+            // rbDamaged
             // 
-            this.tbComment.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbComment.Location = new System.Drawing.Point(1020, 172);
-            this.tbComment.Name = "tbComment";
-            this.tbComment.Size = new System.Drawing.Size(230, 24);
-            this.tbComment.TabIndex = 90;
+            this.rbDamaged.AutoSize = true;
+            this.rbDamaged.Location = new System.Drawing.Point(1016, 174);
+            this.rbDamaged.Name = "rbDamaged";
+            this.rbDamaged.Size = new System.Drawing.Size(90, 21);
+            this.rbDamaged.TabIndex = 90;
+            this.rbDamaged.Text = "Damaged";
+            this.rbDamaged.UseVisualStyleBackColor = true;
+            // 
+            // rbBroken
+            // 
+            this.rbBroken.AutoSize = true;
+            this.rbBroken.Location = new System.Drawing.Point(1016, 201);
+            this.rbBroken.Name = "rbBroken";
+            this.rbBroken.Size = new System.Drawing.Size(74, 21);
+            this.rbBroken.TabIndex = 91;
+            this.rbBroken.Text = "Broken";
+            this.rbBroken.UseVisualStyleBackColor = true;
             // 
             // ReturnRentals
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1262, 673);
-            this.Controls.Add(this.tbComment);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.rbBroken);
+            this.Controls.Add(this.rbDamaged);
+            this.Controls.Add(this.rbNone);
             this.Controls.Add(this.btAddComment);
             this.Controls.Add(this.libItemsRetuning);
             this.Controls.Add(this.btProductsToBasket);
@@ -248,7 +264,8 @@
         private System.Windows.Forms.Button btProductsToBasket;
         private System.Windows.Forms.ListBox libItemsRetuning;
         private System.Windows.Forms.Button btAddComment;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox tbComment;
+        private System.Windows.Forms.RadioButton rbNone;
+        private System.Windows.Forms.RadioButton rbDamaged;
+        private System.Windows.Forms.RadioButton rbBroken;
     }
 }

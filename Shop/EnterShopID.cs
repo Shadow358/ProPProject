@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Classes;
 
 namespace Shop
 {
@@ -26,23 +27,22 @@ namespace Shop
                 this.Hide();
                 this.shopID = Convert.ToInt32(tbShopID.Text);
 
-                //if the shopID inserted is in the table shop in database (SELECT BLAH BLAH...)
-                //Then Make the shop object and open the ShowDialog.
-                Shop shop = new Shop(shopID);
-                shop.ShowDialog();
-
-                //If the shopID is not in the shoptable
-                //Then just show an error message and let them insert a shop again.
-                
-                //The this.Close() is in the finally.
+                DBHelper dbhelper = new DBHelper();
+                if (dbhelper.CheckIfShopExists(shopID)) // Check if the shop exists
+                {
+                    Shop shop = new Shop(shopID);
+                    shop.ShowDialog(); // Open the shop
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("This shop does not exists. Please select an existing shopid");
+                    this.Show(); // Try again
+                }
             }
-            catch (Exception)
+            catch (Exception x)
             {
-                tbShopID.Text = "";
-            }
-            finally
-            {
-                this.Close();
+                MessageBox.Show(x.ToString());
             }
         }
     }

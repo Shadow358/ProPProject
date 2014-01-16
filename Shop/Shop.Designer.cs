@@ -169,7 +169,7 @@
             this.btIncreaseQuantity.Location = new System.Drawing.Point(1005, 37);
             this.btIncreaseQuantity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btIncreaseQuantity.Name = "btIncreaseQuantity";
-            this.btIncreaseQuantity.Size = new System.Drawing.Size(100, 50);
+            this.btIncreaseQuantity.Size = new System.Drawing.Size(200, 50);
             this.btIncreaseQuantity.TabIndex = 12;
             this.btIncreaseQuantity.Text = "+";
             this.btIncreaseQuantity.UseVisualStyleBackColor = true;
@@ -181,7 +181,7 @@
             this.btDecreaseQuantity.Location = new System.Drawing.Point(1005, 94);
             this.btDecreaseQuantity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btDecreaseQuantity.Name = "btDecreaseQuantity";
-            this.btDecreaseQuantity.Size = new System.Drawing.Size(100, 50);
+            this.btDecreaseQuantity.Size = new System.Drawing.Size(200, 50);
             this.btDecreaseQuantity.TabIndex = 13;
             this.btDecreaseQuantity.Text = "-";
             this.btDecreaseQuantity.UseVisualStyleBackColor = true;
@@ -190,12 +190,12 @@
             // btDeleteItem
             // 
             this.btDeleteItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btDeleteItem.Location = new System.Drawing.Point(1005, 149);
+            this.btDeleteItem.Location = new System.Drawing.Point(1006, 148);
             this.btDeleteItem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btDeleteItem.Name = "btDeleteItem";
-            this.btDeleteItem.Size = new System.Drawing.Size(100, 50);
+            this.btDeleteItem.Size = new System.Drawing.Size(200, 50);
             this.btDeleteItem.TabIndex = 14;
-            this.btDeleteItem.Text = "Delete";
+            this.btDeleteItem.Text = "Remove from basket";
             this.btDeleteItem.UseVisualStyleBackColor = true;
             this.btDeleteItem.Click += new System.EventHandler(this.btDeleteItem_Click);
             // 

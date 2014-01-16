@@ -688,6 +688,40 @@ namespace Classes
         }
 
         /// <summary>
+        /// Checks if the inserted shopid exists in the table
+        /// </summary>
+        /// <param name="shopID">The shopid of the shop the user is looking for</param>
+        /// <returns>True if shop exists, else false</returns>
+        public bool CheckIfShopExists(int shopID)
+        {
+            try
+            {
+                String sql = "SELECT * FROM shop WHERE shop_id = '" + shopID +"';";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+                while(reader.Read())
+                {
+                    if (!reader[0].Equals(null))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch(Exception x)
+            {
+                MessageBox.Show(x.ToString());
+                return false;   
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
         /// After paypal sends us a text file of the visitors and their updates we process the file and update the database.
         /// </summary>
         /// <param name="id">The visitors ID</param>

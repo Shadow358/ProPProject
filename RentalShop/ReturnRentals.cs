@@ -147,7 +147,8 @@ namespace RentalShop
             libProductsRented.Items.Clear();
             foreach (Rental item in basketList)
             {
-                tempAmount += (item.ProductPrice);
+                if(item.Comment.Equals(""))
+                    tempAmount += (item.ProductPrice);
                 libItemsRetuning.Items.Add(item.ToString());
             }
             foreach (Rental product in productList)
@@ -163,7 +164,11 @@ namespace RentalShop
             int selectedIndex = libItemsRetuning.SelectedIndex;
             if (!selectedIndex.Equals(-1)) // Check if an item is selected
             {
-                basketList[selectedIndex].Comment = tbComment.Text;
+                string comment = "";
+                if (rbBroken.Checked) { comment = "Broken by: " + myVisitor.FirstName + " " + myVisitor.LastName + "."; }
+                if (rbDamaged.Checked ) { comment = "Damaged by: "+ myVisitor.FirstName + " " + myVisitor.LastName + ".";}
+                
+                basketList[selectedIndex].Comment = comment;
                 showListboxes();
                 setSelected("basket", selectedIndex);
             }

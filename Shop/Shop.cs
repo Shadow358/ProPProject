@@ -27,52 +27,25 @@ namespace Shop
         public Shop(int shopID)
         {
             InitializeComponent();
-
-            //ShopID assigned the variable from the constructor.
             this.shopID = shopID;
-
-            /*using (var form = new EnterShopID()) // Opens a form before opening the main form, and then the entered shopID will be used to query the shop.
-            {
-                var result = form.ShowDialog();
-                int getShopID = form.shopID; //values preserved after close
-                this.shopID = getShopID;
-            }*/
-
-            //BECAUSE YOU CHECK IF THE SHOP ID IS VALD IN THE OTHER FORM YOU DONT HAVE TO CHECK AGAIN HERE
-            //REMOVE IF ELSE STATEMENT AND JUST LEAVE THE "CONNECT TO SHOP" PART....
             
-            if (shopID <= 0)
+            // Connect to shop
+            dbhelper = new DBHelper();
+
+            showProductsDatabase();
+            tbCurCost.Text = "0.00";
+
+            try
             {
-                MessageBox.Show("Error! Enter a correct shopID! Please restart the application");
-                try
-                {
-                    this.Close();
-                }
-                catch(Exception e)
-                {
-                    MessageBox.Show(e.ToString());
-                }
+                myRFIDReader = new RFID();
+                myRFIDReader.Tag += new TagEventHandler(readTag);
+                myRFIDReader.open();
+                myRFIDReader.waitForAttachment(1000);
+                myRFIDReader.Antenna = true;
             }
-            else
+            catch (PhidgetException)
             {
-                // Connect to shop
-                dbhelper = new DBHelper();
-
-                showProductsDatabase();
-                tbCurCost.Text = "0.00";
-
-                try
-                {
-                    myRFIDReader = new RFID();
-                    myRFIDReader.Tag += new TagEventHandler(readTag);
-                    myRFIDReader.open();
-                    myRFIDReader.waitForAttachment(1000);
-                    myRFIDReader.Antenna = true;
-                }
-                catch (PhidgetException)
-                {
-                    MessageBox.Show("Error, could not start");
-                }
+                MessageBox.Show("Error, could not start");
             }
         }
 
@@ -303,10 +276,6 @@ namespace Shop
             try
             {
                 productList = dbhelper.GetAllProducts(shopID);
-                /*foreach (Product item in productList)
-                {
-                    libProducts.Items.Add(item.ToString());
-                }*/
                 showListboxes();
             }
             catch (Exception x)
@@ -340,18 +309,26 @@ namespace Shop
             }
 
             // Only if the todeletelists contain something, delete that from that list
-            if (basketItemToDeleteList.Count != 0)
+            foreach(BasketItem item in basketItemToDeleteList)
             {
-                basketList.Remove(basketItemToDeleteList[0]);
-                basketItemToDeleteList.Clear();
+                basketList.Remove(item);
             }
-            if (productToDeleteList.Count != 0)
+            foreach (Product item in productToDeleteList)
             {
-                productList.Remove(productToDeleteList[0]);
-                productToDeleteList.Clear();
+                productList.Remove(item);
             }
+            productToDeleteList.Clear();
+            basketItemToDeleteList.Clear();
 
             tbCurCost.Text = tempAmount.ToString();
+            try 
+            {	        
+                libProducts.SelectedIndex = 0;
+            }
+            catch (Exception)
+            {
+                return;
+            }
         }
 
         private void setSelected(string list, int place) // Sets the selected items in the listboxes, gotta fix the "length" in the program, so that the whole line can be selected 

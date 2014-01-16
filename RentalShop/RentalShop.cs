@@ -96,11 +96,6 @@ namespace RentalShop
                 setSelected("basket", selectedIndex);
                 return;
             }
-            else
-            {
-                MessageBox.Show("Can't remove, something went wrong, probably the list is empty or you didn't select anything");
-                return;
-            }
         }
 
         private void btCancelTransaction_Click(object sender, EventArgs e) // "Resets" the application
@@ -136,6 +131,10 @@ namespace RentalShop
                         MessageBox.Show("Transaction succesful!");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Can't confirm payment, there's no visitor or basketlist is empty");
+                }
             }
             catch (Exception x)
             {
@@ -148,7 +147,7 @@ namespace RentalShop
             if (myVisitor != null)
             {
                 int selectedIndex = libProducts.SelectedIndex;
-                if (!selectedIndex.Equals(-1)) // Check if an item is selected
+                if (!selectedIndex.Equals(-1) && productList[selectedIndex].Comment == "") // Check if an item is selected
                 {
                     Rental tempProduct = productList[selectedIndex];
                     if (!(myVisitor.Balance < Convert.ToDecimal(tbCurDeposit.Text) + tempProduct.ProductPrice)) // If the user has enough balance
@@ -191,35 +190,23 @@ namespace RentalShop
             libProducts.Items.Clear();
             foreach (Rental item in basketList)
             {
-                /*if (item.StockInShop.Equals(0)) Commented area can be deleted I guess
-                    basketItemToDeleteList.Add(item);
-                else
-                {*/
                     tempAmount += (item.ProductPrice);
                     libBasket.Items.Add(item.ToString());
-                //}
             }
             foreach (Rental product in productList)
             {
-                /*if (product.StockInShop.Equals(0))
-                    productToDeleteList.Add(product);
-                else*/
                     libProducts.Items.Add(product.ToString());
             }
-            /*
-            // Only if the todeletelists contain something, delete that from that list
-            if (basketItemToDeleteList.Count != 0)
-            {
-                basketList.Remove(basketItemToDeleteList[0]);
-                basketItemToDeleteList.Clear();
-            }
-            if (productToDeleteList.Count != 0)
-            {
-                productList.Remove(productToDeleteList[0]);
-                productToDeleteList.Clear();
-            }*/
 
             tbCurDeposit.Text = tempAmount.ToString();
+            try
+            {
+                libProducts.SelectedIndex = 0;
+            }
+            catch (Exception)
+            {
+                return;
+            }
         }
 
         private void setSelected(string list, int place) // Sets the selected items in the listboxes, gotta fix the "length" in the program, so that the whole line can be selected 
