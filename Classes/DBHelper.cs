@@ -27,7 +27,8 @@ namespace Classes
             connection = new MySqlConnection(connectionInfo);
         }
 
-        //Methods
+        // Queries of visitors used in multiple apps\\
+
         /// <summary>
         /// Select VisitorAtExit from database
         /// </summary>
@@ -61,186 +62,6 @@ namespace Classes
                     balance = Convert.ToDecimal(reader[4]);
 
                     TheVisitor = new Visitor(visitorid, rfid, firstname, lastname, balance);
-                }
-                return TheVisitor;
-            }
-            catch (MySqlException)
-            {
-                return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// Select VisitorAtEntrance from database
-        /// </summary>
-        /// <param name="rfidChip">Scanned rfidchip</param>
-        /// <returns>Returns the visitor with the scanned rfidchip</returns>
-        public Visitor GetVisitorEntrance(String rfidChip)
-        {
-            try
-            {
-                Visitor TheVisitor = null;
-                rfidChip = "'" + rfidChip + "'";
-
-                String sql = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, inside_event FROM visitor WHERE rfid_chip = " + rfidChip + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
-                MySqlDataReader reader = command.ExecuteReader();
-
-                int visitorid;
-                String rfid;
-                String firstname;
-                String lastname;
-                decimal balance;
-                bool inside;
-
-                while (reader.Read())
-                {
-                    visitorid = Convert.ToInt32(reader[0]);
-                    rfid = Convert.ToString(reader[1]);
-                    firstname = Convert.ToString(reader[2]);
-                    lastname = Convert.ToString(reader[3]);
-                    balance = Convert.ToDecimal(reader[4]);
-
-                    if (reader[5] == DBNull.Value)
-                    {
-                        inside = (reader[5]) as bool? ?? false; //if null it will be false.
-                    }
-                    else
-                    {
-                        inside = Convert.ToBoolean(reader[5]);
-                    }
-
-                    TheVisitor = new VisitorAtEntrance(visitorid, rfid, firstname, lastname, balance, inside);
-                }
-                return TheVisitor;
-            }
-            catch (MySqlException)
-            {
-                return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// Select VisitorAtExit from database
-        /// </summary>
-        /// <param name="rfidChip">Scanned rfidchip</param>
-        /// <returns>Returns the visitor with the scanned rfidchip</returns>
-        public Visitor GetVisitorExit(String rfidChip)
-        {
-            try
-            {
-                Visitor TheVisitor = null;
-                rfidChip = "'" + rfidChip + "'";
-
-                String sql = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, inside_event FROM visitor WHERE rfid_chip = " + rfidChip + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
-                MySqlDataReader reader = command.ExecuteReader();
-
-                int visitorid;
-                String rfid;
-                String firstname;
-                String lastname;
-                decimal balance;
-                bool inside;
-
-                while (reader.Read())
-                {
-                    visitorid = Convert.ToInt32(reader[0]);
-                    rfid = Convert.ToString(reader[1]);
-                    firstname = Convert.ToString(reader[2]);
-                    lastname = Convert.ToString(reader[3]);
-                    balance = Convert.ToDecimal(reader[4]);
-
-                    if (reader[5] == DBNull.Value)
-                    {
-                        inside = (reader[5]) as bool? ?? false; //if null it will be false.
-                    }
-                    else
-                    {
-                        inside = Convert.ToBoolean(reader[5]);
-                    }
-
-                    TheVisitor = new VisitorAtExit(visitorid, rfid, firstname, lastname, balance, inside);
-                }
-                return TheVisitor;
-            }
-            catch (MySqlException)
-            {
-                return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// Select VisitorAtCamping from database
-        /// </summary>
-        /// <param name="rfidChip">Scanned rfidchip</param>
-        /// <returns>Returns the visitor with the scanned rfidchip</returns>
-        public Visitor GetVisitorCamping(String rfidChip)
-        {
-            try
-            {
-                Visitor TheVisitor = null;
-                rfidChip = "'" + rfidChip + "'";
-
-                String sql = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, spot_id FROM visitor WHERE rfid_chip = " + rfidChip + ";";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
-                MySqlDataReader reader = command.ExecuteReader();
-
-                int visitorid;
-                String rfid;
-                String firstname;
-                String lastname;
-                decimal balance;
-                String spotid;
-
-                while (reader.Read())
-                {
-                    visitorid = Convert.ToInt32(reader[0]);
-                    rfid = Convert.ToString(reader[1]);
-                    firstname = Convert.ToString(reader[2]);
-                    lastname = Convert.ToString(reader[3]);
-                    balance = Convert.ToDecimal(reader[4]);
-
-                    if (String.IsNullOrEmpty(Convert.ToString(reader[5])))
-                    {
-                        spotid = "NULL"; //if null it will be "NULL".
-                    }
-                    else
-                    {
-                        spotid = Convert.ToString(reader[5]);
-                    }
-
-                    TheVisitor = new VisitorAtCamping(visitorid, rfid, firstname, lastname, balance, spotid);
                 }
                 return TheVisitor;
             }
@@ -387,6 +208,77 @@ namespace Classes
         }
 
         /// <summary>
+        /// Selects the current time
+        /// </summary>
+        /// <returns>Returns the current time</returns>
+        public String GetDate()
+        {
+            return DateTime.Now.ToString("yyyy-M-dd");
+        }
+
+        // Queries for entrance app \\
+
+        /// <summary>
+        /// Select VisitorAtEntrance from database
+        /// </summary>
+        /// <param name="rfidChip">Scanned rfidchip</param>
+        /// <returns>Returns the visitor with the scanned rfidchip</returns>
+        public Visitor GetVisitorEntrance(String rfidChip)
+        {
+            try
+            {
+                Visitor TheVisitor = null;
+                rfidChip = "'" + rfidChip + "'";
+
+                String sql = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, inside_event FROM visitor WHERE rfid_chip = " + rfidChip + ";";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+
+                int visitorid;
+                String rfid;
+                String firstname;
+                String lastname;
+                decimal balance;
+                bool inside;
+
+                while (reader.Read())
+                {
+                    visitorid = Convert.ToInt32(reader[0]);
+                    rfid = Convert.ToString(reader[1]);
+                    firstname = Convert.ToString(reader[2]);
+                    lastname = Convert.ToString(reader[3]);
+                    balance = Convert.ToDecimal(reader[4]);
+
+                    if (reader[5] == DBNull.Value)
+                    {
+                        inside = (reader[5]) as bool? ?? false; //if null it will be false.
+                    }
+                    else
+                    {
+                        inside = Convert.ToBoolean(reader[5]);
+                    }
+
+                    TheVisitor = new VisitorAtEntrance(visitorid, rfid, firstname, lastname, balance, inside);
+                }
+                return TheVisitor;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
         /// Update visitor's status to inside event
         /// </summary>
         /// <param name="currentVisitor">Current visitor to update status</param>
@@ -421,6 +313,68 @@ namespace Classes
                     throw;
                 }
                 return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        // Queries for exit app \\
+
+        /// <summary>
+        /// Select VisitorAtExit from database
+        /// </summary>
+        /// <param name="rfidChip">Scanned rfidchip</param>
+        /// <returns>Returns the visitor with the scanned rfidchip</returns>
+        public Visitor GetVisitorExit(String rfidChip)
+        {
+            try
+            {
+                Visitor TheVisitor = null;
+                rfidChip = "'" + rfidChip + "'";
+
+                String sql = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, inside_event FROM visitor WHERE rfid_chip = " + rfidChip + ";";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+
+                int visitorid;
+                String rfid;
+                String firstname;
+                String lastname;
+                decimal balance;
+                bool inside;
+
+                while (reader.Read())
+                {
+                    visitorid = Convert.ToInt32(reader[0]);
+                    rfid = Convert.ToString(reader[1]);
+                    firstname = Convert.ToString(reader[2]);
+                    lastname = Convert.ToString(reader[3]);
+                    balance = Convert.ToDecimal(reader[4]);
+
+                    if (reader[5] == DBNull.Value)
+                    {
+                        inside = (reader[5]) as bool? ?? false; //if null it will be false.
+                    }
+                    else
+                    {
+                        inside = Convert.ToBoolean(reader[5]);
+                    }
+
+                    TheVisitor = new VisitorAtExit(visitorid, rfid, firstname, lastname, balance, inside);
+                }
+                return TheVisitor;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
             }
             finally
             {
@@ -507,38 +461,53 @@ namespace Classes
             }
         }
 
+        // Queries for Camping app \\
+
         /// <summary>
-        /// Select a list of products of the specified shop.
+        /// Select VisitorAtCamping from database
         /// </summary>
-        /// <param name="shopid">The ID of the specified shop</param>
-        /// <returns>Returns a list of products of the specified shop</returns>
-        public List<Product> GetAllProducts(int shopid)
+        /// <param name="rfidChip">Scanned rfidchip</param>
+        /// <returns>Returns the visitor with the scanned rfidchip</returns>
+        public Visitor GetVisitorCamping(String rfidChip)
         {
             try
             {
-                String sql = "SELECT p.product_id, p.product_description, p.product_price, s.stock_quantity FROM Product p NATURAL JOIN Stock s WHERE s.shop_id = " + shopid + ";";
+                Visitor TheVisitor = null;
+                rfidChip = "'" + rfidChip + "'";
+
+                String sql = "SELECT visitor_id, rfid_chip, first_name, last_name, balance, spot_id FROM visitor WHERE rfid_chip = " + rfidChip + ";";
                 MySqlCommand command = new MySqlCommand(sql, connection);
 
                 connection.Open();
                 MySqlDataReader reader = command.ExecuteReader();
 
-                List<Product> tempList = new List<Product>();
-                int productid;
-                String productdescription;
-                decimal productprice;
-                int quantity;
+                int visitorid;
+                String rfid;
+                String firstname;
+                String lastname;
+                decimal balance;
+                String spotid;
 
                 while (reader.Read())
                 {
-                    productid = Convert.ToInt32(reader[0]);
-                    productdescription = Convert.ToString(reader[1]);
-                    productprice = Convert.ToDecimal(reader[2]);
-                    quantity = Convert.ToInt32(reader[3]);
+                    visitorid = Convert.ToInt32(reader[0]);
+                    rfid = Convert.ToString(reader[1]);
+                    firstname = Convert.ToString(reader[2]);
+                    lastname = Convert.ToString(reader[3]);
+                    balance = Convert.ToDecimal(reader[4]);
 
-                    Product tempItem = new Product(productid, productprice, productdescription, quantity);
-                    tempList.Add(tempItem);
+                    if (String.IsNullOrEmpty(Convert.ToString(reader[5])))
+                    {
+                        spotid = "NULL"; //if null it will be "NULL".
+                    }
+                    else
+                    {
+                        spotid = Convert.ToString(reader[5]);
+                    }
+
+                    TheVisitor = new VisitorAtCamping(visitorid, rfid, firstname, lastname, balance, spotid);
                 }
-                return tempList;
+                return TheVisitor;
             }
             catch (MySqlException)
             {
@@ -547,216 +516,6 @@ namespace Classes
             catch (Exception)
             {
                 return null;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// Select a list of rentals of the rental shop.
-        /// </summary>
-        /// <returns>Returns a list of rentals of the rental shop</returns>
-        public List<Rental> GetAllRentals()
-        {
-            try
-            {
-                String sql = "SELECT * FROM  article WHERE article_availability > 0;";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
-                MySqlDataReader reader = command.ExecuteReader();
-
-                List<Rental> tempList = new List<Rental>();
-                int productid;
-                String productdescription;
-                decimal productprice;
-                int quantity;
-                string comment;
-
-                while (reader.Read())
-                {
-                    productid = Convert.ToInt32(reader[0]);
-                    productdescription = Convert.ToString(reader[1]);
-                    productprice = Convert.ToDecimal(reader[2]);
-                    quantity = Convert.ToInt32(reader[3]);
-                    comment = Convert.ToString(reader[4]);
-
-                    Rental tempItem = new Rental(productid, productprice, productdescription, quantity, comment);
-                    tempList.Add(tempItem);
-                }
-                return tempList;
-            }
-            catch (MySqlException)
-            {
-                return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// Select a list of rentals of a specified visitor
-        /// </summary>
-        /// <param name="myVisitor">The current visitor</param>
-        /// <returns>Returns a list of rentals of the specified visitor</returns>
-        public List<Rental> GetAllRentalsOfVisitor(Visitor myVisitor)
-        {
-            try
-            {
-                List<Rental> tempListRental = new List<Rental>();
-                int productID;
-                String productDescription;
-                decimal productPrice;
-                int quantity;
-                string comment;
-
-                String selectRentID = "SELECT rent_id FROM rental_transaction WHERE visitor_id = " + myVisitor.VisitorID + ";"; // Select all rent_id's of the visitor
-                MySqlCommand commandRentID = new MySqlCommand(selectRentID, connection);
-
-                connection.Open();
-                MySqlDataReader readerRentID = commandRentID.ExecuteReader();
-
-                List<Int32> transactionIDList = new List<Int32>(); // A list that will contain all the transaction ID's of the user
-
-                while (readerRentID.Read())
-                {
-                    transactionIDList.Add(Convert.ToInt32(readerRentID[0]));
-                }
-                readerRentID.Close();
-                if (transactionIDList.Count == 0) // If he doesn't have any rentals, return an empty list
-                {
-                    return tempListRental;
-                }
-
-                List<Int32> articleIDList = new List<Int32>(); // Now it's time to store all the article ID's
-
-                foreach (Int32 transactionID in transactionIDList)
-                {
-                    String selectArticleID = "SELECT article_id FROM rental_details WHERE rent_id = " + transactionID + " AND article_returned = 0;";
-                    MySqlCommand commandArticleID = new MySqlCommand(selectArticleID, connection);
-                    MySqlDataReader readerArticleID = commandArticleID.ExecuteReader();
-                    while (readerArticleID.Read())
-                    {
-                        articleIDList.Add(Convert.ToInt32(readerArticleID[0]));
-                    }
-                    readerArticleID.Close(); // Now we've got a list of all article ID's, time to get the articles and add them to the tempListRental
-                }
-
-                foreach (Int32 articleID in articleIDList)
-                {
-                    String selectArticle = "SELECT * FROM article WHERE article_id = " + articleID + ";";
-                    MySqlCommand commandArticle = new MySqlCommand(selectArticle, connection);
-                    MySqlDataReader readerArticle = commandArticle.ExecuteReader();
-                    while (readerArticle.Read())
-                    {
-                        productID = Convert.ToInt32(readerArticle[0]);
-                        productDescription = Convert.ToString(readerArticle[1]);
-                        productPrice = Convert.ToDecimal(readerArticle[2]);
-                        quantity = Convert.ToInt32(readerArticle[3]);
-                        comment = Convert.ToString(readerArticle[4]);
-
-                        Rental tempItem = new Rental(productID, productPrice, productDescription, quantity, comment);
-                        tempListRental.Add(tempItem);
-                    }
-                    readerArticle.Close();
-                }
-
-                return tempListRental;
-            }
-            catch (MySqlException x)
-            {
-                MessageBox.Show(x.ToString());
-                return null;
-            }
-            catch (Exception x)
-            {
-                MessageBox.Show(x.ToString());
-                return null;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// Checks if the inserted shopid exists in the table
-        /// </summary>
-        /// <param name="shopID">The shopid of the shop the user is looking for</param>
-        /// <returns>True if shop exists, else false</returns>
-        public bool CheckIfShopExists(int shopID)
-        {
-            try
-            {
-                String sql = "SELECT * FROM shop WHERE shop_id = '" + shopID +"';";
-                MySqlCommand command = new MySqlCommand(sql, connection);
-
-                connection.Open();
-                MySqlDataReader reader = command.ExecuteReader();
-                while(reader.Read())
-                {
-                    if (!reader[0].Equals(null))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            catch(Exception x)
-            {
-                MessageBox.Show(x.ToString());
-                return false;   
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// After paypal sends us a text file of the visitors and their updates we process the file and update the database.
-        /// </summary>
-        /// <param name="id">The visitors ID</param>
-        /// <param name="amount">The amount to be added to his account</param>
-        /// <returns>Executed query </returns>
-        public void AddMoneyPaypal(int id, decimal amount)
-        {
-            connection.Open();
-            MySqlCommand command = connection.CreateCommand();
-            MySqlTransaction mytransaction;
-
-            //Start transaction
-            mytransaction = connection.BeginTransaction();
-            command.Connection = connection;
-            command.Transaction = mytransaction;
-
-            try
-            {
-                command.CommandText = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + id + ";";
-
-                command.ExecuteNonQuery();
-                mytransaction.Commit();
-                return;
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    mytransaction.Rollback();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                return;
             }
             finally
             {
@@ -845,188 +604,6 @@ namespace Classes
             }
         }
 
-        /// <summary>
-        /// Selects the current time
-        /// </summary>
-        /// <returns>Returns the current time</returns>
-        public String GetDate()
-        {
-            return DateTime.Now.ToString("yyyy-M-dd");
-        }
-
-        /// <summary>
-        /// Tries to confirm the transaction of a shop
-        /// </summary>
-        /// <param name="shopID">The ID of the specified shop</param>
-        /// <param name="myVisitor">The current visitor</param>
-        /// <param name="basketList">The products the visitor wants to buy</param>
-        /// <param name="amount">The amount the visitor has to pay</param>
-        /// <returns>Returns true if successful</returns>
-        public bool ConfirmShopTransaction(int shopID, Visitor myVisitor, List<BasketItem> basketList, decimal amount)
-        {
-            connection.Open();
-            MySqlCommand commandTransaction = connection.CreateCommand();
-            MySqlTransaction mytransaction;
-            
-            //Start sqlTransaction
-            mytransaction = connection.BeginTransaction();
-            commandTransaction.Connection = connection;
-            commandTransaction.Transaction = mytransaction;
-
-            try
-            {
-                /*String sqlTransaction = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.VisitorID + " , " + shopID + ") ;";
-                sqlTransaction.Replace(@"\", string.Empty);
-                INSERT INTO transaction VALUES (0, "2013-07-08" , 7 , 1); also works*/
-                commandTransaction.CommandText = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.VisitorID + " , " + shopID + ") ;";
-                commandTransaction.CommandText.Replace(@"\", string.Empty);
-                commandTransaction.ExecuteNonQuery();
-
-                String sqlTransactionID = "SELECT MAX(trans_id) FROM transaction WHERE visitor_id = " + myVisitor.VisitorID + " GROUP BY visitor_id;";
-                MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
-
-                int transactionID = (int)commandTransactionID.ExecuteScalar();
-                foreach (BasketItem basketItem in basketList)
-                {
-                    commandTransaction.CommandText = "INSERT INTO transaction_details (trans_id, product_id, quantity) VALUES (" + transactionID + ", " + basketItem.Product.ProductID + ", " + basketItem.Quantity + ") ;";
-                    commandTransaction.ExecuteNonQuery();
-                    commandTransaction.CommandText = "UPDATE stock set stock_quantity = (stock_quantity -" + basketItem.Quantity + ") WHERE product_id = " + basketItem.Product.ProductID + " AND shop_id = " + shopID + " ;";
-                    commandTransaction.ExecuteNonQuery();
-                    /*String sqlTransDetails = "INSERT INTO transaction_details (trans_id, product_id, quantity) VALUES (" + transactionID + ", " + basketItem.Product.ProductID + ", " + basketItem.Quantity + ") ;";
-                    MySqlCommand commandTransDetails = new MySqlCommand(sqlTransDetails, connection);
-                    commandTransDetails.ExecuteNonQuery();
-                    String sqlUpdateStock = "UPDATE stock set stock_quantity = " + basketItem.Quantity + " WHERE product_id = " + basketItem.Product.ProductID + " AND shop_id = " + shopID + " ;";
-                    MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
-                    commandUpdateStock.ExecuteNonQuery();*/
-                }
-                mytransaction.Commit();
-                return true;
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    mytransaction.Rollback();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                return false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// Tries to confirm the rental transaction of the rental shop
-        /// </summary>
-        /// <param name="myVisitor">The current visitor</param>
-        /// <param name="basketList">The products the visitor wants to buy</param>
-        /// <param name="amount">The amount the visitor has to pay</param>
-        /// <returns>Returns true if successful</returns>
-        public bool ConfirmRentalTransaction(Visitor myVisitor, List<Rental> basketList, decimal amount)
-        {
-            connection.Open();
-            MySqlCommand command = connection.CreateCommand();
-            MySqlTransaction mytransaction;
-
-            //Start transaction
-            mytransaction = connection.BeginTransaction();
-            command.Connection = connection;
-            command.Transaction = mytransaction;
-
-            try
-            {
-                String sqlTransaction = @"INSERT INTO rental_transaction VALUES (NULL, " + myVisitor.VisitorID + ", \"" + GetDate() + "\", " + amount + ") ;";
-                sqlTransaction.Replace(@"\", string.Empty);
-                MySqlCommand commandTransaction = new MySqlCommand(sqlTransaction, connection);
-
-                String sqlTransactionID = "SELECT MAX(rent_id) FROM rental_transaction WHERE visitor_id = " + myVisitor.VisitorID + " GROUP BY visitor_id;";
-                MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
-
-                commandTransaction.ExecuteNonQuery();
-                int transactionID = (int)commandTransactionID.ExecuteScalar();
-                foreach (Rental basketItem in basketList)
-                {
-                    String sqlTransDetails = "INSERT INTO rental_details (article_id, rent_id, article_returned) VALUES (" + basketItem.ProductID + ", " + transactionID + ", " + 0 + ") ;";
-                    MySqlCommand commandTransDetails = new MySqlCommand(sqlTransDetails, connection);
-                    commandTransDetails.ExecuteNonQuery();
-                    String sqlUpdateStock = "UPDATE article set article_availability = " + 0 + " WHERE article_id = " + basketItem.ProductID + ";";
-                    MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
-                    commandUpdateStock.ExecuteNonQuery();
-                }
-                mytransaction.Commit();
-                return true;
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    mytransaction.Rollback();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                return false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        /// <summary>
-        /// Tries to confirm the returnal of rentals of users
-        /// </summary>
-        /// <param name="basketList">The rentals the visitor wants to bring back</param>
-        /// <returns>Returns true if successful</returns>
-        public bool ConfirmRentalReturnal(List<Rental> basketList)
-        {
-            connection.Open();
-            MySqlCommand command = connection.CreateCommand();
-            MySqlTransaction mytransaction;
-
-            //Start transaction
-            mytransaction = connection.BeginTransaction();
-            command.Connection = connection;
-            command.Transaction = mytransaction;
-
-            try
-            {
-                foreach (Rental item in basketList)
-                {
-                    String sqlUpdateArticle = "UPDATE article SET article_availability = 1, comment = \"" + item.Comment + "\" WHERE article_id = " + item.ProductID + " ;";
-                    sqlUpdateArticle.Replace(@"\", string.Empty);
-                    MySqlCommand commandUpdateArticle = new MySqlCommand(sqlUpdateArticle, connection);
-                    String sqlUpdateRentalDetails = "UPDATE rental_details SET article_returned = 1 WHERE article_id = " + item.ProductID + ";";
-                    MySqlCommand commandUpdateRentalDetails = new MySqlCommand(sqlUpdateRentalDetails, connection);
-                    commandUpdateArticle.ExecuteNonQuery();
-                    commandUpdateRentalDetails.ExecuteNonQuery();
-                }
-                mytransaction.Commit();
-                return true;
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    mytransaction.Rollback();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                return false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
 
         /// <summary>
         /// Returns a list with all the available (free) camping spots
@@ -1447,6 +1024,445 @@ namespace Classes
                 connection.Close();
             }
         }
+
+        // Queries for shop app \\
+
+        /// <summary>
+        /// Select a list of products of the specified shop.
+        /// </summary>
+        /// <param name="shopid">The ID of the specified shop</param>
+        /// <returns>Returns a list of products of the specified shop</returns>
+        public List<Product> GetAllProducts(int shopid)
+        {
+            try
+            {
+                String sql = "SELECT p.product_id, p.product_description, p.product_price, s.stock_quantity FROM Product p NATURAL JOIN Stock s WHERE s.shop_id = " + shopid + ";";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+
+                List<Product> tempList = new List<Product>();
+                int productid;
+                String productdescription;
+                decimal productprice;
+                int quantity;
+
+                while (reader.Read())
+                {
+                    productid = Convert.ToInt32(reader[0]);
+                    productdescription = Convert.ToString(reader[1]);
+                    productprice = Convert.ToDecimal(reader[2]);
+                    quantity = Convert.ToInt32(reader[3]);
+
+                    Product tempItem = new Product(productid, productprice, productdescription, quantity);
+                    tempList.Add(tempItem);
+                }
+                return tempList;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Checks if the inserted shopid exists in the table
+        /// </summary>
+        /// <param name="shopID">The shopid of the shop the user is looking for</param>
+        /// <returns>True if shop exists, else false</returns>
+        public bool CheckIfShopExists(int shopID)
+        {
+            try
+            {
+                String sql = "SELECT * FROM shop WHERE shop_id = '" + shopID + "';";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (!reader[0].Equals(null))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Tries to confirm the transaction of a shop
+        /// </summary>
+        /// <param name="shopID">The ID of the specified shop</param>
+        /// <param name="myVisitor">The current visitor</param>
+        /// <param name="basketList">The products the visitor wants to buy</param>
+        /// <param name="amount">The amount the visitor has to pay</param>
+        /// <returns>Returns true if successful</returns>
+        public bool ConfirmShopTransaction(int shopID, Visitor myVisitor, List<BasketItem> basketList, decimal amount)
+        {
+            connection.Open();
+            MySqlCommand commandTransaction = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start sqlTransaction
+            mytransaction = connection.BeginTransaction();
+            commandTransaction.Connection = connection;
+            commandTransaction.Transaction = mytransaction;
+
+            try
+            {
+                /*String sqlTransaction = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.VisitorID + " , " + shopID + ") ;";
+                sqlTransaction.Replace(@"\", string.Empty);
+                INSERT INTO transaction VALUES (0, "2013-07-08" , 7 , 1); also works*/
+                commandTransaction.CommandText = @"INSERT INTO transaction VALUES (NULL, ""\" + GetDate() + "\", " + myVisitor.VisitorID + " , " + shopID + ") ;";
+                commandTransaction.CommandText.Replace(@"\", string.Empty);
+                commandTransaction.ExecuteNonQuery();
+
+                String sqlTransactionID = "SELECT MAX(trans_id) FROM transaction WHERE visitor_id = " + myVisitor.VisitorID + " GROUP BY visitor_id;";
+                MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
+
+                int transactionID = (int)commandTransactionID.ExecuteScalar();
+                foreach (BasketItem basketItem in basketList)
+                {
+                    commandTransaction.CommandText = "INSERT INTO transaction_details (trans_id, product_id, quantity) VALUES (" + transactionID + ", " + basketItem.Product.ProductID + ", " + basketItem.Quantity + ") ;";
+                    commandTransaction.ExecuteNonQuery();
+                    commandTransaction.CommandText = "UPDATE stock set stock_quantity = (stock_quantity -" + basketItem.Quantity + ") WHERE product_id = " + basketItem.Product.ProductID + " AND shop_id = " + shopID + " ;";
+                    commandTransaction.ExecuteNonQuery();
+                    /*String sqlTransDetails = "INSERT INTO transaction_details (trans_id, product_id, quantity) VALUES (" + transactionID + ", " + basketItem.Product.ProductID + ", " + basketItem.Quantity + ") ;";
+                    MySqlCommand commandTransDetails = new MySqlCommand(sqlTransDetails, connection);
+                    commandTransDetails.ExecuteNonQuery();
+                    String sqlUpdateStock = "UPDATE stock set stock_quantity = " + basketItem.Quantity + " WHERE product_id = " + basketItem.Product.ProductID + " AND shop_id = " + shopID + " ;";
+                    MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
+                    commandUpdateStock.ExecuteNonQuery();*/
+                }
+                mytransaction.Commit();
+                return true;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        // Queries for Rental shop app \\
+
+        /// <summary>
+        /// Select a list of rentals of the rental shop.
+        /// </summary>
+        /// <returns>Returns a list of rentals of the rental shop</returns>
+        public List<Rental> GetAllRentals()
+        {
+            try
+            {
+                String sql = "SELECT * FROM  article WHERE article_availability > 0;";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+
+                List<Rental> tempList = new List<Rental>();
+                int productid;
+                String productdescription;
+                decimal productprice;
+                int quantity;
+                string comment;
+
+                while (reader.Read())
+                {
+                    productid = Convert.ToInt32(reader[0]);
+                    productdescription = Convert.ToString(reader[1]);
+                    productprice = Convert.ToDecimal(reader[2]);
+                    quantity = Convert.ToInt32(reader[3]);
+                    comment = Convert.ToString(reader[4]);
+
+                    Rental tempItem = new Rental(productid, productprice, productdescription, quantity, comment);
+                    tempList.Add(tempItem);
+                }
+                return tempList;
+            }
+            catch (MySqlException)
+            {
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Select a list of rentals of a specified visitor
+        /// </summary>
+        /// <param name="myVisitor">The current visitor</param>
+        /// <returns>Returns a list of rentals of the specified visitor</returns>
+        public List<Rental> GetAllRentalsOfVisitor(Visitor myVisitor)
+        {
+            try
+            {
+                List<Rental> tempListRental = new List<Rental>();
+                int productID;
+                String productDescription;
+                decimal productPrice;
+                int quantity;
+                string comment;
+
+                String selectRentID = "SELECT rent_id FROM rental_transaction WHERE visitor_id = " + myVisitor.VisitorID + ";"; // Select all rent_id's of the visitor
+                MySqlCommand commandRentID = new MySqlCommand(selectRentID, connection);
+
+                connection.Open();
+                MySqlDataReader readerRentID = commandRentID.ExecuteReader();
+
+                List<Int32> transactionIDList = new List<Int32>(); // A list that will contain all the transaction ID's of the user
+
+                while (readerRentID.Read())
+                {
+                    transactionIDList.Add(Convert.ToInt32(readerRentID[0]));
+                }
+                readerRentID.Close();
+                if (transactionIDList.Count == 0) // If he doesn't have any rentals, return an empty list
+                {
+                    return tempListRental;
+                }
+
+                List<Int32> articleIDList = new List<Int32>(); // Now it's time to store all the article ID's
+
+                foreach (Int32 transactionID in transactionIDList)
+                {
+                    String selectArticleID = "SELECT article_id FROM rental_details WHERE rent_id = " + transactionID + " AND article_returned = 0;";
+                    MySqlCommand commandArticleID = new MySqlCommand(selectArticleID, connection);
+                    MySqlDataReader readerArticleID = commandArticleID.ExecuteReader();
+                    while (readerArticleID.Read())
+                    {
+                        articleIDList.Add(Convert.ToInt32(readerArticleID[0]));
+                    }
+                    readerArticleID.Close(); // Now we've got a list of all article ID's, time to get the articles and add them to the tempListRental
+                }
+
+                foreach (Int32 articleID in articleIDList)
+                {
+                    String selectArticle = "SELECT * FROM article WHERE article_id = " + articleID + ";";
+                    MySqlCommand commandArticle = new MySqlCommand(selectArticle, connection);
+                    MySqlDataReader readerArticle = commandArticle.ExecuteReader();
+                    while (readerArticle.Read())
+                    {
+                        productID = Convert.ToInt32(readerArticle[0]);
+                        productDescription = Convert.ToString(readerArticle[1]);
+                        productPrice = Convert.ToDecimal(readerArticle[2]);
+                        quantity = Convert.ToInt32(readerArticle[3]);
+                        comment = Convert.ToString(readerArticle[4]);
+
+                        Rental tempItem = new Rental(productID, productPrice, productDescription, quantity, comment);
+                        tempListRental.Add(tempItem);
+                    }
+                    readerArticle.Close();
+                }
+
+                return tempListRental;
+            }
+            catch (MySqlException x)
+            {
+                MessageBox.Show(x.ToString());
+                return null;
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
+                return null;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Tries to confirm the rental transaction of the rental shop
+        /// </summary>
+        /// <param name="myVisitor">The current visitor</param>
+        /// <param name="basketList">The products the visitor wants to buy</param>
+        /// <param name="amount">The amount the visitor has to pay</param>
+        /// <returns>Returns true if successful</returns>
+        public bool ConfirmRentalTransaction(Visitor myVisitor, List<Rental> basketList, decimal amount)
+        {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
+            try
+            {
+                String sqlTransaction = @"INSERT INTO rental_transaction VALUES (NULL, " + myVisitor.VisitorID + ", \"" + GetDate() + "\", " + amount + ") ;";
+                sqlTransaction.Replace(@"\", string.Empty);
+                MySqlCommand commandTransaction = new MySqlCommand(sqlTransaction, connection);
+
+                String sqlTransactionID = "SELECT MAX(rent_id) FROM rental_transaction WHERE visitor_id = " + myVisitor.VisitorID + " GROUP BY visitor_id;";
+                MySqlCommand commandTransactionID = new MySqlCommand(sqlTransactionID, connection);
+
+                commandTransaction.ExecuteNonQuery();
+                int transactionID = (int)commandTransactionID.ExecuteScalar();
+                foreach (Rental basketItem in basketList)
+                {
+                    String sqlTransDetails = "INSERT INTO rental_details (article_id, rent_id, article_returned) VALUES (" + basketItem.ProductID + ", " + transactionID + ", " + 0 + ") ;";
+                    MySqlCommand commandTransDetails = new MySqlCommand(sqlTransDetails, connection);
+                    commandTransDetails.ExecuteNonQuery();
+                    String sqlUpdateStock = "UPDATE article set article_availability = " + 0 + " WHERE article_id = " + basketItem.ProductID + ";";
+                    MySqlCommand commandUpdateStock = new MySqlCommand(sqlUpdateStock, connection);
+                    commandUpdateStock.ExecuteNonQuery();
+                }
+                mytransaction.Commit();
+                return true;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Tries to confirm the returnal of rentals of users
+        /// </summary>
+        /// <param name="basketList">The rentals the visitor wants to bring back</param>
+        /// <returns>Returns true if successful</returns>
+        public bool ConfirmRentalReturnal(List<Rental> basketList)
+        {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
+            try
+            {
+                foreach (Rental item in basketList)
+                {
+                    String sqlUpdateArticle = "UPDATE article SET article_availability = 1, comment = \"" + item.Comment + "\" WHERE article_id = " + item.ProductID + " ;";
+                    sqlUpdateArticle.Replace(@"\", string.Empty);
+                    MySqlCommand commandUpdateArticle = new MySqlCommand(sqlUpdateArticle, connection);
+                    String sqlUpdateRentalDetails = "UPDATE rental_details SET article_returned = 1 WHERE article_id = " + item.ProductID + ";";
+                    MySqlCommand commandUpdateRentalDetails = new MySqlCommand(sqlUpdateRentalDetails, connection);
+                    commandUpdateArticle.ExecuteNonQuery();
+                    commandUpdateRentalDetails.ExecuteNonQuery();
+                }
+                mytransaction.Commit();
+                return true;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        // Queries for paypal app \\
+
+        /// <summary>
+        /// After paypal sends us a text file of the visitors and their updates we process the file and update the database.
+        /// </summary>
+        /// <param name="id">The visitors ID</param>
+        /// <param name="amount">The amount to be added to his account</param>
+        /// <returns>Executed query </returns>
+        public void AddMoneyPaypal(int id, decimal amount)
+        {
+            connection.Open();
+            MySqlCommand command = connection.CreateCommand();
+            MySqlTransaction mytransaction;
+
+            //Start transaction
+            mytransaction = connection.BeginTransaction();
+            command.Connection = connection;
+            command.Transaction = mytransaction;
+
+            try
+            {
+                command.CommandText = "UPDATE visitor SET balance = balance + " + amount + " WHERE visitor_id = " + id + ";";
+
+                command.ExecuteNonQuery();
+                mytransaction.Commit();
+                return;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    mytransaction.Rollback();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        // Queries for Restock shop app \\
 
         /// <summary>
         /// Updates the stock of the shops.
