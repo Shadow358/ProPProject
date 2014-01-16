@@ -23,18 +23,26 @@ namespace Shop
         {
             try
             {
+                this.Hide();
                 this.shopID = Convert.ToInt32(tbShopID.Text);
+
+                //if the shopID inserted is in the table shop in database (SELECT BLAH BLAH...)
+                //Then Make the shop object and open the ShowDialog.
                 Shop shop = new Shop(shopID);
-                shop.ShowDialog(); 
+                shop.ShowDialog();
+
+                //If the shopID is not in the shoptable
+                //Then just show an error message and let them insert a shop again.
                 
-                this.Close();
-
-
+                //The this.Close() is in the finally.
             }
-            catch (Exception x)
+            catch (Exception)
             {
-                MessageBox.Show(x.Message);
                 tbShopID.Text = "";
+            }
+            finally
+            {
+                this.Close();
             }
         }
     }

@@ -27,7 +27,10 @@ namespace Shop
         public Shop(int shopID)
         {
             InitializeComponent();
-            
+
+            //ShopID assigned the variable from the constructor.
+            this.shopID = shopID;
+
             /*using (var form = new EnterShopID()) // Opens a form before opening the main form, and then the entered shopID will be used to query the shop.
             {
                 var result = form.ShowDialog();
@@ -35,6 +38,9 @@ namespace Shop
                 this.shopID = getShopID;
             }*/
 
+            //BECAUSE YOU CHECK IF THE SHOP ID IS VALD IN THE OTHER FORM YOU DONT HAVE TO CHECK AGAIN HERE
+            //REMOVE IF ELSE STATEMENT AND JUST LEAVE THE "CONNECT TO SHOP" PART....
+            
             if (shopID <= 0)
             {
                 MessageBox.Show("Error! Enter a correct shopID! Please restart the application");
