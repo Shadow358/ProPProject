@@ -1109,6 +1109,40 @@ namespace Classes
         }
 
         /// <summary>
+        /// Checks if the inserted product exists in the table
+        /// </summary>
+        /// <param name="productID">The productID of the product the user is looking for</param>
+        /// <returns>True if product exists, else false</returns>
+        public bool CheckIfProductExists(int productID)
+        {
+            try
+            {
+                String sql = "SELECT * FROM stock WHERE product_id = '" + productID + "';";
+                MySqlCommand command = new MySqlCommand(sql, connection);
+
+                connection.Open();
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (!reader[0].Equals(null))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.ToString());
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
         /// Tries to confirm the transaction of a shop
         /// </summary>
         /// <param name="shopID">The ID of the specified shop</param>

@@ -13,7 +13,7 @@ namespace RestockShop
 {
     public partial class Restock : Form
     {
-       
+
         DBHelper dbh;
         List<Product> productList = new List<Product>();
 
@@ -23,17 +23,17 @@ namespace RestockShop
         {
             InitializeComponent();
             dbh = new DBHelper();
-            
+
             tb_ShopID.Text = "1";
-            shopID = Convert.ToInt16(tb_ShopID.Text) ;
+            shopID = Convert.ToInt16(tb_ShopID.Text);
             showProductsDatabase();
         }
         // Fetches the products from the database and stores it in a list 
-        private void showProductsDatabase() 
+        private void showProductsDatabase()
         {
             shopID = Convert.ToInt16(tb_ShopID.Text);
             productList = dbh.GetAllProducts(shopID);
-           
+
         }
 
         private void Restock_Load(object sender, EventArgs e)
@@ -50,7 +50,7 @@ namespace RestockShop
                 {
                     MessageBox.Show("Please enter a product ID", "Product ID Error");
                 }
-                else if (!dbh.CheckIfShopExists(Convert.ToInt16(tb_ShopID.Text)))
+                else if (!dbh.CheckIfProductExists(Convert.ToInt16(tb_productID.Text)) && dbh.CheckIfShopExists(Convert.ToInt16(tb_ShopID.Text)))
                 {
                     MessageBox.Show("Please enter a valid product ID", "Product ID Error");
                 }
@@ -79,8 +79,8 @@ namespace RestockShop
 
                 }
             }
-            
-            catch 
+
+            catch
             {
                 MessageBox.Show("Please enter only numbers");
             }
@@ -108,7 +108,7 @@ namespace RestockShop
                     }
                 }
             }
-            catch 
+            catch
             {
                 MessageBox.Show("Please enter only numbers");
             }

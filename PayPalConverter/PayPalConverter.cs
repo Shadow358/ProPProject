@@ -83,7 +83,7 @@ namespace PayPalConverter
                 lb_End.Items.Add("Start Period: " + startdate.ToString());
                 lb_End.Items.Add("End Period: " + enddate.ToString());
                 lb_End.Items.Add("Number Of Deposits: " + nrOfDeposits.ToString());
-                lb_End.Items.Add("Total Amount Added: " + totalAmount.ToString());
+
                 //Updates the Database
                 for (int i = 0; i < VisitorsIDs.Count; i++)
                 {
@@ -98,11 +98,11 @@ namespace PayPalConverter
             }
             catch (Exception)
             {
-                MessageBox.Show("File: " + filename + "cannot be processed");
+                MessageBox.Show("File: " + filename + " cannot be processed to the database" + ", Connection error");
             }
             finally
             {
-                MessageBox.Show("File processed!Have a nice day!");
+                MessageBox.Show("Have a nice day!");
             }
         }
     }
