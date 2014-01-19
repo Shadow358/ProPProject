@@ -18,18 +18,34 @@ namespace Entrance
         DBHelper dbhelper;
         VisitorAtEntrance myvisitor;
 
+        //When an instance of this form is created it should pass a VisitorAtEntrance throught the constructor.
         public PayEntrance(VisitorAtEntrance currentvisitor)
         {
             InitializeComponent();
 
-            myvisitor = currentvisitor;
-            this.StartPosition = FormStartPosition.CenterScreen;
-            dbhelper = new DBHelper();
-            lbVisitorName.Text = "Visitor: " + myvisitor.ToString();
-            lbInfo.Text = "Visitor needs to pay at least " + (-(myvisitor.Balance) + 10) + " euros (ticket fee)\nbefore he/she can enter the event.";
-            numericUpDown.Value = (-(myvisitor.Balance) + 10);
+            try
+            {
+                ///assign the visitor with the visitor passed throught the constructor so it can be used everywhere in this form.
+                ///Show labels of how much visitor has to pay, and put the amount in the numericUpDown value.
+                myvisitor = currentvisitor;
+                this.StartPosition = FormStartPosition.CenterScreen;
+                dbhelper = new DBHelper();
+                lbVisitorName.Text = "Visitor: " + myvisitor.ToString();
+                lbInfo.Text = "Visitor needs to pay at least " + (-(myvisitor.Balance) + 10) + " euros (ticket fee)\nbefore he/she can enter the event.";
+                numericUpDown.Value = (-(myvisitor.Balance) + 10);
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.Message);
+            }
         }
 
+        /// <summary>
+        /// When Pay is clicked, if amount that should be paid or more is inserted in the numericUpDown then it's successfull.
+        /// If not then show an error message to the user.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btPay_Click(object sender, EventArgs e)
         {
             if (numericUpDown.Value >= (-(myvisitor.Balance) + 10))
@@ -46,11 +62,21 @@ namespace Entrance
             }
         }
 
+        /// <summary>
+        /// Click on cancel dispose of this form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btCancel_Click(object sender, EventArgs e)
         {
             this.Dispose();
         }
 
+        /// <summary>
+        /// When Form is closed, form is disposed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PayEntrance_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.Dispose();

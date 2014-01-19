@@ -19,13 +19,7 @@ namespace Camping
         CampReservation reservation;
         Visitor myvisitor;
 
-        //Default constructor
-        public PaymentForm()
-        {
-            InitializeComponent();
-        }
-
-        //Constructor
+        //Constructor of this form. When form is created, it knows the visitor that is paying and the reservation that needs to be paid.
         public PaymentForm(CampReservation reservation, VisitorAtCamping myvisitor)
         {
             this.dbhelper = new DBHelper();
@@ -48,6 +42,13 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// When button is clicked, if visitor has enough money, the reservation will be paid and money is deducted from the visitor
+        /// (Using the method in the dbHelper class).
+        /// If visitor does not have enough money then a message is shown, then this form is disposed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btConfirmPayment_Click(object sender, EventArgs e)
         {
             try
@@ -79,11 +80,21 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// When clicked Cancel, this form is disposed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btCancel_Click(object sender, EventArgs e)
         {
             this.Dispose();
         }
 
+        /// <summary>
+        /// When form is closed, this form is disposed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PaymentForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.Dispose();

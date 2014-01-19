@@ -266,7 +266,11 @@ namespace Classes
             }
             catch (MySqlException)
             {
-                return null;
+                throw;
+            }
+            catch (NullReferenceException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -370,7 +374,11 @@ namespace Classes
             }
             catch (MySqlException)
             {
-                return null;
+                throw;
+            }
+            catch (NullReferenceException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -511,7 +519,11 @@ namespace Classes
             }
             catch (MySqlException)
             {
-                return null;
+                throw;
+            }
+            catch (NullReferenceException)
+            {
+                throw;
             }
             catch (Exception)
             {

@@ -30,6 +30,7 @@ namespace Camping
         Visitor mypayingvisitor;
 
         //Constructor for existing reservation
+        //The constructor knows the cadAdd Value, depending how much the value is, when initilalize the form, it hides buttons and textboxes.
         public ReservationForm(CampReservation reservation, int canAdd)
         {
             InitializeComponent();
@@ -142,6 +143,8 @@ namespace Camping
 
             //if canAdd == 5 -> Nothing extra to bo done.
 
+            ///Create a RFID object
+            ///Event for Tag (reading tag)
             try
             {
                 myRFIDReader = new RFID();
@@ -186,6 +189,8 @@ namespace Camping
                 }
                 tbTotalAmount.Text = totalamount.ToString();
 
+                ///Create a RFID object
+                ///Event for Tag (reading tag)
                 myRFIDReader = new RFID();
                 myRFIDReader.Tag += new TagEventHandler(ReadTag);
             }
@@ -195,6 +200,12 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// Read tags and create the visitor with that read tag. Then show the visitor in the textbox (depending on the index)
+        /// index is specified when the button scan is clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReadTag(object sender, TagEventArgs e)
         {
             Console.Beep(2500, 200);
@@ -219,6 +230,10 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// This method is to open the RFID reader and make the antenna true
+        /// it also make the ScannerOn the the oposite bool.
+        /// </summary>
         public void ScanOn()
         {
             myRFIDReader.open();
@@ -227,6 +242,10 @@ namespace Camping
             ScannerOn = !ScannerOn;
         }
 
+        /// <summary>
+        /// This method is to make the antenna of the RFID reader false an also close the RFID reader.
+        /// It also make the ScannerOn the the oposite bool.
+        /// </summary>
         public void ScanOff()
         {
             myRFIDReader.Antenna = false;
@@ -234,9 +253,14 @@ namespace Camping
             ScannerOn = !ScannerOn;
         }
 
+        /// <summary>
+        /// if there is already a visitor scanned with the specifiek visitorIndex it just becomes null.
+        /// Turn scanner on. Clear the textbox with specifiek visitorIndex, and make the backcolor to default.
+        /// </summary>
         public void ScanButtonsMethod()
         {
             myScannedvisitors[visitorIndex] = null;
+            mySavedvisitors[visitorIndex] = null;
 
             if (ScannerOn == false)
             {
@@ -251,6 +275,13 @@ namespace Camping
             textboxesVisitors[visitorIndex].BackColor = DefaultBackColor;
         }
 
+        /// <summary>
+        /// If scanner is on, turn it off.
+        /// if there is a savedvisitor at the specifiek index, check if that specifiek visitor is already saved in this reservation, if it is, then don't save
+        /// the visitor, and show a propper message.
+        /// If visitor already belongs to another reservation, show a propper message and don't save.
+        /// Save the visitor only if visitor does not belong to any reservations, if this is success, then the total amount to pay should be updated.
+        /// </summary>
         public void SaveButtonsMethod()
         {
             if (ScannerOn)
@@ -274,8 +305,8 @@ namespace Camping
                     }
                 }
 
-                //If reservation already exist (Then you are working with an existing reservation, it check first if the visitor
-                //that you are trying to add is already in the reservation.
+                ///If reservation already exist (Then you are working with an existing reservation, it check first if the visitor
+                ///that you are trying to add is already in the reservation.)
                 if (thereservation != null)
                 {
                     if (dbhelper.GetVisitorIDsReservation(thereservation.SpotID).Any(id => id == myScannedvisitors[visitorIndex].VisitorID))
@@ -316,6 +347,12 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// If the visitor with that specifiek visitorIndex is saved then remove that visitor from the saved list and also the visitor from the scanned
+        /// list with that specifiek visitorIndex.
+        /// If there are no visitor with that specifiek visitorIndex saved, just remove that scanned visitor with that specifiek visitorIndex from the scanned list.
+        /// Also when deleting a visitor from the saved visitor list, the totalamount to pay should be deducted.
+        /// </summary>
         public void DeleteButtonsMethod()
         {
             if (mySavedvisitors[visitorIndex] != null)
@@ -340,6 +377,12 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// visitorIndex = 0.
+        /// Perform ScanButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btScanVisitor1_Click(object sender, EventArgs e)
         {
             visitorIndex = 0;
@@ -347,36 +390,73 @@ namespace Camping
             tbVisitor1Balance.Text = "";
         }
 
+        /// <summary>
+        /// visitorIndex = 1.
+        /// Perform ScanButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btScanVisitor2_Click(object sender, EventArgs e)
         {
             visitorIndex = 1;
             ScanButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 2.
+        /// Perform ScanButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btScanVisitor3_Click(object sender, EventArgs e)
         {
             visitorIndex = 2;
             ScanButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 3.
+        /// Perform ScanButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btScanVisitor4_Click(object sender, EventArgs e)
         {
             visitorIndex = 3;
             ScanButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 4.
+        /// Perform ScanButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btScanVisitor5_Click(object sender, EventArgs e)
         {
             visitorIndex = 4;
             ScanButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 5.
+        /// Perform ScanButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btScanVisitor6_Click(object sender, EventArgs e)
         {
             visitorIndex = 5;
             ScanButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 0.
+        /// Check if this paying visitor already booked another reservation, if not. than save, if so, dont save and show a proppermessage
+        /// and also delete the reservation from the scanned list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btSaveVisitor1_Click(object sender, EventArgs e)
         {
             visitorIndex = 0;
@@ -392,72 +472,147 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// visitorIndex = 1.
+        /// Perform SaveButtonMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btSaveVisitor2_Click(object sender, EventArgs e)
         {
             visitorIndex = 1;
             SaveButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 2.
+        /// Perform SaveButtonMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btSaveVisitor3_Click(object sender, EventArgs e)
         {
             visitorIndex = 2;
             SaveButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 3.
+        /// Perform SaveButtonMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btSaveVisitor4_Click(object sender, EventArgs e)
         {
             visitorIndex = 3;
             SaveButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 4.
+        /// Perform SaveButtonMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btSaveVisitor5_Click(object sender, EventArgs e)
         {
             visitorIndex = 4;
             SaveButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 5.
+        /// Perform SaveButtonMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btSaveVisitor6_Click(object sender, EventArgs e)
         {
             visitorIndex = 5;
             SaveButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 0.
+        /// Perform DeleteButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDeleteVisitor1_Click(object sender, EventArgs e)
         {
             visitorIndex = 0;
             DeleteButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 1.
+        /// Perform DeleteButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDeleteVisitor2_Click(object sender, EventArgs e)
         {
             visitorIndex = 1;
             DeleteButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 2.
+        /// Perform DeleteButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDeleteVisitor3_Click(object sender, EventArgs e)
         {
             visitorIndex = 2;
             DeleteButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 3.
+        /// Perform DeleteButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDeleteVisitor4_Click(object sender, EventArgs e)
         {
             visitorIndex = 3;
             DeleteButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 4.
+        /// Perform DeleteButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDeleteVisitor5_Click(object sender, EventArgs e)
         {
             visitorIndex = 4;
             DeleteButtonsMethod();
         }
 
+        /// <summary>
+        /// visitorIndex = 5.
+        /// Perform DeleteButtonsMethod.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDeleteVisitor6_Click(object sender, EventArgs e)
         {
             visitorIndex = 5;
             DeleteButtonsMethod();
         }
 
+        /// <summary>
+        /// This button is for none-existing reservation.
+        /// When clicked, if there is no saved visitor in list at index 0 then show propper message.
+        /// if there are completely no visitor saved, show propper message.
+        /// Else check if there is a spotid chosen, if there is not show propper message, if there is a spot chosen 
+        /// then make the reservation and add all the visitors to the reservation (connect to database and do the insert queries into the database).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btConfirm_Click(object sender, EventArgs e)
         {
             try
@@ -516,6 +671,11 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// If scanner is on, turn off, then dispose this form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Booking_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (ScannerOn)
@@ -525,6 +685,12 @@ namespace Camping
             this.Dispose();
         }
 
+        /// <summary>
+        /// if scanner is on, then turn off, then clear all the visitor's scanned and saved list. 
+        /// This button click should also clear the textboxes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btReset_Click(object sender, EventArgs e)
         {
             if (ScannerOn)
@@ -558,6 +724,13 @@ namespace Camping
             tbTotalAmount.Text = totalamount.ToString();
         }
 
+        /// <summary>
+        /// if the button btDoneExistingReservation.Visible is visible, then this form is disposed.
+        /// if the button btDoneExistingReservation.Visible is not visible then make it visible and hide the btConfirmExistingReservation button and also
+        /// make the buttons in the scansavedeleteButtons array true, also disable the event handler of the RFID and enable it back assigning it another target.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btCancelExistingReservation_Click(object sender, EventArgs e)
         {
             if (!btDoneExistingReservation.Visible)
@@ -584,6 +757,12 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// Reads a tag, if the read visitor is not the one who booked the reservation, then show propper errormessage.
+        /// else show the button btConfirmExistingReservation to let the user confirm.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReadTagPayingVisitor(object sender, TagEventArgs e)
         {
             Console.Beep(2500, 200);
@@ -614,6 +793,12 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// if no visitor is scanned, show a message to scan atleast a visitor.
+        /// else disable the event handler and assign to it another target (the one to scan the paying visitor) and turn scanner on.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDoneExistingReservation_Click(object sender, EventArgs e)
         {
             if (mySavedvisitors.All(visitor => visitor == null))
@@ -650,6 +835,13 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// if savedvisitor list is null then show propper message and disable the event handler and assign it back with the ReadTag target.
+        /// else check if balance is more or equal to the amount to be paid, if it is, connect to database and add visitors to the reservation.
+        /// if amount is more than balance then show propper message and make this btConfirmExistingReservation back invisable.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btConfirmExistingReservation_Click(object sender, EventArgs e)
         {
             if (mySavedvisitors.All(visitor => visitor == null))
@@ -714,6 +906,12 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// Button for none-existing reservation.
+        /// if scanner is on, turn off. if no camping spot is selected, show propper message, else then hide this button and show the confirm button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDone_Click(object sender, EventArgs e)
         {
             if (ScannerOn)
@@ -738,6 +936,13 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// Button for none-existing reservation.
+        /// If the btDone is visible then dispose this form.
+        /// else show the btDone and hide the btConfirm. also make all buttons back true (available to click).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btCancel_Click(object sender, EventArgs e)
         {
             if (!btDone.Visible)

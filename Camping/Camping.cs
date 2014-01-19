@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 using Phidgets;
 using Phidgets.Events;
 using Classes;
@@ -19,14 +20,18 @@ namespace Camping
         DBHelper dbhelper;
         Visitor myvisitor;
         CampReservation reservation;
+        //This bool is to check if the scanner is on or off.
         bool ScannerOn;
 
         public Camping()
         {
             InitializeComponent();
             dbhelper = new DBHelper();
+            //When camping instance is created, the ScannerOn is set to false.
             ScannerOn = false;
 
+            ///Create a RFID object
+            ///Event for Tag (reading tag)
             try
             {
                 myRFIDReader = new RFID();
@@ -40,6 +45,15 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// When a RFID comes close the the RFID Scanner it scannes it.
+        /// Check if the visitor can enter the Camping Area or not.
+        /// If visitor SPOTID is 'NULL', then the visitor does not have a camping spot id and cannot enter.
+        /// If visitor has a spotid, check if the spot is fully paid, if it is then the visitor can enter, if not
+        /// then the reservation has to be paid for.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReadTag(object sender, TagEventArgs e)
         {
             timer.Stop();
@@ -65,6 +79,7 @@ namespace Camping
                 }
                 else
                 {
+                    //If visitor has an spotid and if the reservation is paid for completely.
                     reservation = dbhelper.GetCampingReservation(((VisitorAtCamping)myvisitor).SpotID);
                     if (reservation.AmountPaid == reservation.ShouldBePaid)
                     {
@@ -76,6 +91,7 @@ namespace Camping
                         tbVisitor.Text = myvisitor.ToString();
                         tbSpotPaidBy.Text = reservation.Visitor.ToString();
                     }
+                    //if the reservation is not fully paid.
                     else
                     {
                         Console.Beep(2000, 500);
@@ -87,9 +103,11 @@ namespace Camping
                         lbInfo.Text = "Visitor cannot enter yet...!";
 
                         DialogResult dialogResult = MessageBox.Show("Reservation not (completely) paid.\n" + "Amount to pay: " + (reservation.ShouldBePaid - reservation.AmountPaid) + " Euros.\nClick 'OK' to check who can pay.", "Attention", MessageBoxButtons.OKCancel);
-
+                        //Dialog: if clicked OK, continue to go to payment.
                         if (dialogResult == DialogResult.OK)
                         {
+                            //If visitor is the one who booked the reservation then an instance of the payment form is created 
+                            //and the visitor can continue to pay the reservation.
                             if (reservation.Visitor.VisitorID == myvisitor.VisitorID)
                             {
                                 lbOnOff.Text = "RFID-Reader is OFF";
@@ -102,6 +120,7 @@ namespace Camping
                                 lbOnOff.Text = "RFID-Reader is ON";
                                 lbInfo.Text = "Ready to scan a tag...";
                             }
+                            //If visitor is not the one who booked the reservation then a message is shown to the user.
                             else
                             {
                                 MessageBox.Show("Camping reservation not booked by this visitor.\nPlease scan reservation visitor (" + reservation.Visitor.ToString() + ") for payment.");
@@ -110,6 +129,7 @@ namespace Camping
                             }
                         }
 
+                        //Dialog: if clicked Cancel, then clear the textboxes.
                         if (dialogResult == DialogResult.Cancel)
                         {
                             lbInfo.Text = "Ready to scan a tag...";
@@ -118,16 +138,23 @@ namespace Camping
                     }
                 }
             }
-            catch (NullReferenceException x)
+            catch (MySqlException)
             {
-                MessageBox.Show(x.Message);
+                MessageBox.Show("Error, something went wrong when connecting to the database.\nPlease try again.");
             }
-            catch (Exception x)
+            catch (NullReferenceException)
             {
-                MessageBox.Show(x.Message);
+                MessageBox.Show("No visitor found with this tag.");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error, something went wrong.\nPlease try again.");
             }
         }
 
+        /// <summary>
+        /// Clear the textboxes and make the formcolor to default.
+        /// </summary>
         public void ClearReset()
         {
             tbSpotid.Clear();
@@ -137,6 +164,10 @@ namespace Camping
             this.BackColor = DefaultBackColor;
         }
 
+        /// <summary>
+        /// This method is to open the RFID reader and make the antenna true
+        /// it also make the ScannerOn the the oposite bool.
+        /// </summary>
         public void ScanOn()
         {
             myRFIDReader.open();
@@ -145,14 +176,23 @@ namespace Camping
             ScannerOn = !ScannerOn;
         }
 
+        /// <summary>
+        /// This method is to make the antenna of the RFID reader false an also close the RFID reader.
+        /// It also make the ScannerOn the the oposite bool.
+        /// </summary>
         public void ScanOff()
         {
             myRFIDReader.Antenna = false;
             myRFIDReader.close();
             ScannerOn = !ScannerOn;
-            return;
         }
 
+        /// <summary>
+        /// When button ON is clicked, open the RFID reader, make antenna true.
+        /// clear the textboxes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btOn_Click(object sender, EventArgs e)
         {
             try
@@ -176,6 +216,12 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// When button OFF is clicked, make antenna of the RFID false, and close RFID reader.
+        /// clear the textboxes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btOff_Click(object sender, EventArgs e)
         {
             try
@@ -198,6 +244,11 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// timer tickes. Stop the timer and clear the textboxes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void timer_Tick(object sender, EventArgs e)
         {
             timer.Stop();
@@ -205,6 +256,11 @@ namespace Camping
             ClearReset();
         }
 
+        /// <summary>
+        /// When button is clicked, if scanner is still on, turn off, clear textboxes and create an instance of the ReservationForm.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btCreateNewReservation_Click(object sender, EventArgs e)
         {
             timer.Stop();
@@ -232,6 +288,13 @@ namespace Camping
             }
         }
 
+        /// <summary>
+        /// When button is clicked, if scanner is still on, turn off, clear textboxes.
+        /// If there does not exist a reseration, show a message that there are no reservations available.
+        /// else, create an instance of the Reservations form and pass with it in the constructor the list of the reservations.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btUpdateExistingReservation_Click(object sender, EventArgs e)
         {
             timer.Stop();
